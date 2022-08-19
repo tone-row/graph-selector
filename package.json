@@ -1,0 +1,13 @@
+{
+  "name": "graph-selector-syntax",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "pnpm --parallel dev",
+    "test": "pnpm --parallel test"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
