@@ -4,7 +4,7 @@ export type Element = {
   label: string;
 };
 
-export type Node = Record<string, string | number>;
+export type Node = Record<string, string>;
 
 export type Edge = Element & {
   source: string;

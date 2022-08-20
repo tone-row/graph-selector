@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "build": "pnpm -F parser build && pnpm -F examples build",
     "dev": "pnpm --parallel dev",
     "test": "pnpm --parallel test"
   },
