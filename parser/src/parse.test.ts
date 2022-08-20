@@ -155,4 +155,30 @@ e
     (a) (e)`);
     expect(result.nodes.length).toEqual(2);
   });
+
+  /* Edges */
+
+  test("gets correct line number for edges", () => {
+    const result = parse(`#a[size=4] label a
+#b[size=3] label b
+#c[size=5] label c
+#d[size=2] label d
+
+(#a)
+  (#c)
+  (#d)
+(#b)
+  (#d)
+`);
+    expect(result.edges[0].lineNumber).toEqual(7);
+    expect(result.edges[1].lineNumber).toEqual(8);
+    expect(result.edges[2].lineNumber).toEqual(10);
+  });
+
+  test("get correct edge label", () => {
+    const result = parse(`a
+b
+    test: (a)`);
+    expect(result.edges[0].label).toEqual("test");
+  });
 });

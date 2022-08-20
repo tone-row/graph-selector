@@ -1,14 +1,20 @@
 import { FlatNode } from "./types";
 
-// TODO: handle pointer-relations where you use a pointer with no indentation to describe a many-to-one or many-to-many relationship
 // TODO: parse edge info from <>
 // TODO: should data attributes be parsable as number
 // TODO: does a node really need a label to be a node?
+// TODO: fix types
 
 type PointerType = "id" | "class" | "label";
-type PointerArray = [PointerType, string];
-type PointerEdges = [string | PointerArray, string | PointerArray][];
-type Ancestor = PointerArray[] | string | null;
+type Pointer = [PointerType, string];
+type ID = string;
+type UnresolvedEdges = {
+  source: ID | Pointer;
+  target: ID | Pointer;
+  lineNumber: number;
+  label: string;
+}[];
+type Ancestor = Pointer[] | string | null;
 type Ancestors = Ancestor[];
 
 export function parse(text: string) {
@@ -30,7 +36,7 @@ export function parse(text: string) {
   let ancestors: Ancestors = [];
 
   // store pointer edges to be resolved when all nodes parsed
-  const unresolvedEdges: PointerEdges = [];
+  const unresolvedEdges: UnresolvedEdges = [];
 
   for (let line of lines) {
     ++lineNumber;
@@ -144,7 +150,12 @@ export function parse(text: string) {
 
         // add all pointers to future edges
         for (const [pointerType, pointerId] of pointers) {
-          unresolvedEdges.push([ancestor, [pointerType, pointerId]]);
+          unresolvedEdges.push({
+            source: ancestor,
+            target: [pointerType, pointerId],
+            lineNumber,
+            label: edgeLabel,
+          });
         }
       } else {
         // loop over ancestor pointers
@@ -154,12 +165,22 @@ export function parse(text: string) {
           // if (!sourceNodes) continue;
 
           if (lineHasNode) {
-            unresolvedEdges.push([sourcePointerArray, id]);
+            unresolvedEdges.push({
+              source: sourcePointerArray,
+              target: id,
+              lineNumber,
+              label: edgeLabel,
+            });
           }
 
           // add all pointers to future edges
           for (const targetPointerArray of pointers) {
-            unresolvedEdges.push([sourcePointerArray, targetPointerArray]);
+            unresolvedEdges.push({
+              source: sourcePointerArray,
+              target: targetPointerArray,
+              lineNumber,
+              label: edgeLabel,
+            });
           }
         }
       }
@@ -171,7 +192,7 @@ export function parse(text: string) {
   }
 
   // resolve unresolved edges
-  for (const [source, target] of unresolvedEdges) {
+  for (const { source, target, lineNumber, label } of unresolvedEdges) {
     const sourceNodes = isPointerArray(source)
       ? getNodesFromPointerArray(nodes, source)
       : nodes.filter((n) => n.id === source);
@@ -186,7 +207,7 @@ export function parse(text: string) {
           lineNumber,
           source: sourceNode.id,
           target: targetNode.id,
-          label: target[0],
+          label,
         };
         edges.push(edge);
       }
@@ -214,7 +235,7 @@ function findParent(indentSize: number, ancestors: Ancestors): Ancestor {
   return parent;
 }
 
-function getNodesFromPointerArray(nodes: FlatNode[], [pointerType, value]: PointerArray) {
+function getNodesFromPointerArray(nodes: FlatNode[], [pointerType, value]: Pointer) {
   switch (pointerType) {
     case "id":
       return nodes.filter((node) => node.id === value);
@@ -227,16 +248,16 @@ function getNodesFromPointerArray(nodes: FlatNode[], [pointerType, value]: Point
   }
 }
 
-function isPointerArray(x: unknown): x is PointerArray {
+function isPointerArray(x: unknown): x is Pointer {
   return Array.isArray(x) && x.length === 2;
 }
 
-function matchAndRemovePointers(line: string): [PointerArray[], string] {
+function matchAndRemovePointers(line: string): [Pointer[], string] {
   // parse all pointers
   const pointerRe =
     /(?<replace>\((?<pointer>((?<id>#[\w-]+)|(?<class>.[\w]+)|(?<label>[\w\s]+)))\))/g;
   let pointerMatch: RegExpExecArray | null;
-  const pointers: PointerArray[] = [];
+  const pointers: Pointer[] = [];
   let lineWithPointersRemoved = line.slice(0);
   while ((pointerMatch = pointerRe.exec(line)) != null) {
     if (!pointerMatch.groups) continue;

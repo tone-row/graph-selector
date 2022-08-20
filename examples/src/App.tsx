@@ -1,6 +1,5 @@
 import { Link, Outlet } from "@tanstack/react-location";
-
-import { Router } from "./Router";
+import { Router, routes } from "./Router";
 
 function App() {
   return (
@@ -9,16 +8,12 @@ function App() {
         <aside>
           <Link to="/">Graph Selector Syntax</Link>
           <h2>Examples</h2>
-          <ul>
-            <li>
-              <Link to="/labels-only">Labels Only</Link>
-            </li>
-            <li>
-              <Link to="/ids-classes">Ids &amp; Classes</Link>
-            </li>
-            <li>
-              <Link to="/tabular-data">Tabular Data</Link>
-            </li>
+          <ul className="examples">
+            {routes.map(({ path, title }) => (
+              <li key={path}>
+                <Link to={path}>{title}</Link>
+              </li>
+            ))}
           </ul>
         </aside>
         <main>

@@ -7,13 +7,29 @@ import { ShowParsed } from "../components/ShowParsed";
 import { isError } from "./isError";
 import { toCytoscapeElements } from "./toCytoscapeElements";
 
-const startingCode = `#a long label text
-  (#c)
-#b longer label text
-  (#c)
-#c.large.fantasy the longest label text of all`;
+const startingCode = `.a X
+.a Y
+.a Z
 
-export function IdsClasses() {
+one to many
+  (.a)
+
+.b X
+.b Y
+.b Z
+
+(.b)
+  many to one
+
+.c many to many
+.c X
+.d Y
+.d Z
+
+(.c)
+  (.d)`;
+
+export function ClassConnections() {
   const [code, setCode] = useState(startingCode);
   const [error, setError] = useState("");
   const [parsed, setParsed] = useState<null | Graph>(null);
@@ -28,19 +44,15 @@ export function IdsClasses() {
   }, [code]);
 
   const elements = toCytoscapeElements(parsed);
-
   return (
     <div className="page">
-      <h1>ID's &amp; Classes</h1>
+      <h1>Class Connections</h1>
       <p>
-        Using{" "}
-        <a href="https://js.cytoscape.org/" target="_blank">
-          cytoscape.js
-        </a>{" "}
-        to render graph. Uses dagre layout.
+        Using classes to create one-to-many, many-to-one, and many-to-many
+        connections
       </p>
       <Editor
-        h={180}
+        h={400}
         value={code}
         onChange={(newCode) => newCode && setCode(newCode)}
       />
@@ -52,14 +64,32 @@ export function IdsClasses() {
       <CytoscapeBasic
         elements={elements as any}
         style={[
-          { selector: ".large", style: { "font-size": "24px" } },
           {
-            selector: ".fantasy",
+            selector: "edge",
+            style: { "target-arrow-shape": "triangle", "arrow-scale": 3 },
+          },
+          {
+            selector: ".a",
             style: {
-              "font-family": "fantasy",
-              color: "hotpink",
-              "text-background-color": "orange",
-              "text-background-opacity": 0.5,
+              "background-color": "#f00",
+            },
+          },
+          {
+            selector: ".b",
+            style: {
+              "background-color": "#0f0",
+            },
+          },
+          {
+            selector: ".c",
+            style: {
+              "background-color": "#00f",
+            },
+          },
+          {
+            selector: ".d",
+            style: {
+              "background-color": "#f0f",
             },
           },
         ]}

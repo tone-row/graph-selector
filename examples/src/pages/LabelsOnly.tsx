@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 
 import { CytoscapeBasic } from "../components/CytoscapeBasic";
 import { Editor } from "../components/Editor";
+import { toCytoscapeElements } from "./toCytoscapeElements";
 
 // TODO: add real description for everything
 // TODO: add code snippets for everything
@@ -33,19 +34,10 @@ export function LabelsOnly() {
     }
   }, [code]);
 
-  const elements = parsed
-    ? [
-        ...parsed.nodes.map((node) => ({
-          data: { id: node.id, label: node.label },
-        })),
-        ...parsed.edges.map((edge) => ({
-          data: { id: edge.id, source: edge.source, target: edge.target },
-        })),
-      ]
-    : [];
+  const elements = toCytoscapeElements(parsed);
   return (
     <div className="page">
-      <h1>Labels Only</h1>
+      <h1>Labels &amp; Edges</h1>
       <p>
         Using{" "}
         <a href="https://js.cytoscape.org/" target="_blank">
@@ -53,10 +45,12 @@ export function LabelsOnly() {
         </a>{" "}
         to render graph. Uses dagre layout.
       </p>
+      <h2>Input</h2>
       <Editor
         value={code}
         onChange={(newCode) => newCode && setCode(newCode)}
       />
+      <h2>Output</h2>
       {error ? (
         <div className="error">{error}</div>
       ) : (
@@ -69,7 +63,7 @@ export function LabelsOnly() {
           </Collapsible.Content>
         </Collapsible.Root>
       )}
-      <CytoscapeBasic elements={elements} />
+      <CytoscapeBasic elements={elements as any} />
     </div>
   );
 }
