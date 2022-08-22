@@ -1,7 +1,7 @@
 @import url("https://unpkg.com/tailwindcss@3.0.23/src/css/preflight.css");
 
 html {
-  font-family: Manrope;
+  font-family: Retni Sans;
 }
 
 .App {
@@ -26,37 +26,31 @@ main {
 }
 
 .container {
-  max-width: 900px;
+  max-width: 1100px;
   margin-inline: auto;
 }
 
 .examples {
   display: grid;
-  gap: 5px;
+  gap: 2px;
 }
 
 .examples a {
   font-size: 0.9rem;
-  /* font-weight: 700; */
-  /* text-transform: uppercase; */
-  padding: 5px 14px;
-  display: inline-block;
-  background-color: #dedede;
-  border-radius: 9px;
+  color: #747474;
 }
 .examples a:hover {
-  background-color: #b8b8b8;
+  color: #4f4f4f;
 }
 
 .examples a.active {
-  background-color: #010101;
-  color: white;
+  color: #341bfa;
 }
 
 h1 {
   font-size: 3rem;
   font-weight: 700;
-  margin-top: 4rem;
+  margin-top: 3rem;
   line-height: 1.1;
 }
 

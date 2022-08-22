@@ -4,8 +4,8 @@ import { useEffect, useState } from "react";
 import { CytoscapeBasic } from "../components/CytoscapeBasic";
 import { Editor } from "../components/Editor";
 import { ShowParsed } from "../components/ShowParsed";
-import { isError } from "./isError";
-import { toCytoscapeElements } from "./toCytoscapeElements";
+import { isError } from "../utils/isError";
+import { toCytoscapeElements } from "../utils/toCytoscapeElements";
 
 const startingCode = `.a X
 .a Y

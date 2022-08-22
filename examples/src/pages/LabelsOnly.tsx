@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 
 import { CytoscapeBasic } from "../components/CytoscapeBasic";
 import { Editor } from "../components/Editor";
-import { toCytoscapeElements } from "./toCytoscapeElements";
+import { toCytoscapeElements } from "../utils/toCytoscapeElements";
 
 // TODO: add real description for everything
 // TODO: add code snippets for everything

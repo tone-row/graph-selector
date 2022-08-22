@@ -2,16 +2,16 @@
 
 _A syntax for graphs._
 
-For context, I'm experimenting with this language to determine if it should become the successor to the flowchart-fun language. I wrote [a blog post](https://flowchart.fun/blog/2019/05/19/graph-selector-syntax) explaining my thought process.
+For context, I'm experimenting with this language to determine if it should become the successor to the current [flowchart-fun](https://github.com/tone-row/flowchart-fun) language. I wrote [a blog post](https://flowchart.fun/blog/2019/05/19/graph-selector-syntax) explaining my thought process.
 
-[**Check out the Examples**](https://flowchart.fun/graph-selector-syntax)
+[**Check out the Examples**](http://graph-selector-syntax.vercel.app/)
 
 ## What does the syntax look like?
 
 - indentation to create edges
 - edge labels before a colon `:`
-- _css-selector-ish-looking_ supplementary data for nodes (and maybe one day edges)
-- node(s) reference in parentheses `(ref by label)` `(#ref-by-id)` `(.ref-by-class)`
+- _css-selector-ish-looking_ supplementary data for nodes
+- reference sets of nodes in parentheses `(ref by label)` `(#ref-by-id)` `(.ref-by-class)`
 
 ```
 #a.class1.class2[attr=value] node label
@@ -23,8 +23,8 @@ For context, I'm experimenting with this language to determine if it should beco
 - kept as flat as possible
 - everything parses to strings for now (no numbers, no booleans)
 
-```json
-// output from example above
+```jsonc
+/* output from example above */
 {
   "nodes": [
     {

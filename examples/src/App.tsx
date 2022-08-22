@@ -6,9 +6,10 @@ function App() {
     <Router>
       <div className="App">
         <aside>
-          <Link to="/">Graph Selector Syntax</Link>
-          <h2>Examples</h2>
           <ul className="examples">
+            <li>
+              <Link to="/">Home</Link>
+            </li>
             {routes.map(({ path, title }) => (
               <li key={path}>
                 <Link to={path}>{title}</Link>

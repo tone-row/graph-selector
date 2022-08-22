@@ -5,7 +5,7 @@ import { useEffect, useRef, useState } from "react";
 
 import { Editor } from "../components/Editor";
 import { ShowParsed } from "../components/ShowParsed";
-import { isError } from "./isError";
+import { isError } from "../utils/isError";
 import { parse } from "parser";
 
 const startingCode = `[price=4] label a

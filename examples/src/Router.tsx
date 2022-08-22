@@ -4,12 +4,12 @@ import {
   Router as TanstackRouter,
 } from "@tanstack/react-location";
 
-import { ChordDiagram } from "./pages/ChordDiagram";
 import { ClassConnections } from "./pages/ClassConnections";
 import { D3BarGraph } from "./pages/D3BarGraph";
 import { IdsClasses } from "./pages/IDsClasses";
 import { Index } from "./pages/Index";
 import { LabelsOnly } from "./pages/LabelsOnly";
+import { SankeyDiagram } from "./pages/SankeyDiagram";
 import { TabularData } from "./pages/TabularData";
 
 const location = new ReactLocation();
@@ -45,9 +45,9 @@ export const routes: {
     element: <D3BarGraph />,
   },
   {
-    title: "Chord Diagram",
-    path: "/chord-diagram",
-    element: <ChordDiagram />,
+    title: "Sankey Diagram",
+    path: "/sankey",
+    element: <SankeyDiagram />,
   },
 ];
 
