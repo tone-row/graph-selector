@@ -1,10 +1,5 @@
 import { FlatNode } from "./types";
 
-// TODO: parse edge info from <>
-// TODO: should data attributes be parsable as number
-// TODO: does a node really need a label to be a node?
-// TODO: fix types
-
 type PointerType = "id" | "class" | "label";
 type Pointer = [PointerType, string];
 type ID = string;
@@ -13,14 +8,14 @@ type UnresolvedEdges = {
   target: ID | Pointer;
   lineNumber: number;
   label: string;
+  classes: string;
 }[];
 type Ancestor = Pointer[] | string | null;
 type Ancestors = Ancestor[];
 
 export function parse(text: string) {
-  // TODO: change these back to correct types
   const nodes: FlatNode[] = [];
-  const edges: any[] = [];
+  const edges: FlatNode[] = [];
 
   // break into lines
   const lines = text.split(/\n/g);
@@ -59,42 +54,17 @@ export function parse(text: string) {
     // get edge label if parent
     let edgeLabel = "";
     if (line.match(/.+:.+/)) {
-      const [_edgeLabel, _line] = line.split(":");
-      edgeLabel = _edgeLabel.trim();
-      line = _line;
+      const parts = line.split(":");
+      edgeLabel = parts[0].trim();
+      line = parts[1].trim();
     }
 
     // remove indent from line
     line = line.trim();
 
-    const re =
-      /(?<replace>(?<id>#[\w-]+)?(?<classes>(\.[a-zA-Z]{1}[\w-]*)*)?(?<attributes>(\[\w+=\w+\])*)) \w/g;
-    let match: RegExpExecArray | null;
-    let id = "";
-    let classes = "";
-    let attributes = "";
-
-    while ((match = re.exec(line)) != null) {
-      if (!match.groups) continue;
-      // if (match.groups.pointer) pointers.push(match.groups.pointer);
-      if (match.groups.id) id = match.groups.id.slice(1);
-      if (match.groups.classes) classes = match.groups.classes;
-      if (match.groups.attributes) attributes = match.groups.attributes;
-
-      // remove everything from line
-      if (match.groups.replace) line = line.replace(match.groups.replace, "").trim();
-    }
-
-    // if attributes, parse into data object
-    const data: Record<string, string> = {};
-    if (attributes) {
-      const attrRe = /\[(?<key>\w+)=(?<value>\w+)\]/g;
-      let attrMatch: RegExpExecArray | null;
-      while ((attrMatch = attrRe.exec(attributes)) != null) {
-        if (!attrMatch.groups) continue;
-        data[attrMatch.groups.key] = attrMatch.groups.value;
-      }
-    }
+    const { classes, data, ...rest } = getIdClassesAtts(line);
+    let id = rest.id;
+    line = rest.line;
 
     // parse all pointers
     const [pointers, lineWithPointersRemoved] = matchAndRemovePointers(line);
@@ -103,9 +73,11 @@ export function parse(text: string) {
     // the lable is what is left after everything is removed
     const label = line;
 
+    const shouldCreateNode = !!id || !!label || !!classes || Object.keys(data).length > 0;
+
     // create a unique ID from label
     // if no user-supplied id
-    if (!id) {
+    if (shouldCreateNode && !id) {
       let inc = 1;
       while (nodeIds.includes(label + inc)) ++inc;
       id = label + inc;
@@ -113,7 +85,7 @@ export function parse(text: string) {
     }
 
     // create node if label is not empty
-    if (label) {
+    if (shouldCreateNode) {
       const node: FlatNode = {
         lineNumber,
         label,
@@ -125,18 +97,26 @@ export function parse(text: string) {
       nodes.push(node);
     }
 
+    // TODO: does a node really need a label to be a node?
     const lineHasNode = !!label;
 
-    // Create edge or unresolvedEdge if ancestor
+    // If ancestor, create edge (or unresolvedEdge)
     if (ancestor) {
+      // start by getting edge data
+      const { line: newLabel, ...edgeData } = getIdClassesAtts(edgeLabel);
+      edgeLabel = newLabel;
+
       if (isId(ancestor)) {
         // Create Edge for the node on this line
         if (lineHasNode) {
           let inc = 1;
-          let edgeId = `${ancestor}-${id}-${inc}`;
-          while (edgeIds.includes(edgeId)) {
-            ++inc;
+          let edgeId = edgeData.id;
+          if (!edgeId) {
             edgeId = `${ancestor}-${id}-${inc}`;
+            while (edgeIds.includes(edgeId)) {
+              ++inc;
+              edgeId = `${ancestor}-${id}-${inc}`;
+            }
           }
           const edge = {
             id: edgeId,
@@ -144,6 +124,8 @@ export function parse(text: string) {
             source: ancestor,
             target: id,
             label: edgeLabel,
+            classes: edgeData.classes,
+            ...edgeData.data,
           };
           edges.push(edge);
         }
@@ -155,21 +137,23 @@ export function parse(text: string) {
             target: [pointerType, pointerId],
             lineNumber,
             label: edgeLabel,
+            classes: edgeData.classes,
+            ...edgeData.data,
           });
         }
       } else {
+        // Ancestor is a pointer array
         // loop over ancestor pointers
+        // and create unresolved edges for each
         for (const sourcePointerArray of ancestor) {
-          // get node
-          // const sourceNodes = getNodesFromPointerArray(nodes, sourcePointerArray);
-          // if (!sourceNodes) continue;
-
           if (lineHasNode) {
             unresolvedEdges.push({
               source: sourcePointerArray,
               target: id,
               lineNumber,
               label: edgeLabel,
+              classes: edgeData.classes,
+              ...edgeData.data,
             });
           }
 
@@ -180,6 +164,8 @@ export function parse(text: string) {
               target: targetPointerArray,
               lineNumber,
               label: edgeLabel,
+              classes: edgeData.classes,
+              ...edgeData.data,
             });
           }
         }
@@ -192,7 +178,7 @@ export function parse(text: string) {
   }
 
   // resolve unresolved edges
-  for (const { source, target, lineNumber, label } of unresolvedEdges) {
+  for (const { source, target, lineNumber, label, ...rest } of unresolvedEdges) {
     const sourceNodes = isPointerArray(source)
       ? getNodesFromPointerArray(nodes, source)
       : nodes.filter((n) => n.id === source);
@@ -208,6 +194,7 @@ export function parse(text: string) {
           source: sourceNode.id,
           target: targetNode.id,
           label,
+          ...rest,
         };
         edges.push(edge);
       }
@@ -281,4 +268,44 @@ function matchAndRemovePointers(line: string): [Pointer[], string] {
 
 function isId(id: unknown): id is string {
   return typeof id === "string";
+}
+
+function getIdClassesAtts(_line: string) {
+  let line = _line.slice(0);
+  const re =
+    /(?<replace>(?<id>#[\w-]+)?(?<classes>(\.[a-zA-Z]{1}[\w-]*)*)?(?<attributes>(\[\w+=\w+\])*))/g;
+  let match: RegExpExecArray | null;
+  let id = "";
+  let classes = "";
+  let attributes = "";
+
+  while ((match = re.exec(line)) != null) {
+    if (!match.groups) continue;
+    if (!match.groups.replace) break;
+    // if (match.groups.pointer) pointers.push(match.groups.pointer);
+    if (match.groups.id) id = match.groups.id.slice(1);
+    if (match.groups.classes) classes = match.groups.classes;
+    if (match.groups.attributes) attributes = match.groups.attributes;
+
+    // remove everything from line
+    if (match.groups.replace) line = line.replace(match.groups.replace, "").trim();
+  }
+
+  // if attributes, parse into data object
+  const data: Record<string, string> = {};
+  if (attributes) {
+    const attrRe = /\[(?<key>\w+)=(?<value>\w+)\]/g;
+    let attrMatch: RegExpExecArray | null;
+    while ((attrMatch = attrRe.exec(attributes)) != null) {
+      if (!attrMatch.groups) continue;
+      data[attrMatch.groups.key] = attrMatch.groups.value;
+    }
+  }
+
+  return {
+    id,
+    classes,
+    data,
+    line,
+  };
 }

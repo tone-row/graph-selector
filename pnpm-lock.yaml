@@ -25,6 +25,7 @@ importers:
       parser: workspace:*
       react: ^18.2.0
       react-dom: ^18.2.0
+      react-error-boundary: ^3.1.4
       recharts: ^2.1.13
       typescript: ^4.6.4
       vite: ^3.0.7
@@ -40,6 +41,7 @@ importers:
       parser: link:../parser
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
+      react-error-boundary: 3.1.4_react@18.2.0
       recharts: 2.1.13_biqbaboplfbrettd7655fr4n2y
     devDependencies:
       '@types/cytoscape': 3.19.7
@@ -6063,6 +6065,16 @@ packages:
       loose-envify: 1.4.0
       react: 18.2.0
       scheduler: 0.23.0
+    dev: false
+
+  /react-error-boundary/3.1.4_react@18.2.0:
+    resolution: {integrity: sha512-uM9uPzZJTF6wRQORmSrvOIgt4lJ9MC1sNgEOj2XGsDTRE4kmpWxg7ENK9EWNKJRMAOY9z0MuF4yIfl6gp4sotA==}
+    engines: {node: '>=10', npm: '>=6'}
+    peerDependencies:
+      react: '>=16.13.1'
+    dependencies:
+      '@babel/runtime': 7.18.9
+      react: 18.2.0
     dev: false
 
   /react-is/16.13.1:

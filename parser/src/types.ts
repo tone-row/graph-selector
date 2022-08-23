@@ -12,8 +12,8 @@ export type Edge = Element & {
 };
 
 export type Graph = {
-  nodes: Node[];
-  edges: Edge[];
+  nodes: FlatNode[];
+  edges: FlatNode[];
 };
 
 export type FlatNode = Record<string, string | number>;

@@ -1,11 +1,14 @@
+import { Component, useEffect, useState } from "react";
 import { Graph, parse } from "parser";
-import { useEffect, useState } from "react";
 
 import { CytoscapeBasic } from "../components/CytoscapeBasic";
 import { Editor } from "../components/Editor";
+import { ErrorBoundary } from "react-error-boundary";
 import { ShowParsed } from "../components/ShowParsed";
 import { isError } from "../utils/isError";
 import { toCytoscapeElements } from "../utils/toCytoscapeElements";
+
+// TODO: wrap cytoscape in an error boundary
 
 const startingCode = `#a long label text
   (#c)
@@ -49,21 +52,23 @@ export function IdsClasses() {
       ) : (
         <ShowParsed parsed={parsed} />
       )}
-      <CytoscapeBasic
-        elements={elements as any}
-        style={[
-          { selector: ".large", style: { "font-size": "24px" } },
-          {
-            selector: ".fantasy",
-            style: {
-              "font-family": "fantasy",
-              color: "hotpink",
-              "text-background-color": "orange",
-              "text-background-opacity": 0.5,
+      <ErrorBoundary FallbackComponent={() => <div>oops!</div>} key={code}>
+        <CytoscapeBasic
+          elements={elements as any}
+          style={[
+            { selector: ".large", style: { "font-size": "24px" } },
+            {
+              selector: ".fantasy",
+              style: {
+                "font-family": "fantasy",
+                color: "hotpink",
+                "text-background-color": "orange",
+                "text-background-opacity": 0.5,
+              },
             },
-          },
-        ]}
-      />
+          ]}
+        />
+      </ErrorBoundary>
     </div>
   );
 }

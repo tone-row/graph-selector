@@ -6,12 +6,12 @@ For context, I'm experimenting with this language to determine if it should beco
 
 [**Check out the Examples**](http://graph-selector-syntax.vercel.app/)
 
-## What does the syntax look like?
+## What does this syntax look like?
 
 - indentation to create edges
 - edge labels before a colon `:`
 - _css-selector-ish-looking_ supplementary data for nodes
-- reference sets of nodes in parentheses `(ref by label)` `(#ref-by-id)` `(.ref-by-class)`
+- point to nodes/edges using parentheses `(ref by label)` `(#ref-by-id)` `(.ref-by-class)`
 
 ```
 #a.class1.class2[attr=value] node label
@@ -57,6 +57,10 @@ For context, I'm experimenting with this language to determine if it should beco
 ## In this repository
 
 This is a monorepo containing a `/parser` (written in TS) and a website of `/examples` illustrating how you can use it.
+
+## How are graphs rendered?
+
+One of the main goals of this project is to detatch the rendering from the parsing. The examples show how this syntax and parser can be used to render different types of graphs using a variety of libraries, including [D3](https://d3js.org/), [Cytoscape JS](https://js.cytoscape.org/), and [Recharts](https://recharts.org/).
 
 ## Contributing
 

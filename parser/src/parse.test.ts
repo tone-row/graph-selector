@@ -181,4 +181,26 @@ b
     test: (a)`);
     expect(result.edges[0].label).toEqual("test");
   });
+
+  test("allow dashes and numbers in classes and ids", () => {
+    const result = parse(`#a-1.class-1.class-2[d=e][f=a] c`);
+    expect(result.nodes[0].id).toEqual("a-1");
+    expect(result.nodes[0].classes).toEqual(".class-1.class-2");
+  });
+
+  test("parse edge data", () => {
+    const result = parse(`a\n  #x.fun.fun-2[att=15] still the label: b`);
+    expect(result.edges[0].id).toEqual("x");
+    expect(result.edges[0].source).toEqual("a1");
+    expect(result.edges[0].target).toEqual("b1");
+    expect(result.edges[0].att).toEqual("15");
+    expect(result.edges[0].classes).toEqual(".fun.fun-2");
+    expect(result.edges[0].label).toEqual("still the label");
+  });
+
+  test("shouldn't create node for empty line", () => {
+    const result = parse(`
+    `);
+    expect(result.nodes.length).toEqual(0);
+  });
 });
