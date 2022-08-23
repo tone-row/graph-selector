@@ -9,6 +9,7 @@ import { CytoscapeAssociative } from "../components/CytoscapeAssociative";
 import { CytoscapeBasic } from "../components/CytoscapeBasic";
 import { Editor } from "../components/Editor";
 import { ErrorBoundary } from "react-error-boundary";
+import { NextExample } from "../components/NextExample";
 import { ShowParsed } from "../components/ShowParsed";
 import { TitleDescription } from "../components/TitleDescription";
 import { isError } from "../utils/isError";
@@ -83,6 +84,7 @@ export function AssociativeModel() {
           ]}
         />
       </ErrorBoundary>
+      <NextExample />
     </div>
   );
 }

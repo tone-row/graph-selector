@@ -99,7 +99,6 @@ export function parse(text: string) {
       nodes.push(node);
     }
 
-    // TODO: does a node really need a label to be a node?
     const lineHasNode = !!label;
 
     // If ancestor, create edge (or unresolvedEdge)

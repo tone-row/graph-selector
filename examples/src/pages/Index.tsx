@@ -1,6 +1,8 @@
 import { Link } from "@tanstack/react-location";
 import { TitleDescription } from "../components/TitleDescription";
 
+// TODO: Add a link to the blog post when it's ready
+
 export function Index() {
   return (
     <div className="page home">

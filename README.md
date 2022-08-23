@@ -64,10 +64,12 @@ One of the main goals of this project is to detatch the rendering from the parsi
 
 ## Contributing
 
+Very open to contributions! Specifically in the following ways:
+
 ### Contributing to the conversation
 
 I'm really interested in feedback on the syntax and how it can be improved. Head to the github discussions page and join the conversation.
 
 ### Contributing an example
 
-### Adding an Example
+Add an example by first adding a route to `examples/src/Router.tsx` and then adding a page `examples/src/pages`. If your example uses a different renderer, you'll need to set the `type` property in the route, and then add that type to the side bar in `examples/src/App.tsx`.
