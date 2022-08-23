@@ -9,6 +9,8 @@ type UnresolvedEdges = {
   lineNumber: number;
   label: string;
   classes: string;
+  id: string;
+  data: Record<string, string>;
 }[];
 type Ancestor = Pointer[] | string | null;
 type Ancestors = Ancestor[];
@@ -137,8 +139,7 @@ export function parse(text: string) {
             target: [pointerType, pointerId],
             lineNumber,
             label: edgeLabel,
-            classes: edgeData.classes,
-            ...edgeData.data,
+            ...edgeData,
           });
         }
       } else {
@@ -152,8 +153,7 @@ export function parse(text: string) {
               target: id,
               lineNumber,
               label: edgeLabel,
-              classes: edgeData.classes,
-              ...edgeData.data,
+              ...edgeData,
             });
           }
 
@@ -164,8 +164,7 @@ export function parse(text: string) {
               target: targetPointerArray,
               lineNumber,
               label: edgeLabel,
-              classes: edgeData.classes,
-              ...edgeData.data,
+              ...edgeData,
             });
           }
         }
@@ -178,24 +177,33 @@ export function parse(text: string) {
   }
 
   // resolve unresolved edges
-  for (const { source, target, lineNumber, label, ...rest } of unresolvedEdges) {
+  for (const { source, target, lineNumber, label, data, ...rest } of unresolvedEdges) {
     const sourceNodes = isPointerArray(source)
-      ? getNodesFromPointerArray(nodes, source)
+      ? source[0] === "id"
+        ? [{ id: source[1] }]
+        : getNodesFromPointerArray(nodes, source)
       : nodes.filter((n) => n.id === source);
     const targetNodes = isPointerArray(target)
-      ? getNodesFromPointerArray(nodes, target)
+      ? target[0] === "id"
+        ? [{ id: target[1] }]
+        : getNodesFromPointerArray(nodes, target)
       : nodes.filter((n) => n.id === target);
     if (sourceNodes.length === 0 || targetNodes.length === 0) continue;
     for (const sourceNode of sourceNodes) {
       for (const targetNode of targetNodes) {
         const edge = {
-          id: `${sourceNode.id}-${targetNode.id}`,
           lineNumber,
           source: sourceNode.id,
           target: targetNode.id,
           label,
           ...rest,
+          ...data,
         };
+
+        if (!edge.id) {
+          edge.id = `${sourceNode.id}-${targetNode.id}`;
+        }
+
         edges.push(edge);
       }
     }

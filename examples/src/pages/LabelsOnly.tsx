@@ -5,6 +5,8 @@ import { useEffect, useState } from "react";
 
 import { CytoscapeBasic } from "../components/CytoscapeBasic";
 import { Editor } from "../components/Editor";
+import { NextExample } from "../components/NextExample";
+import { TitleDescription } from "../components/TitleDescription";
 import { toCytoscapeElements } from "../utils/toCytoscapeElements";
 
 // TODO: add real description for everything
@@ -37,14 +39,18 @@ export function LabelsOnly() {
   const elements = toCytoscapeElements(parsed);
   return (
     <div className="page">
-      <h1>Labels &amp; Edges</h1>
-      <p>
-        Using{" "}
-        <a href="https://js.cytoscape.org/" target="_blank">
-          cytoscape.js
-        </a>{" "}
-        to render graph. Uses dagre layout.
-      </p>
+      <TitleDescription
+        pageTitle="Labels and Edges"
+        pageDescription={
+          <p>
+            Using{" "}
+            <a href="https://js.cytoscape.org/" target="_blank">
+              cytoscape.js
+            </a>{" "}
+            to render graph. Uses dagre layout.
+          </p>
+        }
+      />
       <h2>Input</h2>
       <Editor
         value={code}
@@ -64,6 +70,7 @@ export function LabelsOnly() {
         </Collapsible.Root>
       )}
       <CytoscapeBasic elements={elements as any} />
+      <NextExample />
     </div>
   );
 }

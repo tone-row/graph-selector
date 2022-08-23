@@ -19,6 +19,7 @@ importers:
       '@vitejs/plugin-react': ^2.0.1
       cytoscape: ^3.22.1
       cytoscape-dagre: ^2.4.0
+      cytoscape-edge-connections: ^0.4.2
       d3: ^7.6.1
       d3-sankey: ^0.12.3
       highlight.js: ^11.6.0
@@ -35,6 +36,7 @@ importers:
       '@tanstack/react-location': 3.7.4_biqbaboplfbrettd7655fr4n2y
       cytoscape: 3.22.1
       cytoscape-dagre: 2.4.0_cytoscape@3.22.1
+      cytoscape-edge-connections: 0.4.2_cytoscape@3.22.1
       d3: 7.6.1
       d3-sankey: 0.12.3
       highlight.js: 11.6.0
@@ -3091,6 +3093,14 @@ packages:
     dependencies:
       cytoscape: 3.22.1
       dagre: 0.8.5
+    dev: false
+
+  /cytoscape-edge-connections/0.4.2_cytoscape@3.22.1:
+    resolution: {integrity: sha512-1hUKh6kHEDG4+8iHzZgaGcd7jR78CpnaHKmW3Z6zx3Lj/Ru6Pq0puhpUpmJB2/MXk0k9V1jtbLgegFtahgaxPQ==}
+    peerDependencies:
+      cytoscape: '>=3.3.2'
+    dependencies:
+      cytoscape: 3.22.1
     dev: false
 
   /cytoscape/3.22.1:

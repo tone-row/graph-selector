@@ -3,7 +3,9 @@ import { useEffect, useState } from "react";
 
 import { CytoscapeBasic } from "../components/CytoscapeBasic";
 import { Editor } from "../components/Editor";
+import { NextExample } from "../components/NextExample";
 import { ShowParsed } from "../components/ShowParsed";
+import { TitleDescription } from "../components/TitleDescription";
 import { isError } from "../utils/isError";
 import { toCytoscapeElements } from "../utils/toCytoscapeElements";
 
@@ -46,16 +48,22 @@ export function ClassConnections() {
   const elements = toCytoscapeElements(parsed);
   return (
     <div className="page">
-      <h1>Class Connections</h1>
-      <p>
-        Using classes to create one-to-many, many-to-one, and many-to-many
-        connections
-      </p>
+      <TitleDescription
+        pageTitle="Class Connections"
+        pageDescription={
+          <p>
+            Using classes to create one-to-many, many-to-one, and many-to-many
+            connections
+          </p>
+        }
+      />
+      <h2>Input</h2>
       <Editor
         h={400}
         value={code}
         onChange={(newCode) => newCode && setCode(newCode)}
       />
+      <h2>Output</h2>
       {error ? (
         <div className="error">{error}</div>
       ) : (
@@ -94,6 +102,7 @@ export function ClassConnections() {
           },
         ]}
       />
+      <NextExample />
     </div>
   );
 }

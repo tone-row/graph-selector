@@ -8,11 +8,13 @@ import edgeConnections from "cytoscape-edge-connections";
 cytoscape.use(edgeConnections);
 cytoscape.use(dagre);
 
-export function CytoscapeBasic({
-  elements,
+export function CytoscapeAssociative({
+  nodes,
+  edges,
   style = [],
 }: {
-  elements: cytoscape.ElementDefinition[];
+  nodes: cytoscape.ElementDefinition[];
+  edges: cytoscape.ElementDefinition[];
   style?: cytoscape.Stylesheet[];
 }) {
   const cy = useRef<cytoscape.Core>();
@@ -20,11 +22,7 @@ export function CytoscapeBasic({
   useEffect(() => {
     cy.current = cytoscape({
       container: container.current,
-      elements,
-      layout: {
-        name: "dagre",
-        spacingFactor: 2,
-      },
+      elements: nodes,
       style: [
         // the stylesheet for the graph
         {
@@ -41,17 +39,29 @@ export function CytoscapeBasic({
             "text-rotation": "autorotate",
           },
         },
+        {
+          selector: "node.aux-node",
+          style: {
+            width: 1,
+            height: 1,
+          },
+        },
         ...style,
       ],
     });
     let current = cy.current;
     // @ts-ignore
-    current.edgeConnections({ maxPasses: 10 });
+    let edgeStuff = current.edgeConnections({ maxPasses: 10 });
+    for (const edge of edges) {
+      edgeStuff.addEdge(edge);
+    }
+
+    current.layout({ name: "dagre", spacingFactor: 2 }).run();
 
     return () => {
       current.destroy();
     };
-  }, [elements, style]);
+  }, [nodes, edges, style]);
   return (
     <div
       ref={container}

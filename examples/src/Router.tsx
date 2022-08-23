@@ -4,6 +4,7 @@ import {
   Router as TanstackRouter,
 } from "@tanstack/react-location";
 
+import { AssociativeModel } from "./pages/AssociativeModel";
 import { ClassConnections } from "./pages/ClassConnections";
 import { D3BarGraph } from "./pages/D3BarGraph";
 import { IdsClasses } from "./pages/IDsClasses";
@@ -14,40 +15,55 @@ import { TabularData } from "./pages/TabularData";
 
 const location = new ReactLocation();
 
-export const routes: {
+export type Route = {
   title: string;
   path: string;
   element: SyncOrAsyncElement;
-}[] = [
+  type: "cyto" | "d3" | "recharts";
+};
+
+export const routes: Route[] = [
   {
     title: "Labels & Edges",
     path: "/labels-and-edges",
     element: <LabelsOnly />,
+    type: "cyto",
   },
   {
     title: "ID's & Classes",
     path: "/ids-classes",
     element: <IdsClasses />,
+    type: "cyto",
   },
   {
     title: "Class Connections",
     path: "/class-connections",
     element: <ClassConnections />,
+    type: "cyto",
   },
   {
-    title: "Tabular Data",
-    path: "/tabular-data",
-    element: <TabularData />,
+    title: "Associative Model",
+    path: "/associative-model",
+    element: <AssociativeModel />,
+    type: "cyto",
   },
   {
-    title: "D3 Bar Graph",
-    path: "/d3-bar-graph",
+    title: "Bar Graph",
+    path: "/bar-graph",
     element: <D3BarGraph />,
+    type: "d3",
   },
   {
     title: "Sankey Diagram",
     path: "/sankey",
     element: <SankeyDiagram />,
+    type: "d3",
+  },
+  {
+    title: "Tabular Data",
+    path: "/tabular-data",
+    element: <TabularData />,
+    type: "recharts",
   },
 ];
 

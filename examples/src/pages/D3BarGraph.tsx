@@ -4,7 +4,9 @@ import * as d3 from "d3";
 import { useEffect, useRef, useState } from "react";
 
 import { Editor } from "../components/Editor";
+import { NextExample } from "../components/NextExample";
 import { ShowParsed } from "../components/ShowParsed";
+import { TitleDescription } from "../components/TitleDescription";
 import { isError } from "../utils/isError";
 import { parse } from "parser";
 
@@ -30,16 +32,22 @@ export function D3BarGraph() {
 
   return (
     <div className="page">
-      <h1>D3 Bar Graph</h1>
-      <p>
-        This example shows how we can use data attributes but using a d3 bar
-        graph this time.
-      </p>
+      <TitleDescription
+        pageTitle="Bar Graph"
+        pageDescription={
+          <p>
+            This example shows how we can use data attributes but using a d3 bar
+            graph this time.
+          </p>
+        }
+      />
+      <h2>Input</h2>
       <Editor
         h={140}
         value={code}
         onChange={(newCode) => newCode && setCode(newCode)}
       />
+      <h2>Output</h2>
       {error ? (
         <div className="error">{error}</div>
       ) : (
@@ -57,6 +65,7 @@ export function D3BarGraph() {
           />
         </>
       )}
+      <NextExample />
     </div>
   );
 }

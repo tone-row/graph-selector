@@ -6,7 +6,9 @@ import { useEffect, useRef, useState } from "react";
 
 // import { chord as Chord } from "d3-chord";
 import { Editor } from "../components/Editor";
+import { NextExample } from "../components/NextExample";
 import { ShowParsed } from "../components/ShowParsed";
+import { TitleDescription } from "../components/TitleDescription";
 import { isError } from "../utils/isError";
 import { parse } from "parser";
 
@@ -17,16 +19,15 @@ Thing Three
 .a Thing Five
 
 (Thing One)
-  15: (Thing Two)
-  20: (Thing Three)
+  [amt=15]: (Thing Two)
+  [amt=20]: (Thing Three)
 
 (Thing Two)
-  12: (Thing Four)
-  20: (Thing Five)
+  [amt=12]: (Thing Four)
+  [amt=20]: (Thing Five)
 
 (Thing Three)
-  6: (.a)
-`;
+  [amt=6]: (.a)`;
 
 export function SankeyDiagram() {
   const [code, setCode] = useState(startingCode);
@@ -47,25 +48,36 @@ export function SankeyDiagram() {
         return {
           source: parsed.nodes.find(({ id }) => id === edge.source).label,
           target: parsed.nodes.find(({ id }) => id === edge.target).label,
-          value: parseFloat(edge.label),
+          value: parseFloat(edge.amt ?? 0),
         };
       })
     : [];
 
   return (
     <div className="page">
-      <h1>Sankey Diagram</h1>
+      <TitleDescription
+        pageTitle="Sankey Diagram"
+        pageDescription={
+          <p>
+            Sankey Diagrams are a good example of how data stored on an edge can
+            be used.
+          </p>
+        }
+      />
+      <h2>Input</h2>
       <Editor
         h={430}
         value={code}
         onChange={(newCode) => newCode && setCode(newCode)}
       />
+      <h2>Output</h2>
       {error ? (
         <div className="error">{error}</div>
       ) : (
         <ShowParsed parsed={parsed} />
       )}
       {links.length && <D3Graph links={links} />}
+      <NextExample />
     </div>
   );
 }

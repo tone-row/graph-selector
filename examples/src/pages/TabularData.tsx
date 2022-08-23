@@ -13,6 +13,8 @@ import { Graph, parse } from "parser";
 import { useEffect, useState } from "react";
 
 import { Editor } from "../components/Editor";
+import { NextExample } from "../components/NextExample";
+import { TitleDescription } from "../components/TitleDescription";
 
 const startingCode = `[c2us=200894][us2c=53361] 1955 to 1959
 [c2us=240033][us2c=58707] 1960 to 1964
@@ -69,16 +71,24 @@ export function TabularData() {
     : [];
   return (
     <div className="page">
-      <h1>Tabular Data</h1>
-      <p>
-        Using data from
-        https://www2.census.gov/library/publications/1990/demographics/p23-161.pdf.
-        Migration between US and Canada from 1955-1988 (Page 9).
-      </p>
+      <TitleDescription
+        pageTitle="Tabular Data"
+        pageDescription={
+          <p>
+            An example using data from
+            <a href="https://www2.census.gov/library/publications/1990/demographics/p23-161.pdf">
+              this random document
+            </a>
+            . Migration between US and Canada from 1955-1988 (Page 9).
+          </p>
+        }
+      />
+      <h2>Input</h2>
       <Editor
         value={code}
         onChange={(newCode) => newCode && setCode(newCode)}
       />
+      <h2>Output</h2>
       {error ? (
         <div className="error">{error}</div>
       ) : (
@@ -129,6 +139,7 @@ export function TabularData() {
           />
         </AreaChart>
       </ResponsiveContainer>
+      <NextExample />
     </div>
   );
 }

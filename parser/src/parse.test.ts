@@ -189,18 +189,33 @@ b
   });
 
   test("parse edge data", () => {
-    const result = parse(`a\n  #x.fun.fun-2[att=15] still the label: b`);
+    let result = parse(`a\n  #x.fun.fun-2[att=15] still the label: b`);
     expect(result.edges[0].id).toEqual("x");
     expect(result.edges[0].source).toEqual("a1");
     expect(result.edges[0].target).toEqual("b1");
     expect(result.edges[0].att).toEqual("15");
     expect(result.edges[0].classes).toEqual(".fun.fun-2");
     expect(result.edges[0].label).toEqual("still the label");
+
+    result = parse(`#b longer label text
+    #xxx edge label: (#c)`);
+
+    expect(result.edges[0].id).toEqual("xxx");
   });
 
   test("shouldn't create node for empty line", () => {
     const result = parse(`
     `);
     expect(result.nodes.length).toEqual(0);
+  });
+
+  test("should allow edge to edge if specified by id", () => {
+    const result = parse(`a
+  #c : cool
+
+to edge
+  (#c)`);
+    expect(result.edges.length).toEqual(2);
+    expect(result.edges[1].target).toEqual("c");
   });
 });

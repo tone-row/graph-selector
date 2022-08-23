@@ -6,22 +6,20 @@ html {
 
 .App {
   display: grid;
-  grid-template-columns: 230px minmax(0, 1fr);
+  grid-template-columns: 200px minmax(0, 1fr);
   height: 100vh;
 }
 
 aside {
-  background-color: whitesmoke;
-  border-right: 2px solid #eaeaea;
-}
-
-aside,
-main {
+  background-color: #eaeaea;
+  border-right: 1px solid #bebebe;
   padding: 1rem;
 }
 
 main {
   overflow-y: auto;
+  background: #fafafa;
+  padding: 1rem 2rem;
   /* background-image: linear-gradient(182deg, #dfe4f2, #fff 400px); */
 }
 
@@ -36,14 +34,14 @@ main {
 }
 
 .examples a {
-  font-size: 0.9rem;
+  font-size: 1rem;
   color: #747474;
 }
 .examples a:hover {
   color: #4f4f4f;
 }
 
-.examples a.active {
+aside a.active {
   color: #341bfa;
 }
 
@@ -57,12 +55,15 @@ h1 {
 h2 {
   font-size: 1.5rem;
   font-weight: 700;
-  margin: 1rem 0;
+  margin: 1rem 0 0 0;
 }
 
 .page {
   display: grid;
   gap: 1rem;
+}
+.page.home {
+  gap: 3rem;
 }
 
 .editor {
@@ -73,10 +74,12 @@ h2 {
 }
 
 button,
-[type="button"] {
+[type="button"],
+.link-to-example {
   background-color: #eaeaea;
   border-radius: 8px;
   padding: 0.5rem 1rem;
+  text-align: center;
 }
 
 .cytoscape-basic {
@@ -93,4 +96,60 @@ button,
 .renderer {
   display: grid;
   place-content: center;
+}
+
+p a {
+  color: #341bfa;
+}
+
+aside h2 {
+  color: #aaa;
+  margin-bottom: 1rem;
+  font-weight: 400;
+}
+
+h3 {
+  margin-top: 2rem;
+  margin-bottom: 0.25rem;
+  font-weight: 700;
+  color: #222;
+  font-size: 1.1rem;
+}
+
+aside h2 + h3 {
+  margin-top: 0;
+}
+
+.description {
+  font-size: 1.1rem;
+  max-width: 500px;
+  margin-top: 0.5rem;
+  display: grid;
+  gap: 0.5rem;
+}
+
+@media (max-width: 700px) {
+  aside {
+    display: none;
+  }
+
+  .App {
+    display: block;
+    height: auto;
+  }
+}
+
+p.large {
+  font-size: 1.5rem;
+}
+
+.link-to-example {
+  background-color: #6c5af7;
+  color: white;
+  font-size: 1.25rem;
+  justify-self: start;
+  padding-inline: 20px;
+}
+.link-to-example:hover {
+  background-color: #5845e9;
 }
