@@ -24,7 +24,9 @@ export function CytoscapeBasic({
       layout: {
         name: "dagre",
         spacingFactor: 2,
-      },
+        // left to right
+        rankDir: "LR",
+      } as any,
       style: [
         // the stylesheet for the graph
         {

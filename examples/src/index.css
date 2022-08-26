@@ -1,7 +1,22 @@
 @import url("https://unpkg.com/tailwindcss@3.0.23/src/css/preflight.css");
 
+@font-face {
+  font-family: Retni Sans;
+  src: url(/public/RetniSans-Regular.woff2);
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: Retni Sans;
+  src: url(/public/RetniSans-Bold.woff2);
+  font-weight: 700;
+  font-style: normal;
+}
+
 html {
   font-family: Retni Sans;
+  background: #fafafa;
 }
 
 .App {
@@ -18,7 +33,6 @@ aside {
 
 main {
   overflow-y: auto;
-  background: #fafafa;
   padding: 1rem 2rem;
   /* background-image: linear-gradient(182deg, #dfe4f2, #fff 400px); */
 }
@@ -48,7 +62,8 @@ aside a.active {
 h1 {
   font-size: 3rem;
   font-weight: 700;
-  margin-top: 3rem;
+  margin-top: 2rem;
+  margin-bottom: 1rem;
   line-height: 1.1;
 }
 
@@ -128,14 +143,38 @@ aside h2 + h3 {
   gap: 0.5rem;
 }
 
+.mobile-header {
+  padding: 5px;
+  padding-left: 1rem;
+  display: grid;
+  grid-auto-flow: column;
+  justify-content: space-between;
+  align-items: center;
+  display: none;
+  background-color: #cdcdcd;
+}
+
 @media (max-width: 700px) {
   aside {
     display: none;
   }
 
+  aside.open {
+    display: block;
+  }
+
   .App {
     display: block;
     height: auto;
+  }
+
+  .mobile-header {
+    display: grid;
+  }
+
+  h1 {
+    font-size: 2rem;
+    margin-top: 1rem;
   }
 }
 
@@ -152,4 +191,9 @@ p.large {
 }
 .link-to-example:hover {
   background-color: #5845e9;
+}
+
+.toggle-mobile-menu.open {
+  background-color: #6c5af7;
+  color: white;
 }

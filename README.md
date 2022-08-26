@@ -58,6 +58,10 @@ For context, I'm experimenting with this language to determine if it should beco
 
 This is a monorepo containing a `/parser` (written in TS) and a website of `/examples` illustrating how you can use it.
 
+## How to Develop
+
+This is a monorepo using pnpm. Git clone, then install dependencies with `pnpm install`. Then you can start both the parser and the examples websites with `pnpm dev`.
+
 ## How are graphs rendered?
 
 One of the main goals of this project is to detatch the rendering from the parsing. The examples show how this syntax and parser can be used to render different types of graphs using a variety of libraries, including [D3](https://d3js.org/), [Cytoscape JS](https://js.cytoscape.org/), and [Recharts](https://recharts.org/).

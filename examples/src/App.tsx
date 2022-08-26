@@ -1,5 +1,6 @@
 import { Link, Outlet } from "@tanstack/react-location";
 import { Route, Router, routes } from "./Router";
+import { useEffect, useState } from "react";
 
 // TODO: add mobile menu
 
@@ -12,17 +13,31 @@ function App() {
     },
     {}
   );
+  const [isOpen, setIsOpen] = useState(false);
   return (
     <Router>
       <div className="App">
-        <aside>
-          <Link to="/">Home</Link>
+        <div className="mobile-header">
+          <span>Graph Selector Syntax</span>
+          <button
+            className={"toggle-mobile-menu" + (isOpen ? " open" : "")}
+            onClick={() => setIsOpen((x) => !x)}
+          >
+            Menu
+          </button>
+        </div>
+        <aside className={isOpen ? "open" : ""}>
+          <Link onClick={() => setIsOpen(false)} to="/">
+            Home
+          </Link>
           <h2>Examples</h2>
           <h3>Cytoscape.js</h3>
           <ul className="examples">
             {routesByType["cyto"].map(({ path, title }) => (
               <li key={path}>
-                <Link to={path}>{title}</Link>
+                <Link onClick={() => setIsOpen(false)} to={path}>
+                  {title}
+                </Link>
               </li>
             ))}
           </ul>
@@ -30,7 +45,9 @@ function App() {
           <ul className="examples">
             {routesByType["d3"].map(({ path, title }) => (
               <li key={path}>
-                <Link to={path}>{title}</Link>
+                <Link onClick={() => setIsOpen(false)} to={path}>
+                  {title}
+                </Link>
               </li>
             ))}
           </ul>
@@ -38,7 +55,9 @@ function App() {
           <ul className="examples">
             {routesByType["recharts"].map(({ path, title }) => (
               <li key={path}>
-                <Link to={path}>{title}</Link>
+                <Link onClick={() => setIsOpen(false)} to={path}>
+                  {title}
+                </Link>
               </li>
             ))}
           </ul>
