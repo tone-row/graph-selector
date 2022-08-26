@@ -66,6 +66,12 @@ This is a monorepo using pnpm. Git clone, then install dependencies with `pnpm i
 
 One of the main goals of this project is to detatch the rendering from the parsing. The examples show how this syntax and parser can be used to render different types of graphs using a variety of libraries, including [D3](https://d3js.org/), [Cytoscape JS](https://js.cytoscape.org/), and [Recharts](https://recharts.org/).
 
+## Next Steps
+
+- add relevant tests from Flowchart Fun parser
+- add package containing syntax highlighter that can be used with Monaco, eventually for CodeMirrora as well
+- create NPM package
+
 ## Contributing
 
 Very open to contributions! Specifically in the following ways:
