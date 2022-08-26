@@ -219,3 +219,6 @@ to edge
     expect(result.edges[1].target).toEqual("c");
   });
 });
+
+// TODO: make sure selection by label is still working
+// TODO: move over any tests from current parser that are relevant to new parser
