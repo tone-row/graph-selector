@@ -74,9 +74,8 @@ One of the main goals of this project is to detatch the rendering from the parsi
 
 ## Next Steps
 
-- add relevant tests from Flowchart Fun parser
-- add package containing syntax highlighter that can be used with Monaco, eventually for CodeMirrora as well
-- create NPM package
+- publish NPM package
+- add package containing syntax highlighter that can be used with Monaco; eventually for CodeMirror as well
 
 ## Contributing
 
