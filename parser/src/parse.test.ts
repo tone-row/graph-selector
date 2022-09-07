@@ -247,6 +247,13 @@ to edge
     expect(result.edges[1].id).toEqual("a1-b1-2");
   });
 
+  test("should auto-increment edge ids", () => {
+    const result = parse(`a\n  (b)\n  (b)\n  b`);
+    expect(result.edges[0].id).toEqual("a1-b1-1");
+    expect(result.edges[1].id).toEqual("a1-b1-2");
+    expect(result.edges[2].id).toEqual("a1-b1-3");
+  });
+
   /* Errors */
   test("should error labeled edge width no indent", () => {
     const label = `A\ntest: B`;
@@ -261,5 +268,10 @@ to edge
   test("should error if edge ID used more than once", () => {
     const getResult = () => parse(`#a hi\n #b: test\n #b: another one`);
     expect(getResult).toThrow('Line 3: Duplicate edge id "b"');
+  });
+
+  test("should error intentional duplicate edge Id", () => {
+    const getResult = () => parse(`a\n b\n #a1-b1-1: (b)`);
+    expect(getResult).toThrow('Line 3: Duplicate edge id "a1-b1-1"');
   });
 });

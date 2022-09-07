@@ -118,14 +118,9 @@ export function parse(text: string): GSGraph {
       if (isId(ancestor)) {
         // Create Edge for the node on this line
         if (lineDeclaresNode) {
-          let inc = 1;
           let edgeId = edgeData.id;
           if (!edgeId) {
-            edgeId = `${ancestor}-${id}-${inc}`;
-            while (edgeIds.includes(edgeId)) {
-              ++inc;
-              edgeId = `${ancestor}-${id}-${inc}`;
-            }
+            edgeId = `${ancestor}-${id}-1`;
           }
           if (edgeIds.includes(edgeId)) {
             throw new Error(`Line ${lineNumber}: Duplicate edge id "${edgeId}"`);
