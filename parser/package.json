@@ -19,8 +19,9 @@
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
     "test:coverage:open": "jest --coverage && open coverage/lcov-report/index.html",
-    "lint": "eslint 'src/**/*.{js,cjs,ts,tsx}' --quiet --fix",
-    "lint:staged": "eslint --fix"
+    "lint": "eslint 'src/**/*.{js,cjs,ts}' --quiet --fix",
+    "lint:staged": "eslint --fix",
+    "lint:ci": "eslint 'src/**/*.{js,cjs,ts}'"
   },
   "keywords": [],
   "author": "",

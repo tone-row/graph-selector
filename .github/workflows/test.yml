@@ -11,6 +11,8 @@ jobs:
           version: 7.11.0
       - name: Install Dependencies
         run: pnpm install
+      - name: Lint
+        run: pnpm -F parser lint:ci
       - name: Run Tests
         run: pnpm test:coverage
       - name: Upload Coverage
