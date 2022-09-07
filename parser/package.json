@@ -20,7 +20,7 @@
     "test:coverage": "jest --coverage",
     "test:coverage:open": "jest --coverage && open coverage/lcov-report/index.html",
     "lint": "eslint 'src/**/*.{js,cjs,ts,tsx}' --quiet --fix",
-    "lint:staged": "eslint --debug"
+    "lint:staged": "eslint --fix"
   },
   "keywords": [],
   "author": "",
