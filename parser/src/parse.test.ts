@@ -6,8 +6,8 @@ describe("parse", () => {
     expect(result).toHaveProperty("nodes");
     expect(result).toHaveProperty("edges");
   });
-
-  test("nodes have line number", () => {
+  /* Nodes */
+  test("nodes have label", () => {
     const result = parse(`a\nb`);
     expect(result.nodes[0].label).toEqual("a");
     expect(result.nodes[1].label).toEqual("b");
@@ -106,7 +106,12 @@ describe("parse", () => {
     `);
   });
 
-  // pointers
+  test("should create node with only data", () => {
+    const result = parse(`[d=e]\n[f=a]`);
+    expect(result.nodes.length).toEqual(2);
+  });
+
+  /* Pointers */
   test("can parse pointer to label", () => {
     const result = parse(`a\n  (a)`);
     expect(result.edges[0].source).toEqual("a1");
@@ -154,6 +159,21 @@ describe("parse", () => {
 e
     (a) (e)`);
     expect(result.nodes.length).toEqual(2);
+  });
+
+  test("should work with chinese colon and parentheses", () => {
+    const result = parse(`中文\n to：（中文）`);
+    expect(result.edges).toEqual([
+      {
+        classes: "",
+        id: "中文1-中文1-1",
+        label: "to",
+        lineNumber: 2,
+        source: "中文1",
+        target: "中文1",
+      },
+    ]);
+    expect(result.nodes).toEqual([{ classes: "", id: "中文1", label: "中文", lineNumber: 1 }]);
   });
 
   /* Edges */
@@ -218,7 +238,40 @@ to edge
     expect(result.edges.length).toEqual(2);
     expect(result.edges[1].target).toEqual("c");
   });
-});
 
-// TODO: make sure selection by label is still working
-// TODO: move over any tests from current parser that are relevant to new parser
+  test("unresolved edges also have unique edge ids", () => {
+    const input = `a\n b\n(#a1)\n (#b1)\n(#a1)\n (#b1)`;
+    expect(() => parse(input)).not.toThrow();
+    const result = parse(input);
+    expect(result.edges[0].id).toEqual("a1-b1-1");
+    expect(result.edges[1].id).toEqual("a1-b1-2");
+  });
+
+  test("should auto-increment edge ids", () => {
+    const result = parse(`a\n  (b)\n  (b)\n  b`);
+    expect(result.edges[0].id).toEqual("a1-b1-1");
+    expect(result.edges[1].id).toEqual("a1-b1-2");
+    expect(result.edges[2].id).toEqual("a1-b1-3");
+  });
+
+  /* Errors */
+  test("should error labeled edge width no indent", () => {
+    const label = `A\ntest: B`;
+    expect(() => parse(label)).toThrow("Line 2: Edge label without parent");
+  });
+
+  test("should error if node ID used more than once", () => {
+    const getResult = () => parse(`#hello hi\n#hello hi`);
+    expect(getResult).toThrow('Line 2: Duplicate node id "hello"');
+  });
+
+  test("should error if edge ID used more than once", () => {
+    const getResult = () => parse(`#a hi\n #b: test\n #b: another one`);
+    expect(getResult).toThrow('Line 3: Duplicate edge id "b"');
+  });
+
+  test("should error intentional duplicate edge Id", () => {
+    const getResult = () => parse(`a\n b\n #a1-b1-1: (b)`);
+    expect(getResult).toThrow('Line 3: Duplicate edge id "a1-b1-1"');
+  });
+});

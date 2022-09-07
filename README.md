@@ -1,5 +1,7 @@
 # graph-selector-syntax
 
+![Coverage](https://img.shields.io/codecov/c/github/tone-row/graph-selector-syntax)
+
 _A syntax for graphs._
 
 For context, I'm experimenting with this language to determine if it should become the successor to the current [flowchart-fun](https://github.com/tone-row/flowchart-fun) language. I wrote [a blog post](https://tone-row.com/blog/graph-syntax-css-selectors) explaining my thought process.
@@ -62,6 +64,10 @@ This is a monorepo containing a `/parser` (written in TS) and a website of `/exa
 
 This is a monorepo using pnpm. Git clone, then install dependencies with `pnpm install`. Then you can start both the parser and the examples websites with `pnpm dev`.
 
+### Debugging Tests
+
+In VS Code, debugging tests can be done by selecting `Javascript Debug Terminal` from the command palette. Then you can run `pnpm test:watch` to run the tests in debug mode and stop on breakpoints. (Leaving this here because I haven't been able to make it work any other way.)
+
 ## How are graphs rendered?
 
 One of the main goals of this project is to detatch the rendering from the parsing. The examples show how this syntax and parser can be used to render different types of graphs using a variety of libraries, including [D3](https://d3js.org/), [Cytoscape JS](https://js.cytoscape.org/), and [Recharts](https://recharts.org/).
@@ -74,11 +80,16 @@ One of the main goals of this project is to detatch the rendering from the parsi
 
 ## Contributing
 
-Very open to contributions! Specifically in the following ways:
+Very open to contributions! Specifically in the following ways 👇
 
 ### Contributing to the conversation
 
 I'm really interested in feedback on the syntax and how it can be improved. Head to the github discussions page and join the conversation.
+
+#### Open Problems
+
+1. Automatic Id's by position or label
+1. indenting below pointers
 
 ### Contributing an example
 
