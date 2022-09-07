@@ -17,6 +17,7 @@
     "dev": "microbundle watch",
     "test": "jest",
     "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
     "lint": "eslint 'src/**/*.{js,cjs,ts,tsx}' --quiet --fix"
   },
   "keywords": [],
