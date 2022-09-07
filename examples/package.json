@@ -17,8 +17,8 @@
     "cytoscape-edge-connections": "^0.4.2",
     "d3": "^7.6.1",
     "d3-sankey": "^0.12.3",
+    "graph-selector": "workspace:*",
     "highlight.js": "^11.6.0",
-    "parser": "workspace:*",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-error-boundary": "^3.1.4",
@@ -32,6 +32,8 @@
     "@types/react": "^18.0.17",
     "@types/react-dom": "^18.0.6",
     "@vitejs/plugin-react": "^2.0.1",
+    "monaco-editor": "^0.34.0",
+    "prop-types": "^15.8.1",
     "typescript": "^4.6.4",
     "vite": "^3.0.7"
   }

@@ -2,7 +2,7 @@
 import * as d3 from "d3";
 import * as d3Sankey from "d3-sankey";
 
-import { GSGraph, parse } from "parser";
+import { GSGraph, parse } from "graph-selector";
 import { useEffect, useRef, useState } from "react";
 
 import { Editor } from "../components/Editor";

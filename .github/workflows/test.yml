@@ -12,7 +12,7 @@ jobs:
       - name: Install Dependencies
         run: pnpm install
       - name: Lint
-        run: pnpm -F parser lint:ci
+        run: pnpm -F graph-selector lint:ci
       - name: Run Tests
         run: pnpm test:coverage
       - name: Upload Coverage

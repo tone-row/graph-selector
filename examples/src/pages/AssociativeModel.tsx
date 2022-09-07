@@ -1,4 +1,4 @@
-import { GSGraph, parse } from "parser";
+import { GSGraph, parse } from "graph-selector";
 import { useEffect, useState } from "react";
 
 import { CytoscapeAssociative } from "../components/CytoscapeAssociative";

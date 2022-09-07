@@ -9,7 +9,7 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
-import { GSGraph, parse } from "parser";
+import { GSGraph, parse } from "graph-selector";
 import { useEffect, useState } from "react";
 
 import { Editor } from "../components/Editor";

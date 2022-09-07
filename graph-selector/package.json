@@ -1,16 +1,16 @@
 {
-  "name": "parser",
+  "name": "graph-selector",
   "type": "module",
   "source": "src/index.ts",
   "exports": {
-    "require": "./dist/parser.cjs",
-    "default": "./dist/parser.modern.js"
+    "require": "./dist/graph-selector.cjs",
+    "default": "./dist/graph-selector.modern.js"
   },
-  "main": "./dist/parser.cjs",
+  "main": "./dist/graph-selector.cjs",
   "types": "./dist/index.d.ts",
-  "module": "./dist/parser.module.js",
-  "unpkg": "./dist/parser.umd.js",
-  "version": "1.0.0",
+  "module": "./dist/graph-selector.module.js",
+  "unpkg": "./dist/graph-selector.umd.js",
+  "version": "0.1.0",
   "description": "Parser flowchart fun syntax into a generalized graph syntax",
   "scripts": {
     "build": "microbundle",
@@ -21,7 +21,8 @@
     "test:coverage:open": "jest --coverage && open coverage/lcov-report/index.html",
     "lint": "eslint 'src/**/*.{js,cjs,ts}' --quiet --fix",
     "lint:staged": "eslint --fix",
-    "lint:ci": "eslint 'src/**/*.{js,cjs,ts}'"
+    "lint:ci": "eslint 'src/**/*.{js,cjs,ts}'",
+    "prepublish": "pnpm build"
   },
   "keywords": [],
   "author": "",

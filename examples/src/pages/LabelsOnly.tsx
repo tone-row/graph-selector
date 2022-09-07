@@ -1,6 +1,6 @@
 import * as Collapsible from "@radix-ui/react-collapsible";
 
-import { GSGraph, parse } from "parser";
+import { GSGraph, parse } from "graph-selector";
 import { useEffect, useState } from "react";
 
 import { CytoscapeBasic } from "../components/CytoscapeBasic";

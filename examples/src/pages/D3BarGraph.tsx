@@ -1,6 +1,6 @@
 import * as d3 from "d3";
 
-import { GSGraph, parse } from "parser";
+import { GSGraph, parse } from "graph-selector";
 import { useEffect, useRef, useState } from "react";
 
 import { Editor } from "../components/Editor";

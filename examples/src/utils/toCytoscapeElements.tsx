@@ -1,4 +1,4 @@
-import { GSGraph } from "parser";
+import { GSGraph } from "graph-selector";
 
 export function toCytoscapeElements(parsed: GSGraph | null) {
   return parsed
