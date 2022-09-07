@@ -1,6 +1,6 @@
-import { Graph } from "parser";
+import { GSGraph } from "parser";
 
-export function toCytoscapeElements(parsed: Graph | null) {
+export function toCytoscapeElements(parsed: GSGraph | null) {
   return parsed
     ? [
         ...parsed.nodes.map((node) => ({
@@ -15,7 +15,7 @@ export function toCytoscapeElements(parsed: Graph | null) {
     : [];
 }
 
-export function toCytoscapeNodesEdges(parsed: Graph | null) {
+export function toCytoscapeNodesEdges(parsed: GSGraph | null) {
   return parsed
     ? {
         nodes: parsed.nodes.map((node) => ({
