@@ -22,7 +22,7 @@
     "lint": "eslint 'src/**/*.{js,cjs,ts}' --quiet --fix",
     "lint:staged": "eslint --fix",
     "lint:ci": "eslint 'src/**/*.{js,cjs,ts}'",
-    "prepublish": "pnpm build"
+    "prepublish": "pnpm build && cp ../README.md ./README.md"
   },
   "keywords": [],
   "author": "",
