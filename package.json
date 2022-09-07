@@ -7,7 +7,8 @@
     "build": "pnpm -F parser build && pnpm -F examples build",
     "dev": "pnpm --parallel dev",
     "test": "pnpm --parallel test",
-    "test:coverage": "pnpm --parallel test:coverage"
+    "test:coverage": "pnpm --parallel test:coverage",
+    "test:watch": "pnpm --parallel test:watch"
   },
   "keywords": [],
   "author": "",

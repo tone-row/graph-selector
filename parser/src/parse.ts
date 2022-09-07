@@ -55,10 +55,15 @@ export function parse(text: string): GSGraph {
 
     // get edge label if parent
     let edgeLabel = "";
-    if (line.match(/.+:.+/)) {
-      const parts = line.split(":");
+    if (line.match(/.+[:：].+/)) {
+      const parts = line.split(/[:：]/);
       edgeLabel = parts[0].trim();
       line = parts[1].trim();
+    }
+
+    // throw if edge label and no indent
+    if (indentSize === 0 && edgeLabel) {
+      throw new Error(`Line ${lineNumber}: Edge label without parent`);
     }
 
     // remove indent from line
@@ -75,19 +80,26 @@ export function parse(text: string): GSGraph {
     // the lable is what is left after everything is removed
     const label = line;
 
-    const shouldCreateNode = !!id || !!label || !!classes || Object.keys(data).length > 0;
+    const lineDeclaresNode = !!id || !!label || !!classes || Object.keys(data).length > 0;
 
     // create a unique ID from label
     // if no user-supplied id
-    if (shouldCreateNode && !id) {
+    if (lineDeclaresNode && !id) {
       let inc = 1;
       while (nodeIds.includes(label + inc)) ++inc;
       id = label + inc;
-      nodeIds.push(id);
     }
 
+    // Throw if id already exists
+    if (lineDeclaresNode && nodeIds.includes(id)) {
+      throw new Error(`Line ${lineNumber}: Duplicate node id "${id}"`);
+    }
+
+    // Store id
+    nodeIds.push(id);
+
     // create node if label is not empty
-    if (shouldCreateNode) {
+    if (lineDeclaresNode) {
       nodes.push({
         lineNumber,
         label,
@@ -97,8 +109,6 @@ export function parse(text: string): GSGraph {
       });
     }
 
-    const lineHasNode = !!label;
-
     // If ancestor, create edge (or unresolvedEdge)
     if (ancestor) {
       // start by getting edge data
@@ -107,7 +117,7 @@ export function parse(text: string): GSGraph {
 
       if (isId(ancestor)) {
         // Create Edge for the node on this line
-        if (lineHasNode) {
+        if (lineDeclaresNode) {
           let inc = 1;
           let edgeId = edgeData.id;
           if (!edgeId) {
@@ -117,7 +127,11 @@ export function parse(text: string): GSGraph {
               edgeId = `${ancestor}-${id}-${inc}`;
             }
           }
-          const edge = {
+          if (edgeIds.includes(edgeId)) {
+            throw new Error(`Line ${lineNumber}: Duplicate edge id "${edgeId}"`);
+          }
+          edgeIds.push(edgeId);
+          edges.push({
             id: edgeId,
             lineNumber,
             source: ancestor,
@@ -125,8 +139,7 @@ export function parse(text: string): GSGraph {
             label: edgeLabel,
             classes: edgeData.classes,
             ...edgeData.data,
-          };
-          edges.push(edge);
+          });
         }
 
         // add all pointers to future edges
@@ -144,7 +157,7 @@ export function parse(text: string): GSGraph {
         // loop over ancestor pointers
         // and create unresolved edges for each
         for (const sourcePointerArray of ancestor) {
-          if (lineHasNode) {
+          if (lineDeclaresNode) {
             unresolvedEdges.push({
               source: sourcePointerArray,
               target: id,
@@ -197,10 +210,22 @@ export function parse(text: string): GSGraph {
           ...data,
         };
 
+        // Create edge id if not user-supplied
         if (!edge.id) {
-          edge.id = `${sourceNode.id}-${targetNode.id}`;
+          let inc = 1;
+          let edgeId = `${sourceNode.id}-${targetNode.id}-${inc}`;
+          while (edgeIds.includes(edgeId)) {
+            ++inc;
+            edgeId = `${sourceNode.id}-${targetNode.id}-${inc}`;
+          }
+          edge.id = edgeId;
         }
 
+        if (edgeIds.includes(edge.id)) {
+          throw new Error(`Line ${lineNumber}: Duplicate edge id "${edge.id}"`);
+        }
+
+        edgeIds.push(edge.id);
         edges.push(edge);
       }
     }
@@ -247,7 +272,7 @@ function isPointerArray(x: unknown): x is Pointer {
 function matchAndRemovePointers(line: string): [Pointer[], string] {
   // parse all pointers
   const pointerRe =
-    /(?<replace>\((?<pointer>((?<id>#[\w-]+)|(?<class>.[\w]+)|(?<label>[\w\s]+)))\))/g;
+    /(?<replace>[(（](?<pointer>((?<id>#[\w-]+)|(?<class>.[\w]+)|(?<label>.+)))[)）])/g;
   let pointerMatch: RegExpExecArray | null;
   const pointers: Pointer[] = [];
   let lineWithPointersRemoved = line.slice(0);
