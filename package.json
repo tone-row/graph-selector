@@ -8,9 +8,20 @@
     "dev": "pnpm --parallel dev",
     "test": "pnpm --parallel test",
     "test:coverage": "pnpm --parallel test:coverage",
-    "test:watch": "pnpm --parallel test:watch"
+    "test:watch": "pnpm --parallel test:watch",
+    "lint": "pnpm -F parser lint",
+    "prepare": "husky install"
   },
   "keywords": [],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "husky": "^8.0.1",
+    "lint-staged": "^13.0.3"
+  },
+  "lint-staged": {
+    "parser/**/*.{js,ts}": [
+      "pnpm -F parser lint:staged"
+    ]
+  }
 }
