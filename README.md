@@ -2,7 +2,7 @@
 
 _A syntax for graphs._
 
-For context, I'm experimenting with this language to determine if it should become the successor to the current [flowchart-fun](https://github.com/tone-row/flowchart-fun) language. I wrote [a blog post](https://flowchart.fun/blog/2019/05/19/graph-selector-syntax) explaining my thought process.
+For context, I'm experimenting with this language to determine if it should become the successor to the current [flowchart-fun](https://github.com/tone-row/flowchart-fun) language. I wrote [a blog post](https://tone-row.com/blog/graph-syntax-css-selectors) explaining my thought process.
 
 [**Check out the Examples**](http://graph-selector-syntax.vercel.app/)
 
@@ -58,7 +58,7 @@ For context, I'm experimenting with this language to determine if it should beco
 
 This is a monorepo containing a `/parser` (written in TS) and a website of `/examples` illustrating how you can use it.
 
-## How to Develop
+## Developing
 
 This is a monorepo using pnpm. Git clone, then install dependencies with `pnpm install`. Then you can start both the parser and the examples websites with `pnpm dev`.
 

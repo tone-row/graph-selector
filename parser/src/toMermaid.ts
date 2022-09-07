@@ -1,8 +1,6 @@
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-nocheck
-import { Graph } from "./types";
+import { GSGraph } from "./types";
 
-export function toMermaid({ nodes, edges }: Graph) {
+export function toMermaid({ nodes, edges }: GSGraph) {
   const styleLines: string[] = [];
   const lines = ["flowchart"];
 

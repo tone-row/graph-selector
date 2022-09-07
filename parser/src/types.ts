@@ -1,19 +1,21 @@
-export type Element = {
+export type GSElement = {
   id: string;
   lineNumber: number;
   label: string;
+  classes: string;
 };
 
-export type Node = Record<string, string>;
+export type GSNode = GSElement & {
+  [key: string]: string | number;
+};
 
-export type Edge = Element & {
+export type GSEdge = GSElement & {
   source: string;
   target: string;
+  [key: string]: string | number;
 };
 
-export type Graph = {
-  nodes: FlatNode[];
-  edges: FlatNode[];
+export type GSGraph = {
+  nodes: GSNode[];
+  edges: GSEdge[];
 };
-
-export type FlatNode = Record<string, string | number>;
