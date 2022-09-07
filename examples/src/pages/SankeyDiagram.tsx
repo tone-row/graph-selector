@@ -2,15 +2,14 @@
 import * as d3 from "d3";
 import * as d3Sankey from "d3-sankey";
 
+import { GSGraph, parse } from "parser";
 import { useEffect, useRef, useState } from "react";
 
-// import { chord as Chord } from "d3-chord";
 import { Editor } from "../components/Editor";
 import { NextExample } from "../components/NextExample";
 import { ShowParsed } from "../components/ShowParsed";
 import { TitleDescription } from "../components/TitleDescription";
 import { isError } from "../utils/isError";
-import { parse } from "parser";
 
 const startingCode = `Thing One
 Thing Two
@@ -32,11 +31,10 @@ Thing Three
 export function SankeyDiagram() {
   const [code, setCode] = useState(startingCode);
   const [error, setError] = useState("");
-  const [parsed, setParsed] = useState<null | any>(null);
+  const [parsed, setParsed] = useState<null | GSGraph>(null);
   useEffect(() => {
     try {
-      // TODO: fix the Graph type, it's not correct anymore
-      setParsed(parse(code) as any);
+      setParsed(parse(code));
     } catch (e) {
       setParsed(null);
       if (isError(e)) setError(e.message);
@@ -45,10 +43,13 @@ export function SankeyDiagram() {
 
   const links = parsed
     ? parsed.edges.map((edge) => {
+        const source = parsed.nodes.find((node) => node.id === edge.source);
+        const target = parsed.nodes.find((node) => node.id === edge.target);
+        if (!source || !target) return null;
         return {
-          source: parsed.nodes.find(({ id }) => id === edge.source).label,
-          target: parsed.nodes.find(({ id }) => id === edge.target).label,
-          value: parseFloat(edge.amt ?? 0),
+          source: source.label,
+          target: target.label,
+          value: parseFloat(edge.amt.toString() ?? 0),
         };
       })
     : [];
@@ -120,42 +121,40 @@ function D3Graph({ links = [] }: { links?: any[] }) {
   );
 }
 
+// Borrowed from https://observablehq.com/@d3/sankey
 function SankeyChart(
+  { nodes, links },
   {
-    nodes, // an iterable of node objects (typically [{id}, …]); implied by links if missing
-    links, // an iterable of link objects (typically [{source, target}, …])
-  },
-  {
-    format = ",", // a function or format specifier for values in titles
-    align = "justify", // convenience shorthand for nodeAlign
-    nodeId = (d) => d.id, // given d in nodes, returns a unique identifier (string)
-    nodeGroup, // given d in nodes, returns an (ordinal) value for color
-    nodeGroups, // an array of ordinal values representing the node groups
-    nodeLabel, // given d in (computed) nodes, text to label the associated rect
-    nodeTitle = (d) => `${d.id}\n${format(d.value)}`, // given d in (computed) nodes, hover text
-    nodeAlign = align, // Sankey node alignment strategy: left, right, justify, center
-    nodeWidth = 15, // width of node rects
-    nodePadding = 10, // vertical separation between adjacent nodes
-    nodeLabelPadding = 6, // horizontal separation between node and label
-    nodeStroke = "currentColor", // stroke around node rects
-    nodeStrokeWidth, // width of stroke around node rects, in pixels
-    nodeStrokeOpacity, // opacity of stroke around node rects
-    nodeStrokeLinejoin, // line join for stroke around node rects
-    linkSource = ({ source }) => source, // given d in links, returns a node identifier string
-    linkTarget = ({ target }) => target, // given d in links, returns a node identifier string
-    linkValue = ({ value }) => value, // given d in links, returns the quantitative value
-    linkPath = d3Sankey.sankeyLinkHorizontal(), // given d in (computed) links, returns the SVG path
-    linkTitle = (d) => `${d.source.id} → ${d.target.id}\n${format(d.value)}`, // given d in (computed) links
-    linkColor = "source-target", // source, target, source-target, or static color
-    linkStrokeOpacity = 0.5, // link stroke opacity
-    linkMixBlendMode = "multiply", // link blending mode
-    colors = d3.schemeTableau10, // array of colors
-    width = 640, // outer width, in pixels
-    height = 400, // outer height, in pixels
-    marginTop = 5, // top margin, in pixels
-    marginRight = 1, // right margin, in pixels
-    marginBottom = 5, // bottom margin, in pixels
-    marginLeft = 1, // left margin, in pixels
+    format = ",",
+    align = "justify",
+    nodeId = (d) => d.id,
+    nodeGroup,
+    nodeGroups,
+    nodeLabel,
+    nodeTitle = (d) => `${d.id}\n${format(d.value)}`,
+    nodeAlign = align,
+    nodeWidth = 15,
+    nodePadding = 10,
+    nodeLabelPadding = 6,
+    nodeStroke = "currentColor",
+    nodeStrokeWidth,
+    nodeStrokeOpacity,
+    nodeStrokeLinejoin,
+    linkSource = ({ source }) => source,
+    linkTarget = ({ target }) => target,
+    linkValue = ({ value }) => value,
+    linkPath = d3Sankey.sankeyLinkHorizontal(),
+    linkTitle = (d) => `${d.source.id} → ${d.target.id}\n${format(d.value)}`,
+    linkColor = "source-target",
+    linkStrokeOpacity = 0.5,
+    linkMixBlendMode = "multiply",
+    colors = d3.schemeTableau10,
+    width = 640,
+    height = 400,
+    marginTop = 5,
+    marginRight = 1,
+    marginBottom = 5,
+    marginLeft = 1,
   } = {}
 ) {
   // Compute values.

@@ -1,8 +1,9 @@
-import { Graph, parse } from "parser";
+import { GSGraph, parse } from "parser";
 import { useEffect, useState } from "react";
 
 import { CytoscapeBasic } from "../components/CytoscapeBasic";
 import { Editor } from "../components/Editor";
+import { ErrorBoundary } from "react-error-boundary";
 import { NextExample } from "../components/NextExample";
 import { ShowParsed } from "../components/ShowParsed";
 import { TitleDescription } from "../components/TitleDescription";
@@ -34,11 +35,10 @@ one to many
 export function ClassConnections() {
   const [code, setCode] = useState(startingCode);
   const [error, setError] = useState("");
-  const [parsed, setParsed] = useState<null | Graph>(null);
+  const [parsed, setParsed] = useState<null | GSGraph>(null);
   useEffect(() => {
     try {
-      // TODO: fix the Graph type, it's not correct anymore
-      setParsed(parse(code) as any);
+      setParsed(parse(code));
     } catch (e) {
       setParsed(null);
       if (isError(e)) setError(e.message);
@@ -69,39 +69,44 @@ export function ClassConnections() {
       ) : (
         <ShowParsed parsed={parsed} />
       )}
-      <CytoscapeBasic
-        elements={elements as any}
-        style={[
-          {
-            selector: "edge",
-            style: { "target-arrow-shape": "triangle", "arrow-scale": 3 },
-          },
-          {
-            selector: ".a",
-            style: {
-              "background-color": "#f00",
+      <ErrorBoundary
+        FallbackComponent={() => <div>Failed to render</div>}
+        key={code}
+      >
+        <CytoscapeBasic
+          elements={elements as any}
+          style={[
+            {
+              selector: "edge",
+              style: { "target-arrow-shape": "triangle", "arrow-scale": 3 },
             },
-          },
-          {
-            selector: ".b",
-            style: {
-              "background-color": "#0f0",
+            {
+              selector: ".a",
+              style: {
+                "background-color": "#f00",
+              },
             },
-          },
-          {
-            selector: ".c",
-            style: {
-              "background-color": "#00f",
+            {
+              selector: ".b",
+              style: {
+                "background-color": "#0f0",
+              },
             },
-          },
-          {
-            selector: ".d",
-            style: {
-              "background-color": "#f0f",
+            {
+              selector: ".c",
+              style: {
+                "background-color": "#00f",
+              },
             },
-          },
-        ]}
-      />
+            {
+              selector: ".d",
+              style: {
+                "background-color": "#f0f",
+              },
+            },
+          ]}
+        />
+      </ErrorBoundary>
       <NextExample />
     </div>
   );

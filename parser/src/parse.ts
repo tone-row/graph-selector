@@ -1,4 +1,4 @@
-import { FlatNode } from "./types";
+import { GSGraph } from "./types";
 
 type PointerType = "id" | "class" | "label";
 type Pointer = [PointerType, string];
@@ -15,9 +15,9 @@ type UnresolvedEdges = {
 type Ancestor = Pointer[] | string | null;
 type Ancestors = Ancestor[];
 
-export function parse(text: string) {
-  const nodes: FlatNode[] = [];
-  const edges: FlatNode[] = [];
+export function parse(text: string): GSGraph {
+  const nodes: GSGraph["nodes"] = [];
+  const edges: GSGraph["edges"] = [];
 
   // break into lines
   const lines = text.split(/\n/g);
@@ -88,15 +88,13 @@ export function parse(text: string) {
 
     // create node if label is not empty
     if (shouldCreateNode) {
-      const node: FlatNode = {
+      nodes.push({
         lineNumber,
         label,
         id,
         classes,
         ...data,
-      };
-
-      nodes.push(node);
+      });
     }
 
     const lineHasNode = !!label;
@@ -229,7 +227,7 @@ function findParent(indentSize: number, ancestors: Ancestors): Ancestor {
   return parent;
 }
 
-function getNodesFromPointerArray(nodes: FlatNode[], [pointerType, value]: Pointer) {
+function getNodesFromPointerArray(nodes: GSGraph["nodes"], [pointerType, value]: Pointer) {
   switch (pointerType) {
     case "id":
       return nodes.filter((node) => node.id === value);

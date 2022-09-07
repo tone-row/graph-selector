@@ -1,8 +1,7 @@
 import { Link, Outlet } from "@tanstack/react-location";
 import { Route, Router, routes } from "./Router";
-import { useEffect, useState } from "react";
 
-// TODO: add mobile menu
+import { useState } from "react";
 
 function App() {
   const routesByType = routes.reduce<{ [key: string]: Route[] }>(

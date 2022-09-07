@@ -1,6 +1,6 @@
-// @ts-nocheck
 import * as d3 from "d3";
 
+import { GSGraph, parse } from "parser";
 import { useEffect, useRef, useState } from "react";
 
 import { Editor } from "../components/Editor";
@@ -8,7 +8,6 @@ import { NextExample } from "../components/NextExample";
 import { ShowParsed } from "../components/ShowParsed";
 import { TitleDescription } from "../components/TitleDescription";
 import { isError } from "../utils/isError";
-import { parse } from "parser";
 
 const startingCode = `[price=4] label a
 [price=3] label b
@@ -19,11 +18,10 @@ const startingCode = `[price=4] label a
 export function D3BarGraph() {
   const [code, setCode] = useState(startingCode);
   const [error, setError] = useState("");
-  const [parsed, setParsed] = useState<null | any>(null);
+  const [parsed, setParsed] = useState<null | GSGraph>(null);
   useEffect(() => {
     try {
-      // TODO: fix the Graph type, it's not correct anymore
-      setParsed(parse(code) as any);
+      setParsed(parse(code));
     } catch (e) {
       setParsed(null);
       if (isError(e)) setError(e.message);
@@ -57,7 +55,7 @@ export function D3BarGraph() {
             data={
               parsed
                 ? parsed.nodes.map((node) => ({
-                    price: parseInt(node.price, 10),
+                    price: parseInt(node.price.toString(), 10),
                     name: node.label,
                   }))
                 : []
@@ -99,7 +97,7 @@ function D3Graph({ data }: { data: { price: number; name: string }[] }) {
 
     // use data to update axis with domains
     xScale.domain(data.map((d, i) => d.name));
-    yScale.domain([0, d3.max(data, (d) => d.price)]);
+    yScale.domain([0, d3.max(data, (d) => d.price) as number]);
 
     // append x axis to group
     g.append("g")
@@ -117,7 +115,7 @@ function D3Graph({ data }: { data: { price: number; name: string }[] }) {
       .data(data)
       .enter()
       .append("rect")
-      .attr("x", (d, i) => xScale(d.name))
+      .attr("x", (d) => xScale(d.name) as number)
       .attr("y", (d) => yScale(d.price))
       .attr("width", xScale.bandwidth())
       .attr("height", (d) => height - yScale(d.price));
