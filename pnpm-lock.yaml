@@ -27,8 +27,10 @@ importers:
       cytoscape-edge-connections: ^0.4.2
       d3: ^7.6.1
       d3-sankey: ^0.12.3
+      graph-selector: workspace:*
       highlight.js: ^11.6.0
-      parser: workspace:*
+      monaco-editor: ^0.34.0
+      prop-types: ^15.8.1
       react: ^18.2.0
       react-dom: ^18.2.0
       react-error-boundary: ^3.1.4
@@ -36,7 +38,7 @@ importers:
       typescript: ^4.6.4
       vite: ^3.0.7
     dependencies:
-      '@monaco-editor/react': 4.4.5_biqbaboplfbrettd7655fr4n2y
+      '@monaco-editor/react': 4.4.5_7payg3yaajmz2lehtpasnhysrm
       '@radix-ui/react-collapsible': 1.0.0_biqbaboplfbrettd7655fr4n2y
       '@tanstack/react-location': 3.7.4_biqbaboplfbrettd7655fr4n2y
       cytoscape: 3.22.1
@@ -44,12 +46,12 @@ importers:
       cytoscape-edge-connections: 0.4.2_cytoscape@3.22.1
       d3: 7.6.1
       d3-sankey: 0.12.3
+      graph-selector: link:../graph-selector
       highlight.js: 11.6.0
-      parser: link:../parser
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
       react-error-boundary: 3.1.4_react@18.2.0
-      recharts: 2.1.13_biqbaboplfbrettd7655fr4n2y
+      recharts: 2.1.13_v2m5e27vhdewzwhryxwfaorcca
     devDependencies:
       '@types/cytoscape': 3.19.7
       '@types/cytoscape-dagre': 2.3.0
@@ -58,10 +60,12 @@ importers:
       '@types/react': 18.0.17
       '@types/react-dom': 18.0.6
       '@vitejs/plugin-react': 2.0.1_vite@3.0.8
+      monaco-editor: 0.34.0
+      prop-types: 15.8.1
       typescript: 4.7.4
       vite: 3.0.8
 
-  parser:
+  graph-selector:
     specifiers:
       '@types/jest': ^28.1.7
       '@typescript-eslint/eslint-plugin': ^5.33.0
@@ -1722,22 +1726,24 @@ packages:
       '@jridgewell/sourcemap-codec': 1.4.14
     dev: true
 
-  /@monaco-editor/loader/1.3.2:
+  /@monaco-editor/loader/1.3.2_monaco-editor@0.34.0:
     resolution: {integrity: sha512-BTDbpHl3e47r3AAtpfVFTlAi7WXv4UQ/xZmz8atKl4q7epQV5e7+JbigFDViWF71VBi4IIBdcWP57Hj+OWuc9g==}
     peerDependencies:
       monaco-editor: '>= 0.21.0 < 1'
     dependencies:
+      monaco-editor: 0.34.0
       state-local: 1.0.7
     dev: false
 
-  /@monaco-editor/react/4.4.5_biqbaboplfbrettd7655fr4n2y:
+  /@monaco-editor/react/4.4.5_7payg3yaajmz2lehtpasnhysrm:
     resolution: {integrity: sha512-IImtzU7sRc66OOaQVCG+5PFHkSWnnhrUWGBuH6zNmH2h0YgmAhcjHZQc/6MY9JWEbUtVF1WPBMJ9u1XuFbRrVA==}
     peerDependencies:
       monaco-editor: '>= 0.25.0 < 1'
       react: ^16.8.0 || ^17.0.0 || ^18.0.0
       react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0
     dependencies:
-      '@monaco-editor/loader': 1.3.2
+      '@monaco-editor/loader': 1.3.2_monaco-editor@0.34.0
+      monaco-editor: 0.34.0
       prop-types: 15.8.1
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
@@ -5404,7 +5410,6 @@ packages:
     hasBin: true
     dependencies:
       js-tokens: 4.0.0
-    dev: false
 
   /lru-cache/6.0.0:
     resolution: {integrity: sha512-Jo6dJ04CmSjuznwJSS3pUeWmd/H0ffTlkXXgwZi+eq1UCmqQwCh+eLsYOYCwY991i2Fah4h1BEMCx4qThGbsiA==}
@@ -5548,6 +5553,9 @@ packages:
     dependencies:
       brace-expansion: 2.0.1
     dev: true
+
+  /monaco-editor/0.34.0:
+    resolution: {integrity: sha512-VF+S5zG8wxfinLKLrWcl4WUizMx+LeJrG4PM/M78OhcwocpV0jiyhX/pG6Q9jIOhrb/ckYi6nHnaR5OojlOZCQ==}
 
   /mri/1.2.0:
     resolution: {integrity: sha512-tzzskb3bG8LvYGFF/mDTpq3jpI6Q9wc3LEmBaghu+DdCssd1FakN7Bc0hVNmEyGq1bq3RgfkCb3cmQLpNPOroA==}
@@ -6258,7 +6266,6 @@ packages:
       loose-envify: 1.4.0
       object-assign: 4.1.1
       react-is: 16.13.1
-    dev: false
 
   /punycode/2.1.1:
     resolution: {integrity: sha512-XRsRjdf+j5ml+y/6GKHPZbrF/8p2Yga0JPtdqTIY2Xe5ohJPD9saDJJLPvp9+NSBprVvevdXZybnj2cv8OEd0A==}
@@ -6297,7 +6304,6 @@ packages:
 
   /react-is/16.13.1:
     resolution: {integrity: sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==}
-    dev: false
 
   /react-is/18.2.0:
     resolution: {integrity: sha512-xWGDIW6x921xtzPkhiULtthJHoJvBbF3q26fzloPCK0hsvxtPVelvftw3zjbHWSkR2km9Z+4uxbDDK/6Zw9B8w==}
@@ -6323,7 +6329,7 @@ packages:
       react-dom: 18.2.0_react@18.2.0
     dev: false
 
-  /react-smooth/2.0.1_biqbaboplfbrettd7655fr4n2y:
+  /react-smooth/2.0.1_v2m5e27vhdewzwhryxwfaorcca:
     resolution: {integrity: sha512-Own9TA0GPPf3as4vSwFhDouVfXP15ie/wIHklhyKBH5AN6NFtdk0UpHBnonV11BtqDkAWlt40MOUc+5srmW7NA==}
     peerDependencies:
       prop-types: ^15.6.0
@@ -6331,6 +6337,7 @@ packages:
       react-dom: ^15.0.0 || ^16.0.0 || ^17.0.0 || ^18.0.0
     dependencies:
       fast-equals: 2.0.4
+      prop-types: 15.8.1
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
       react-transition-group: 2.9.0_biqbaboplfbrettd7655fr4n2y
@@ -6363,7 +6370,7 @@ packages:
       decimal.js-light: 2.5.1
     dev: false
 
-  /recharts/2.1.13_biqbaboplfbrettd7655fr4n2y:
+  /recharts/2.1.13_v2m5e27vhdewzwhryxwfaorcca:
     resolution: {integrity: sha512-9VWu2nzExmfiMFDHKqRFhYlJVmjzQGVKH5rBetXR4EuyEXuu3Y6cVxQuNEdusHhbm4SoPPrVDCwlBdREL3sQPA==}
     engines: {node: '>=12'}
     peerDependencies:
@@ -6377,11 +6384,12 @@ packages:
       d3-shape: 3.1.0
       eventemitter3: 4.0.7
       lodash: 4.17.21
+      prop-types: 15.8.1
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
       react-is: 16.13.1
       react-resize-detector: 7.1.2_biqbaboplfbrettd7655fr4n2y
-      react-smooth: 2.0.1_biqbaboplfbrettd7655fr4n2y
+      react-smooth: 2.0.1_v2m5e27vhdewzwhryxwfaorcca
       recharts-scale: 0.4.5
       reduce-css-calc: 2.1.8
     dev: false
