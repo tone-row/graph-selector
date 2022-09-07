@@ -9,7 +9,7 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
-import { Graph, parse } from "parser";
+import { GSGraph, parse } from "parser";
 import { useEffect, useState } from "react";
 
 import { Editor } from "../components/Editor";
@@ -49,11 +49,10 @@ function CustomizedAxisTick(props: any) {
 export function TabularData() {
   const [code, setCode] = useState(startingCode);
   const [error, setError] = useState("");
-  const [parsed, setParsed] = useState<null | Graph>(null);
+  const [parsed, setParsed] = useState<null | GSGraph>(null);
   useEffect(() => {
     try {
-      // TODO: fix the Graph type, it's not correct anymore
-      setParsed(parse(code) as any);
+      setParsed(parse(code));
     } catch (e) {
       setParsed(null);
       if (isError(e)) setError(e.message);

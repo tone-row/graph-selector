@@ -1,8 +1,6 @@
 import { Link } from "@tanstack/react-location";
 import { TitleDescription } from "../components/TitleDescription";
 
-// TODO: Add a link to the blog post when it's ready
-
 export function Index() {
   return (
     <div className="page home">
@@ -19,6 +17,14 @@ export function Index() {
               For context, this syntax was created as the successor to the
               current syntax on{" "}
               <a href="https://flowchart.fun">Flowchart Fun</a>.
+            </p>
+            <p>
+              More information about how I arrived at this syntax, you can check
+              out the blog post:{" "}
+              <a href="https://tone-row.com/blog/graph-syntax-css-selectors">
+                https://tone-row.com/blog/graph-syntax-css-selectors
+              </a>
+              .
             </p>
           </>
         }

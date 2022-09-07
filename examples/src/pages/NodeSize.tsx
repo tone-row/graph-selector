@@ -1,13 +1,13 @@
-import { Graph, parse } from "parser";
+import { GSGraph, parse } from "parser";
 import { useEffect, useState } from "react";
 
 import { CytoscapeBasic } from "../components/CytoscapeBasic";
 import { Editor } from "../components/Editor";
+import { ErrorBoundary } from "react-error-boundary";
 import { NextExample } from "../components/NextExample";
 import { ShowParsed } from "../components/ShowParsed";
 import { TitleDescription } from "../components/TitleDescription";
 import { isError } from "../utils/isError";
-import { toCytoscapeElements } from "../utils/toCytoscapeElements";
 
 const startingCode = `[size=2439] Mercury
   [size=6052] Venus
@@ -21,11 +21,10 @@ const startingCode = `[size=2439] Mercury
 export function NodeSize() {
   const [code, setCode] = useState(startingCode);
   const [error, setError] = useState("");
-  const [parsed, setParsed] = useState<null | Graph>(null);
+  const [parsed, setParsed] = useState<null | GSGraph>(null);
   useEffect(() => {
     try {
-      // TODO: fix the Graph type, it's not correct anymore
-      setParsed(parse(code) as any);
+      setParsed(parse(code));
     } catch (e) {
       setParsed(null);
       if (isError(e)) setError(e.message);
@@ -72,19 +71,24 @@ export function NodeSize() {
       ) : (
         <ShowParsed parsed={parsed} />
       )}
-      <CytoscapeBasic
-        elements={[...nodes, ...edges] as any}
-        style={[
-          {
-            selector: "node",
-            style: {
-              width: "data(width)",
-              height: "data(width)",
-              label: "data(label)",
+      <ErrorBoundary
+        FallbackComponent={() => <div>Failed to render</div>}
+        key={code}
+      >
+        <CytoscapeBasic
+          elements={[...nodes, ...edges] as any}
+          style={[
+            {
+              selector: "node",
+              style: {
+                width: "data(width)",
+                height: "data(width)",
+                label: "data(label)",
+              },
             },
-          },
-        ]}
-      />
+          ]}
+        />
+      </ErrorBoundary>
       <NextExample />
     </div>
   );

@@ -1,5 +1,5 @@
-import { Component, useEffect, useState } from "react";
-import { Graph, parse } from "parser";
+import { GSGraph, parse } from "parser";
+import { useEffect, useState } from "react";
 
 import { CytoscapeBasic } from "../components/CytoscapeBasic";
 import { Editor } from "../components/Editor";
@@ -10,8 +10,6 @@ import { TitleDescription } from "../components/TitleDescription";
 import { isError } from "../utils/isError";
 import { toCytoscapeElements } from "../utils/toCytoscapeElements";
 
-// TODO: wrap cytoscape in an error boundary
-
 const startingCode = `#a long label text
   (#c)
 #b longer label text
@@ -21,11 +19,10 @@ const startingCode = `#a long label text
 export function IdsClasses() {
   const [code, setCode] = useState(startingCode);
   const [error, setError] = useState("");
-  const [parsed, setParsed] = useState<null | Graph>(null);
+  const [parsed, setParsed] = useState<null | GSGraph>(null);
   useEffect(() => {
     try {
-      // TODO: fix the Graph type, it's not correct anymore
-      setParsed(parse(code) as any);
+      setParsed(parse(code));
     } catch (e) {
       setParsed(null);
       if (isError(e)) setError(e.message);

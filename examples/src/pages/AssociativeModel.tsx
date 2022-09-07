@@ -1,20 +1,14 @@
-import { Component, useEffect, useState } from "react";
-import { Graph, parse } from "parser";
-import {
-  toCytoscapeElements,
-  toCytoscapeNodesEdges,
-} from "../utils/toCytoscapeElements";
+import { GSGraph, parse } from "parser";
+import { useEffect, useState } from "react";
 
 import { CytoscapeAssociative } from "../components/CytoscapeAssociative";
-import { CytoscapeBasic } from "../components/CytoscapeBasic";
 import { Editor } from "../components/Editor";
 import { ErrorBoundary } from "react-error-boundary";
 import { NextExample } from "../components/NextExample";
 import { ShowParsed } from "../components/ShowParsed";
 import { TitleDescription } from "../components/TitleDescription";
 import { isError } from "../utils/isError";
-
-// TODO: wrap cytoscape in an error boundary
+import { toCytoscapeNodesEdges } from "../utils/toCytoscapeElements";
 
 const startingCode = `a
   #fun great: (#test)
@@ -26,11 +20,10 @@ c
 export function AssociativeModel() {
   const [code, setCode] = useState(startingCode);
   const [error, setError] = useState("");
-  const [parsed, setParsed] = useState<null | Graph>(null);
+  const [parsed, setParsed] = useState<null | GSGraph>(null);
   useEffect(() => {
     try {
-      // TODO: fix the Graph type, it's not correct anymore
-      setParsed(parse(code) as any);
+      setParsed(parse(code));
     } catch (e) {
       setParsed(null);
       if (isError(e)) setError(e.message);
@@ -66,7 +59,10 @@ export function AssociativeModel() {
       ) : (
         <ShowParsed parsed={parsed} />
       )}
-      <ErrorBoundary FallbackComponent={() => <div>oops!</div>} key={code}>
+      <ErrorBoundary
+        FallbackComponent={() => <div>Failed to render</div>}
+        key={code}
+      >
         <CytoscapeAssociative
           nodes={nodes as any}
           edges={edges as any}

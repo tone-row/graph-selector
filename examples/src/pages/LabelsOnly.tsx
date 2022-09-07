@@ -1,17 +1,14 @@
 import * as Collapsible from "@radix-ui/react-collapsible";
 
-import { Graph, parse } from "parser";
+import { GSGraph, parse } from "parser";
 import { useEffect, useState } from "react";
 
 import { CytoscapeBasic } from "../components/CytoscapeBasic";
 import { Editor } from "../components/Editor";
+import { ErrorBoundary } from "react-error-boundary";
 import { NextExample } from "../components/NextExample";
 import { TitleDescription } from "../components/TitleDescription";
 import { toCytoscapeElements } from "../utils/toCytoscapeElements";
-
-// TODO: add real description for everything
-// TODO: add code snippets for everything
-// TODO: consider add a "Rendered With" tab to the top of the render window
 
 const startingCode = `a
 e
@@ -25,11 +22,10 @@ d
 export function LabelsOnly() {
   const [code, setCode] = useState(startingCode);
   const [error, setError] = useState("");
-  const [parsed, setParsed] = useState<null | Graph>(null);
+  const [parsed, setParsed] = useState<null | GSGraph>(null);
   useEffect(() => {
     try {
-      // TODO: fix the Graph type, it's not correct anymore
-      setParsed(parse(code) as any);
+      setParsed(parse(code));
     } catch (e) {
       setParsed(null);
       if (isError(e)) setError(e.message);
@@ -69,7 +65,13 @@ export function LabelsOnly() {
           </Collapsible.Content>
         </Collapsible.Root>
       )}
-      <CytoscapeBasic elements={elements as any} />
+
+      <ErrorBoundary
+        FallbackComponent={() => <div>Failed to render</div>}
+        key={code}
+      >
+        <CytoscapeBasic elements={elements as any} />
+      </ErrorBoundary>
       <NextExample />
     </div>
   );
