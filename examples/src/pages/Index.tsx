@@ -35,6 +35,21 @@ export function Index() {
           tone-row/graph-selector-syntax
         </a>
       </p>
+      <div style={{ display: "grid", gap: "0.5rem" }}>
+        <p className="large">Get Started</p>
+        <code
+          style={{
+            display: "block",
+            padding: "0.5rem",
+            background: "rgba(0, 0, 0, 0.05)",
+            borderRadius: "0.25rem",
+            fontSize: "1.25rem",
+            fontFamily: "monospace",
+          }}
+        >
+          npm install graph-selector
+        </code>
+      </div>
 
       <Link to="/labels-and-edges" className="link-to-example">
         Open the first example
