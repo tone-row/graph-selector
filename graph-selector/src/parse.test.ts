@@ -254,6 +254,14 @@ to edge
     expect(result.edges[2].id).toEqual("a1-b1-3");
   });
 
+  test("should find edges created later by label", () => {
+    const result = parse(`a\n\t(b) (c)\nb\nc`);
+    expect(result.edges[0].source).toEqual("a1");
+    expect(result.edges[0].target).toEqual("b1");
+    expect(result.edges[1].source).toEqual("a1");
+    expect(result.edges[1].target).toEqual("c1");
+  });
+
   /* Errors */
   test("should error labeled edge width no indent", () => {
     const label = `A\ntest: B`;

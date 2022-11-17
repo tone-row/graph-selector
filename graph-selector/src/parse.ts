@@ -40,7 +40,7 @@ export function parse(text: string): GSGraph {
     // get indent size
     const indentSize = getIndentSize(line);
 
-    // check if line is a source-pointer
+    // check if line is a "source-pointer" (i.e. a reference, like (x), with no indent)
     if (indentSize === 0 && line[0] === "(") {
       // parse pointers
       const [pointers] = matchAndRemovePointers(line);
@@ -76,7 +76,7 @@ export function parse(text: string): GSGraph {
     // parse all pointers
     const [pointers, lineWithPointersRemoved] = matchAndRemovePointers(line);
     line = lineWithPointersRemoved;
-
+    debugger;
     // the lable is what is left after everything is removed
     const label = line;
 
@@ -114,7 +114,6 @@ export function parse(text: string): GSGraph {
       // start by getting edge data
       const { line: newLabel, ...edgeData } = getIdClassesAtts(edgeLabel);
       edgeLabel = newLabel;
-
       if (isId(ancestor)) {
         // Create Edge for the node on this line
         if (lineDeclaresNode) {
@@ -267,7 +266,7 @@ function isPointerArray(x: unknown): x is Pointer {
 function matchAndRemovePointers(line: string): [Pointer[], string] {
   // parse all pointers
   const pointerRe =
-    /(?<replace>[(（](?<pointer>((?<id>#[\w-]+)|(?<class>.[\w]+)|(?<label>.+)))[)）])/g;
+    /(?<replace>[(（](?<pointer>((?<id>#[\w-]+)|(?<class>.[\w]+)|(?<label>[^)）]+)))[)）])/g;
   let pointerMatch: RegExpExecArray | null;
   const pointers: Pointer[] = [];
   let lineWithPointersRemoved = line.slice(0);
