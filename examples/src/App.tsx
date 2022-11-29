@@ -1,6 +1,7 @@
 import { Link, Outlet } from "@tanstack/react-location";
 import { Route, Router, routes } from "./Router";
 
+import { FiHome } from "react-icons/fi";
 import { useState } from "react";
 
 function App() {
@@ -26,10 +27,9 @@ function App() {
           </button>
         </div>
         <aside className={isOpen ? "open" : ""}>
-          <Link onClick={() => setIsOpen(false)} to="/">
-            Home
+          <Link onClick={() => setIsOpen(false)} to="/" aria-label="Home">
+            <FiHome size={24} />
           </Link>
-          <h2>Examples</h2>
           <h3>Cytoscape.js</h3>
           <ul className="examples">
             {routesByType["cyto"].map(({ path, title }) => (

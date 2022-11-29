@@ -34,6 +34,7 @@ importers:
       react: ^18.2.0
       react-dom: ^18.2.0
       react-error-boundary: ^3.1.4
+      react-icons: ^4.7.1
       recharts: ^2.1.13
       typescript: ^4.6.4
       vite: ^3.0.7
@@ -51,6 +52,7 @@ importers:
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
       react-error-boundary: 3.1.4_react@18.2.0
+      react-icons: 4.7.1_react@18.2.0
       recharts: 2.1.13_v2m5e27vhdewzwhryxwfaorcca
     devDependencies:
       '@types/cytoscape': 3.19.7
@@ -6299,6 +6301,14 @@ packages:
       react: '>=16.13.1'
     dependencies:
       '@babel/runtime': 7.18.9
+      react: 18.2.0
+    dev: false
+
+  /react-icons/4.7.1_react@18.2.0:
+    resolution: {integrity: sha512-yHd3oKGMgm7zxo3EA7H2n7vxSoiGmHk5t6Ou4bXsfcgWyhfDKMpyKfhHR6Bjnn63c+YXBLBPUql9H4wPJM6sXw==}
+    peerDependencies:
+      react: '*'
+    dependencies:
       react: 18.2.0
     dev: false
 
