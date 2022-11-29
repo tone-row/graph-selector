@@ -6,6 +6,7 @@ describe("parse", () => {
     expect(result).toHaveProperty("nodes");
     expect(result).toHaveProperty("edges");
   });
+
   /* Nodes */
   test("nodes have label", () => {
     const result = parse(`a\nb`);
@@ -260,6 +261,13 @@ to edge
     expect(result.edges[0].target).toEqual("b1");
     expect(result.edges[1].source).toEqual("a1");
     expect(result.edges[1].target).toEqual("c1");
+  });
+
+  /* Misc */
+  test("should ignore empty lines", () => {
+    const result = parse(`a\n\n\tb`);
+    expect(result.nodes.length).toEqual(2);
+    expect(result.edges.length).toEqual(1);
   });
 
   /* Errors */
