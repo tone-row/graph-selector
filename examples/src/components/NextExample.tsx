@@ -1,5 +1,6 @@
 import { Link, useMatch } from "@tanstack/react-location";
 
+import { FiArrowRight } from "react-icons/fi";
 import { routes } from "../Router";
 
 export function NextExample() {
@@ -11,8 +12,12 @@ export function NextExample() {
   const nextRoute = routes[routeIndex + 1];
   if (!nextRoute) return null;
   return (
-    <Link to={nextRoute.path} className="link-to-example">
-      Open the next example
+    <Link
+      to={nextRoute.path}
+      className="link-to-example"
+      aria-label="Next Example"
+    >
+      <FiArrowRight size={24} />
     </Link>
   );
 }

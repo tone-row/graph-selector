@@ -37,6 +37,10 @@ export function parse(text: string): GSGraph {
 
   for (let line of lines) {
     ++lineNumber;
+
+    // continue from empty line
+    if (!line.trim()) continue;
+
     // get indent size
     const indentSize = getIndentSize(line);
 
@@ -76,7 +80,7 @@ export function parse(text: string): GSGraph {
     // parse all pointers
     const [pointers, lineWithPointersRemoved] = matchAndRemovePointers(line);
     line = lineWithPointersRemoved;
-    debugger;
+
     // the lable is what is left after everything is removed
     const label = line;
 
