@@ -1,4 +1,4 @@
-# graph-selector-syntax
+# graph-selector
 
 ![Version](https://img.shields.io/npm/v/graph-selector)
 ![Coverage](https://img.shields.io/codecov/c/github/tone-row/graph-selector-syntax)
