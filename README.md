@@ -1,3 +1,5 @@
+<img src="https://raw.githubusercontent.com/tone-row/graph-selector/main/examples/public/graph-selector-logo.png" width="200" />
+
 # graph-selector
 
 ![Version](https://img.shields.io/npm/v/graph-selector)
@@ -5,9 +7,9 @@
 ![License](https://img.shields.io/github/license/tone-row/graph-selector-syntax)
 ![Build](https://img.shields.io/github/checks-status/tone-row/graph-selector-syntax/main)
 
-A syntax for storing graphs and tabular data in plain text
+Graph Selector is a language for describing graphs (nodes and edges) and storing arbitrary data on those nodes and edges in plaintext.
 
-### [View Examples](http://graph-selector-syntax.tone-row.com/)
+### [Check out the Demos 💫](http://graph-selector-syntax.tone-row.com/)
 
 ## Installation
 
@@ -21,8 +23,8 @@ npm install graph-selector
 import { parse } from "graph-selector";
 
 const graph = parse(`
-  #a.class1.class2[attr=value] node label
-   edge label: #b.class1[attr=value] another label
+  #a.some-class Node A
+    Labelled edge: #b[someattr=value] Node B
 `);
 
 const { nodes, edges } = graph;
@@ -30,15 +32,15 @@ const { nodes, edges } = graph;
 console.log(nodes, edges);
 ```
 
-## Overview
+## Context
 
-For context, I'm experimenting with this language to determine if it should become the successor to the current [flowchart-fun](https://github.com/tone-row/flowchart-fun) language. I wrote [a blog post](https://tone-row.com/blog/graph-syntax-css-selectors) explaining my thought process.
+[A blog post](https://tone-row.com/blog/graph-syntax-css-selectors) explaining the thought-process behind this language.
 
-### What does this syntax look like?
+## Syntax Overview
 
 - indentation to create edges
 - edge labels before a colon `:`
-- _css-selector-ish-looking_ supplementary data for nodes
+- _CSS Selector-ish_ supplementary data for nodes
 - point to nodes/edges using parentheses `(ref by label)` `(#ref-by-id)` `(.ref-by-class)`
 
 ```
@@ -46,7 +48,7 @@ For context, I'm experimenting with this language to determine if it should beco
  edge label: #b.class1[attr=value] another label
 ```
 
-### What does the parser output look like?
+## Output Goals
 
 - kept as flat as possible
 - everything parses to strings for now (no numbers, no booleans)
