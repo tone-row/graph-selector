@@ -23,66 +23,120 @@ npm install graph-selector
 import { parse } from "graph-selector";
 
 const graph = parse(`
-  #a.some-class Node A
-    Labelled edge: #b[someattr=value] Node B
+Node A
+  goes to: Node B
 `);
 
 const { nodes, edges } = graph;
 
-console.log(nodes, edges);
+// do something with nodes and edges...
+```
+
+## Language Overview
+
+- **Uses indentation to create edges**
+
+  ```
+  Node A
+    Node B
+  ```
+
+  This creates an edge from Node A to Node B.
+
+- **Edge info is stored before a colon `:`**
+
+  ```
+  Node A
+    goes to: Node B
+  ```
+
+  This creates an edge from Node A to Node B with the label `goes to`.
+
+- **Uses CSS Selector syntax encode data on nodes & edges**
+
+  Parses strings like `#id.class1.class2[n=4][m]` into:
+
+  ```js
+  {
+    id: "id",
+    classes: ".class1.class2",
+    n: 4,
+    m: true
+  }
+  ```
+
+- **Uses parentheses to refer to nodes created elsewhere**
+
+  For example, `(ref by label)` `(#ref-by-id)` `(.ref-by-class)`
+
+  ```
+  a
+  #id b
+  .class c
+  d
+    (a)
+    (#id)
+    (.class)
+  ```
+
+  This creates a graph with 4 nodes and 3 edges.
+
+## Parsing Example
+
+```
+#a.class1[boolAttr] node 1 label
+ the edge label [weight=100]: .class1[attr2="test"] node 2 label
+```
+
+<center>⤵️⤵️⤵️</center>
+
+```jsonc
+/* Output from example above */
+{
+  "nodes": [
+    {
+      "data": {
+        "label": "node 1 label",
+        "id": "a",
+        "classes": ".class1",
+        "boolAttr": true
+      },
+      "parser": {
+        "lineNumber": 1
+      }
+    },
+    {
+      "data": {
+        "label": "node 2 label",
+        "id": "node 2 label1",
+        "classes": ".class1",
+        "attr2": "test"
+      },
+      "parser": {
+        "lineNumber": 2
+      }
+    }
+  ],
+  "edges": [
+    {
+      "source": "a",
+      "target": "node 2 label1",
+      "parser": {
+        "lineNumber": 2
+      },
+      "data": {
+        "id": "a-node 2 label1-1",
+        "label": "the edge label [weight=100]",
+        "classes": ""
+      }
+    }
+  ]
+}
 ```
 
 ## Context
 
 [A blog post](https://tone-row.com/blog/graph-syntax-css-selectors) explaining the thought-process behind this language.
-
-## Syntax Overview
-
-- indentation to create edges
-- edge labels before a colon `:`
-- _CSS Selector-ish_ supplementary data for nodes
-- point to nodes/edges using parentheses `(ref by label)` `(#ref-by-id)` `(.ref-by-class)`
-
-```
-#a.class1.class2[attr=value] node label
- edge label: #b.class1[attr=value] another label
-```
-
-## Output Goals
-
-- kept as flat as possible
-- everything parses to strings for now (no numbers, no booleans)
-
-```jsonc
-/* output from example above */
-{
-  "nodes": [
-    {
-      "lineNumber": 1,
-      "label": "node label",
-      "id": "a",
-      "classes": ".class1.class2",
-      "attr": "value"
-    },
-    {
-      "lineNumber": 2,
-      "label": "another label",
-      "id": "b",
-      "classes": ".class1",
-      "attr": "value"
-    }
-  ],
-  "edges": [
-    {
-      "id": "a-b-1",
-      "lineNumber": 2,
-      "source": "a",
-      "target": "b",
-      "label": "edge label"
-    }
-  ]
-}
-```
 
 ## Developing
 
@@ -92,12 +146,18 @@ Git clone, then install dependencies with `pnpm install`. Then you can start bot
 
 ### Debugging Tests
 
-In VS Code, debugging tests can be done by selecting `Javascript Debug Terminal` from the command palette. Then you can run `pnpm test:watch` to run the tests in debug mode and stop on breakpoints. (Leaving this here because I haven't been able to make it work any other way.)
+In VS Code, debugging tests can be done by selecting `Javascript Debug Terminal` from the command palette. Then you can run `pnpm test:watch` to run the tests in debug mode and stop on breakpoints. (Leaving this here because I haven't been able to make it work any other way!)
 
-## Next Steps
+If you want to run a single test you can use the `-t` flag on the command line and pass the test's name `pnpm test -- -t "the name of my test"`
 
-- add benchmarks
-- add syntax highlighter that can be used with Monaco; eventually for CodeMirror as well
+## Project Goals
+
+Become stable-enough to migrate https://flowchart.fun to this syntax and use it as the basis for a new version of the site.
+
+### Next Steps
+
+- Add benchmarks
+- Add syntax highlighter packages that can be used with Monaco & CodeMirror
 
 ## Contributing
 

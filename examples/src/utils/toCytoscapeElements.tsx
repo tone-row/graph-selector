@@ -5,12 +5,12 @@ export function toCytoscapeElements(parsed: Graph | null) {
     ? [
         ...parsed.nodes.map((node) => ({
           classes:
-            typeof node.attributes.classes === "string" &&
-            node.attributes.classes.split("."),
-          data: { id: node.attributes.id, label: node.attributes.label },
+            typeof node.data.classes === "string" &&
+            node.data.classes.split("."),
+          data: { id: node.data.id, label: node.data.label },
         })),
-        ...parsed.edges.map(({ source, target, attributes }) => {
-          const { id, label, classes = "" } = attributes;
+        ...parsed.edges.map(({ source, target, data }) => {
+          const { id, label, classes = "" } = data;
           return {
             classes: typeof classes === "string" && classes.split("."),
             data: { id, source, target, label },
@@ -25,12 +25,12 @@ export function toCytoscapeNodesEdges(parsed: Graph | null) {
     ? {
         nodes: parsed.nodes.map((node) => ({
           classes:
-            typeof node.attributes.classes === "string" &&
-            node.attributes.classes.split("."),
-          data: { id: node.attributes.id, label: node.attributes.label },
+            typeof node.data.classes === "string" &&
+            node.data.classes.split("."),
+          data: { id: node.data.id, label: node.data.label },
         })),
-        edges: parsed.edges.map(({ source, target, attributes }) => {
-          const { id, label, classes = "" } = attributes;
+        edges: parsed.edges.map(({ source, target, data }) => {
+          const { id, label, classes = "" } = data;
           return {
             classes: typeof classes === "string" && classes.split("."),
             data: { id, source, target, label },

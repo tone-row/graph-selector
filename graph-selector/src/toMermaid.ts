@@ -9,7 +9,7 @@ export function toMermaid({ nodes, edges }: Graph) {
   }
 
   for (const node of nodes) {
-    const { id, label } = node.attributes;
+    const { id, label } = node.data;
     if (!id) continue;
     const safeId = getSafe(id);
 
@@ -21,7 +21,7 @@ export function toMermaid({ nodes, edges }: Graph) {
 
   for (const edge of edges) {
     const { source, target } = edge;
-    const { label } = edge.attributes;
+    const { label } = edge.data;
     const safeSource = getSafe(source);
     const safeTarget = getSafe(target);
     const safeLabel = getSafeLabel(label);

@@ -44,16 +44,16 @@ export function SankeyDiagram() {
   const links = parsed
     ? parsed.edges.map((edge) => {
         const source = parsed.nodes.find(
-          (node) => node.attributes.id === edge.source
+          (node) => node.data.id === edge.source
         );
         const target = parsed.nodes.find(
-          (node) => node.attributes.id === edge.target
+          (node) => node.data.id === edge.target
         );
         if (!source || !target) return null;
         return {
-          source: source.label,
-          target: target.label,
-          value: parseFloat(edge.amt.toString() ?? 0),
+          source: source.data.label,
+          target: target.data.label,
+          value: edge.data.amt,
         };
       })
     : [];

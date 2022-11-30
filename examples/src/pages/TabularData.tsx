@@ -62,9 +62,9 @@ export function TabularData() {
   const data: any = parsed
     ? [
         ...parsed.nodes.map((node) => ({
-          years: node.attributes.label,
-          c2us: parseInt(node.attributes.c2us as string, 10),
-          us2c: parseInt(node.attributes.us2c as string, 10),
+          years: node.data.label,
+          c2us: parseInt(node.data.c2us as string, 10),
+          us2c: parseInt(node.data.us2c as string, 10),
         })),
       ]
     : [];

@@ -32,8 +32,8 @@ export function NodeSize() {
   }, [code]);
 
   let nodes =
-    parsed?.nodes.map(({ attributes }) => {
-      const { id, label, size } = attributes;
+    parsed?.nodes.map(({ data }) => {
+      const { id, label, size } = data;
       return {
         data: {
           width:
