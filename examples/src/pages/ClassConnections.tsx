@@ -1,4 +1,4 @@
-import { GSGraph, parse } from "graph-selector";
+import { Graph, parse } from "graph-selector";
 import { useEffect, useState } from "react";
 
 import { CytoscapeBasic } from "../components/CytoscapeBasic";
@@ -35,7 +35,7 @@ one to many
 export function ClassConnections() {
   const [code, setCode] = useState(startingCode);
   const [error, setError] = useState("");
-  const [parsed, setParsed] = useState<null | GSGraph>(null);
+  const [parsed, setParsed] = useState<null | Graph>(null);
   useEffect(() => {
     try {
       setParsed(parse(code));

@@ -1,6 +1,6 @@
-import { GSGraph } from "./types";
+import { Graph } from "./types";
 
-export function toMermaid({ nodes, edges }: GSGraph) {
+export function toMermaid({ nodes, edges }: Graph) {
   const styleLines: string[] = [];
   const lines = ["flowchart"];
 
@@ -9,7 +9,7 @@ export function toMermaid({ nodes, edges }: GSGraph) {
   }
 
   for (const node of nodes) {
-    const { id, label } = node;
+    const { id, label } = node.attributes;
     if (!id) continue;
     const safeId = getSafe(id);
 
@@ -20,7 +20,8 @@ export function toMermaid({ nodes, edges }: GSGraph) {
   }
 
   for (const edge of edges) {
-    const { source, target, label } = edge;
+    const { source, target } = edge;
+    const { label } = edge.attributes;
     const safeSource = getSafe(source);
     const safeTarget = getSafe(target);
     const safeLabel = getSafeLabel(label);

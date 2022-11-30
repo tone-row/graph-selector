@@ -9,7 +9,7 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
-import { GSGraph, parse } from "graph-selector";
+import { Graph, parse } from "graph-selector";
 import { useEffect, useState } from "react";
 
 import { Editor } from "../components/Editor";
@@ -49,7 +49,7 @@ function CustomizedAxisTick(props: any) {
 export function TabularData() {
   const [code, setCode] = useState(startingCode);
   const [error, setError] = useState("");
-  const [parsed, setParsed] = useState<null | GSGraph>(null);
+  const [parsed, setParsed] = useState<null | Graph>(null);
   useEffect(() => {
     try {
       setParsed(parse(code));
@@ -62,9 +62,9 @@ export function TabularData() {
   const data: any = parsed
     ? [
         ...parsed.nodes.map((node) => ({
-          years: node.label,
-          c2us: parseInt(node.c2us as string, 10),
-          us2c: parseInt(node.us2c as string, 10),
+          years: node.attributes.label,
+          c2us: parseInt(node.attributes.c2us as string, 10),
+          us2c: parseInt(node.attributes.us2c as string, 10),
         })),
       ]
     : [];

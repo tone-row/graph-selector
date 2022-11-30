@@ -1,4 +1,4 @@
-import { GSGraph, parse } from "graph-selector";
+import { Graph, parse } from "graph-selector";
 import { useEffect, useState } from "react";
 
 import { CytoscapeBasic } from "../components/CytoscapeBasic";
@@ -21,7 +21,7 @@ const startingCode = `[size=2439] Mercury
 export function NodeSize() {
   const [code, setCode] = useState(startingCode);
   const [error, setError] = useState("");
-  const [parsed, setParsed] = useState<null | GSGraph>(null);
+  const [parsed, setParsed] = useState<null | Graph>(null);
   useEffect(() => {
     try {
       setParsed(parse(code));
@@ -32,14 +32,19 @@ export function NodeSize() {
   }, [code]);
 
   let nodes =
-    parsed?.nodes.map(({ id, label, size }) => ({
-      data: {
-        width:
-          (typeof size === "string" ? parseFloat(size) : size) / 600 + "px",
-        id,
-        label,
-      },
-    })) ?? [];
+    parsed?.nodes.map(({ attributes }) => {
+      const { id, label, size } = attributes;
+      return {
+        data: {
+          width:
+            (typeof size === "string" ? parseFloat(size) : (size as number)) /
+              600 +
+            "px",
+          id,
+          label,
+        },
+      };
+    }) ?? [];
   let edges =
     parsed?.edges.map(({ source, target }) => ({
       data: {
