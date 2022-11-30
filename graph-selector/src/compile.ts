@@ -1,1 +1,3 @@
-export function compile() {}
+export function compile() {
+  // no empty functions
+}
