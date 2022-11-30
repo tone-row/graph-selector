@@ -1,5 +1,6 @@
-import { Graph, Pointer } from "./types";
+import { Data, Graph, Pointer } from "./types";
 
+import { getFeatureData } from "./getFeatureData";
 import { matchAndRemovePointers } from "./matchAndRemovePointers";
 
 // TODO: these types could probably be improved to match the target types (in ./types.ts) more closely
@@ -12,7 +13,7 @@ type UnresolvedEdges = {
   label: string;
   classes: string;
   id: string;
-  data: Record<string, string>;
+  otherData: Data;
 }[];
 type Ancestor = Pointer[] | string | null;
 type Ancestors = Ancestor[];
@@ -75,7 +76,7 @@ export function parse(text: string): Graph {
     // remove indent from line
     line = line.trim();
 
-    const { classes, data, ...rest } = getIdClassesAtts(line);
+    const { classes, data, ...rest } = getFeatureData(line);
     let id = rest.id;
     line = rest.line;
 
@@ -107,7 +108,7 @@ export function parse(text: string): Graph {
     // create node if label is not empty
     if (lineDeclaresNode) {
       nodes.push({
-        attributes: {
+        data: {
           label,
           id,
           classes,
@@ -122,7 +123,7 @@ export function parse(text: string): Graph {
     // If ancestor, create edge (or unresolvedEdge)
     if (ancestor) {
       // start by getting edge data
-      const { line: newLabel, ...edgeData } = getIdClassesAtts(edgeLabel);
+      const { line: newLabel, ...edgeData } = getFeatureData(edgeLabel);
       edgeLabel = newLabel;
       if (isId(ancestor)) {
         // Create Edge for the node on this line
@@ -141,7 +142,7 @@ export function parse(text: string): Graph {
             parser: {
               lineNumber,
             },
-            attributes: {
+            data: {
               id: edgeId,
               label: edgeLabel,
               classes: edgeData.classes,
@@ -157,7 +158,9 @@ export function parse(text: string): Graph {
             target: [pointerType, pointerId],
             lineNumber,
             label: edgeLabel,
-            ...edgeData,
+            id: edgeData.id,
+            classes: edgeData.classes,
+            otherData: edgeData.data,
           });
         }
       } else {
@@ -171,7 +174,9 @@ export function parse(text: string): Graph {
               target: id,
               lineNumber,
               label: edgeLabel,
-              ...edgeData,
+              id: edgeData.id,
+              classes: edgeData.classes,
+              otherData: edgeData.data,
             });
           }
 
@@ -182,7 +187,9 @@ export function parse(text: string): Graph {
               target: targetPointerArray,
               lineNumber,
               label: edgeLabel,
-              ...edgeData,
+              id: edgeData.id,
+              classes: edgeData.classes,
+              otherData: edgeData.data,
             });
           }
         }
@@ -195,51 +202,51 @@ export function parse(text: string): Graph {
   }
 
   // resolve unresolved edges
-  for (const { source, target, lineNumber, label, data, ...rest } of unresolvedEdges) {
+  for (const { source, target, lineNumber, label, otherData, ...rest } of unresolvedEdges) {
     const sourceNodes = isPointerArray(source)
       ? source[0] === "id"
         ? [{ id: source[1] }]
         : getNodesFromPointerArray(nodes, source)
-      : nodes.filter((n) => n.attributes.id === source);
+      : nodes.filter((n) => n.data.id === source);
     const targetNodes = isPointerArray(target)
       ? target[0] === "id"
         ? [{ id: target[1] }]
         : getNodesFromPointerArray(nodes, target)
-      : nodes.filter((n) => n.attributes.id === target);
+      : nodes.filter((n) => n.data.id === target);
     if (sourceNodes.length === 0 || targetNodes.length === 0) continue;
     for (const sourceNode of sourceNodes) {
       for (const targetNode of targetNodes) {
-        const source = "id" in sourceNode ? sourceNode.id : sourceNode.attributes.id;
-        const target = "id" in targetNode ? targetNode.id : targetNode.attributes.id;
-        const attributes = {
+        const source = "id" in sourceNode ? sourceNode.id : sourceNode.data.id;
+        const target = "id" in targetNode ? targetNode.id : targetNode.data.id;
+        const data = {
           ...rest,
-          ...data,
+          ...otherData,
           label,
         };
 
         // Create edge id if not user-supplied
-        if (!attributes.id) {
+        if (!data.id) {
           let inc = 1;
           let edgeId = `${source}-${target}-${inc}`;
           while (edgeIds.includes(edgeId)) {
             ++inc;
             edgeId = `${source}-${target}-${inc}`;
           }
-          attributes.id = edgeId;
+          data.id = edgeId;
         }
 
-        if (edgeIds.includes(attributes.id)) {
-          throw new Error(`Line ${lineNumber}: Duplicate edge id "${attributes.id}"`);
+        if (edgeIds.includes(data.id)) {
+          throw new Error(`Line ${lineNumber}: Duplicate edge id "${data.id}"`);
         }
 
-        edgeIds.push(attributes.id);
+        edgeIds.push(data.id);
         edges.push({
           source,
           target,
           parser: {
             lineNumber,
           },
-          attributes,
+          data,
         });
       }
     }
@@ -269,15 +276,14 @@ function findParent(indentSize: number, ancestors: Ancestors): Ancestor {
 function getNodesFromPointerArray(nodes: Graph["nodes"], [pointerType, value]: Pointer) {
   switch (pointerType) {
     case "id":
-      return nodes.filter((node) => node.attributes.id === value);
+      return nodes.filter((node) => node.data.id === value);
     case "class":
       return nodes.filter(
         (node) =>
-          typeof node.attributes.classes === "string" &&
-          node.attributes.classes.split(".").includes(value),
+          typeof node.data.classes === "string" && node.data.classes.split(".").includes(value),
       );
     case "label":
-      return nodes.filter((node) => node.attributes.label === value);
+      return nodes.filter((node) => node.data.label === value);
   }
 }
 
@@ -287,44 +293,4 @@ function isPointerArray(x: unknown): x is Pointer {
 
 function isId(id: unknown): id is string {
   return typeof id === "string";
-}
-
-function getIdClassesAtts(_line: string) {
-  let line = _line.slice(0);
-  const re =
-    /(?<replace>(?<id>#[\w-]+)?(?<classes>(\.[a-zA-Z]{1}[\w-]*)*)?(?<attributes>(\[\w+=\w+\])*))/g;
-  let match: RegExpExecArray | null;
-  let id = "";
-  let classes = "";
-  let attributes = "";
-
-  while ((match = re.exec(line)) != null) {
-    if (!match.groups) continue;
-    if (!match.groups.replace) break;
-    // if (match.groups.pointer) pointers.push(match.groups.pointer);
-    if (match.groups.id) id = match.groups.id.slice(1);
-    if (match.groups.classes) classes = match.groups.classes;
-    if (match.groups.attributes) attributes = match.groups.attributes;
-
-    // remove everything from line
-    if (match.groups.replace) line = line.replace(match.groups.replace, "").trim();
-  }
-
-  // if attributes, parse into data object
-  const data: Record<string, string> = {};
-  if (attributes) {
-    const attrRe = /\[(?<key>\w+)=(?<value>\w+)\]/g;
-    let attrMatch: RegExpExecArray | null;
-    while ((attrMatch = attrRe.exec(attributes)) != null) {
-      if (!attrMatch.groups) continue;
-      data[attrMatch.groups.key] = attrMatch.groups.value;
-    }
-  }
-
-  return {
-    id,
-    classes,
-    data,
-    line,
-  };
 }

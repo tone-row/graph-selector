@@ -11,7 +11,7 @@ import { ShowParsed } from "../components/ShowParsed";
 import { TitleDescription } from "../components/TitleDescription";
 import { isError } from "../utils/isError";
 
-const startingCode = `Thing One
+const oldStartingCode = `Thing One
 Thing Two
 Thing Three
 .a Thing Four
@@ -27,6 +27,13 @@ Thing Three
 
 (Thing Three)
   [amt=6]: (.a)`;
+const startingCode = `Thing One
+Thing Two
+Thing Three
+.a Thing Four
+.a Thing Five
+
+(Thing One)`;
 
 export function SankeyDiagram() {
   const [code, setCode] = useState(startingCode);
@@ -44,16 +51,16 @@ export function SankeyDiagram() {
   const links = parsed
     ? parsed.edges.map((edge) => {
         const source = parsed.nodes.find(
-          (node) => node.attributes.id === edge.source
+          (node) => node.data.id === edge.source
         );
         const target = parsed.nodes.find(
-          (node) => node.attributes.id === edge.target
+          (node) => node.data.id === edge.target
         );
         if (!source || !target) return null;
         return {
           source: source.label,
           target: target.label,
-          value: parseFloat(edge.amt.toString() ?? 0),
+          value: edge.amt,
         };
       })
     : [];

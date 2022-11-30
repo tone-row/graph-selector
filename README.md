@@ -92,7 +92,13 @@ Git clone, then install dependencies with `pnpm install`. Then you can start bot
 
 ### Debugging Tests
 
-In VS Code, debugging tests can be done by selecting `Javascript Debug Terminal` from the command palette. Then you can run `pnpm test:watch` to run the tests in debug mode and stop on breakpoints. (Leaving this here because I haven't been able to make it work any other way.)
+In VS Code, debugging tests can be done by selecting `Javascript Debug Terminal` from the command palette. Then you can run `pnpm test:watch` to run the tests in debug mode and stop on breakpoints. (Leaving this here because I haven't been able to make it work any other way!)
+
+If you want to run a single test you can use the `-t` flag on the command line and pass the test's name `pnpm test -- -t "the name of my test"`
+
+## Project Goals
+
+...
 
 ## Next Steps
 

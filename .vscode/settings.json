@@ -1,3 +1,4 @@
 {
-  "jest.jestCommandLine": "pnpm test:watch"
+  "jest.jestCommandLine": "pnpm test -- --watch",
+  "jest.rootPath": "graph-selector"
 }

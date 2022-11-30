@@ -55,8 +55,8 @@ export function D3BarGraph() {
             data={
               parsed
                 ? parsed.nodes.map((node) => ({
-                    price: parseInt(node.attributes.price.toString(), 10),
-                    name: node.attributes.label,
+                    price: parseInt(node.data.price.toString(), 10),
+                    name: node.data.label,
                   }))
                 : []
             }
