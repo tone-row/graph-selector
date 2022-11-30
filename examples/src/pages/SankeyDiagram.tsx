@@ -11,7 +11,7 @@ import { ShowParsed } from "../components/ShowParsed";
 import { TitleDescription } from "../components/TitleDescription";
 import { isError } from "../utils/isError";
 
-const oldStartingCode = `Thing One
+const startingCode = `Thing One
 Thing Two
 Thing Three
 .a Thing Four
@@ -27,13 +27,6 @@ Thing Three
 
 (Thing Three)
   [amt=6]: (.a)`;
-const startingCode = `Thing One
-Thing Two
-Thing Three
-.a Thing Four
-.a Thing Five
-
-(Thing One)`;
 
 export function SankeyDiagram() {
   const [code, setCode] = useState(startingCode);
@@ -58,9 +51,9 @@ export function SankeyDiagram() {
         );
         if (!source || !target) return null;
         return {
-          source: source.label,
-          target: target.label,
-          value: edge.amt,
+          source: source.data.label,
+          target: target.data.label,
+          value: edge.data.amt,
         };
       })
     : [];
