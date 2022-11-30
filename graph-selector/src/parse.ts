@@ -209,8 +209,8 @@ export function parse(text: string): Graph {
     if (sourceNodes.length === 0 || targetNodes.length === 0) continue;
     for (const sourceNode of sourceNodes) {
       for (const targetNode of targetNodes) {
-        let source = "id" in sourceNode ? sourceNode.id : sourceNode.attributes.id;
-        let target = "id" in targetNode ? targetNode.id : targetNode.attributes.id;
+        const source = "id" in sourceNode ? sourceNode.id : sourceNode.attributes.id;
+        const target = "id" in targetNode ? targetNode.id : targetNode.attributes.id;
         const attributes = {
           ...rest,
           ...data,
