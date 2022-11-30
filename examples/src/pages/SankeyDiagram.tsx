@@ -2,7 +2,7 @@
 import * as d3 from "d3";
 import * as d3Sankey from "d3-sankey";
 
-import { GSGraph, parse } from "graph-selector";
+import { Graph, parse } from "graph-selector";
 import { useEffect, useRef, useState } from "react";
 
 import { Editor } from "../components/Editor";
@@ -31,7 +31,7 @@ Thing Three
 export function SankeyDiagram() {
   const [code, setCode] = useState(startingCode);
   const [error, setError] = useState("");
-  const [parsed, setParsed] = useState<null | GSGraph>(null);
+  const [parsed, setParsed] = useState<null | Graph>(null);
   useEffect(() => {
     try {
       setParsed(parse(code));
@@ -43,8 +43,12 @@ export function SankeyDiagram() {
 
   const links = parsed
     ? parsed.edges.map((edge) => {
-        const source = parsed.nodes.find((node) => node.id === edge.source);
-        const target = parsed.nodes.find((node) => node.id === edge.target);
+        const source = parsed.nodes.find(
+          (node) => node.attributes.id === edge.source
+        );
+        const target = parsed.nodes.find(
+          (node) => node.attributes.id === edge.target
+        );
         if (!source || !target) return null;
         return {
           source: source.label,

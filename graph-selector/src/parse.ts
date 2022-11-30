@@ -1,7 +1,9 @@
-import { GSGraph } from "./types";
+import { Graph, Pointer } from "./types";
 
-type PointerType = "id" | "class" | "label";
-type Pointer = [PointerType, string];
+import { matchAndRemovePointers } from "./matchAndRemovePointers";
+
+// TODO: these types could probably be improved to match the target types (in ./types.ts) more closely
+
 type ID = string;
 type UnresolvedEdges = {
   source: ID | Pointer;
@@ -15,9 +17,9 @@ type UnresolvedEdges = {
 type Ancestor = Pointer[] | string | null;
 type Ancestors = Ancestor[];
 
-export function parse(text: string): GSGraph {
-  const nodes: GSGraph["nodes"] = [];
-  const edges: GSGraph["edges"] = [];
+export function parse(text: string): Graph {
+  const nodes: Graph["nodes"] = [];
+  const edges: Graph["edges"] = [];
 
   // break into lines
   const lines = text.split(/\n/g);
@@ -105,11 +107,15 @@ export function parse(text: string): GSGraph {
     // create node if label is not empty
     if (lineDeclaresNode) {
       nodes.push({
-        lineNumber,
-        label,
-        id,
-        classes,
-        ...data,
+        attributes: {
+          label,
+          id,
+          classes,
+          ...data,
+        },
+        parser: {
+          lineNumber,
+        },
       });
     }
 
@@ -130,13 +136,17 @@ export function parse(text: string): GSGraph {
           }
           edgeIds.push(edgeId);
           edges.push({
-            id: edgeId,
-            lineNumber,
             source: ancestor,
             target: id,
-            label: edgeLabel,
-            classes: edgeData.classes,
-            ...edgeData.data,
+            parser: {
+              lineNumber,
+            },
+            attributes: {
+              id: edgeId,
+              label: edgeLabel,
+              classes: edgeData.classes,
+              ...edgeData.data,
+            },
           });
         }
 
@@ -190,41 +200,47 @@ export function parse(text: string): GSGraph {
       ? source[0] === "id"
         ? [{ id: source[1] }]
         : getNodesFromPointerArray(nodes, source)
-      : nodes.filter((n) => n.id === source);
+      : nodes.filter((n) => n.attributes.id === source);
     const targetNodes = isPointerArray(target)
       ? target[0] === "id"
         ? [{ id: target[1] }]
         : getNodesFromPointerArray(nodes, target)
-      : nodes.filter((n) => n.id === target);
+      : nodes.filter((n) => n.attributes.id === target);
     if (sourceNodes.length === 0 || targetNodes.length === 0) continue;
     for (const sourceNode of sourceNodes) {
       for (const targetNode of targetNodes) {
-        const edge = {
-          lineNumber,
-          source: sourceNode.id,
-          target: targetNode.id,
-          label,
+        let source = "id" in sourceNode ? sourceNode.id : sourceNode.attributes.id;
+        let target = "id" in targetNode ? targetNode.id : targetNode.attributes.id;
+        const attributes = {
           ...rest,
           ...data,
+          label,
         };
 
         // Create edge id if not user-supplied
-        if (!edge.id) {
+        if (!attributes.id) {
           let inc = 1;
-          let edgeId = `${sourceNode.id}-${targetNode.id}-${inc}`;
+          let edgeId = `${source}-${target}-${inc}`;
           while (edgeIds.includes(edgeId)) {
             ++inc;
-            edgeId = `${sourceNode.id}-${targetNode.id}-${inc}`;
+            edgeId = `${source}-${target}-${inc}`;
           }
-          edge.id = edgeId;
+          attributes.id = edgeId;
         }
 
-        if (edgeIds.includes(edge.id)) {
-          throw new Error(`Line ${lineNumber}: Duplicate edge id "${edge.id}"`);
+        if (edgeIds.includes(attributes.id)) {
+          throw new Error(`Line ${lineNumber}: Duplicate edge id "${attributes.id}"`);
         }
 
-        edgeIds.push(edge.id);
-        edges.push(edge);
+        edgeIds.push(attributes.id);
+        edges.push({
+          source,
+          target,
+          parser: {
+            lineNumber,
+          },
+          attributes,
+        });
       }
     }
   }
@@ -250,48 +266,23 @@ function findParent(indentSize: number, ancestors: Ancestors): Ancestor {
   return parent;
 }
 
-function getNodesFromPointerArray(nodes: GSGraph["nodes"], [pointerType, value]: Pointer) {
+function getNodesFromPointerArray(nodes: Graph["nodes"], [pointerType, value]: Pointer) {
   switch (pointerType) {
     case "id":
-      return nodes.filter((node) => node.id === value);
+      return nodes.filter((node) => node.attributes.id === value);
     case "class":
       return nodes.filter(
-        (node) => typeof node.classes === "string" && node.classes.split(".").includes(value),
+        (node) =>
+          typeof node.attributes.classes === "string" &&
+          node.attributes.classes.split(".").includes(value),
       );
     case "label":
-      return nodes.filter((node) => node.label === value);
+      return nodes.filter((node) => node.attributes.label === value);
   }
 }
 
 function isPointerArray(x: unknown): x is Pointer {
   return Array.isArray(x) && x.length === 2;
-}
-
-function matchAndRemovePointers(line: string): [Pointer[], string] {
-  // parse all pointers
-  const pointerRe =
-    /(?<replace>[(（](?<pointer>((?<id>#[\w-]+)|(?<class>.[\w]+)|(?<label>[^)）]+)))[)）])/g;
-  let pointerMatch: RegExpExecArray | null;
-  const pointers: Pointer[] = [];
-  let lineWithPointersRemoved = line.slice(0);
-  while ((pointerMatch = pointerRe.exec(line)) != null) {
-    if (!pointerMatch.groups) continue;
-    if (pointerMatch.groups.pointer) {
-      if (pointerMatch.groups.id) {
-        pointers.push(["id", pointerMatch.groups.id.slice(1)]);
-      } else if (pointerMatch.groups.class) {
-        pointers.push(["class", pointerMatch.groups.class.slice(1)]);
-      } else if (pointerMatch.groups.label) {
-        pointers.push(["label", pointerMatch.groups.label]);
-      }
-    }
-    // remove everything from line
-    if (pointerMatch.groups.replace)
-      lineWithPointersRemoved = lineWithPointersRemoved
-        .replace(pointerMatch.groups.replace, "")
-        .trim();
-  }
-  return [pointers, lineWithPointersRemoved];
 }
 
 function isId(id: unknown): id is string {

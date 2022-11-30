@@ -1,6 +1,6 @@
 import * as d3 from "d3";
 
-import { GSGraph, parse } from "graph-selector";
+import { Graph, parse } from "graph-selector";
 import { useEffect, useRef, useState } from "react";
 
 import { Editor } from "../components/Editor";
@@ -18,7 +18,7 @@ const startingCode = `[price=4] label a
 export function D3BarGraph() {
   const [code, setCode] = useState(startingCode);
   const [error, setError] = useState("");
-  const [parsed, setParsed] = useState<null | GSGraph>(null);
+  const [parsed, setParsed] = useState<null | Graph>(null);
   useEffect(() => {
     try {
       setParsed(parse(code));
@@ -55,8 +55,8 @@ export function D3BarGraph() {
             data={
               parsed
                 ? parsed.nodes.map((node) => ({
-                    price: parseInt(node.price.toString(), 10),
-                    name: node.label,
+                    price: parseInt(node.attributes.price.toString(), 10),
+                    name: node.attributes.label,
                   }))
                 : []
             }

@@ -1,4 +1,4 @@
-import { GSGraph, parse } from "graph-selector";
+import { Graph, parse } from "graph-selector";
 import { useEffect, useState } from "react";
 
 import { CytoscapeAssociative } from "../components/CytoscapeAssociative";
@@ -20,7 +20,7 @@ c
 export function AssociativeModel() {
   const [code, setCode] = useState(startingCode);
   const [error, setError] = useState("");
-  const [parsed, setParsed] = useState<null | GSGraph>(null);
+  const [parsed, setParsed] = useState<null | Graph>(null);
   useEffect(() => {
     try {
       setParsed(parse(code));
