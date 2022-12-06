@@ -59,4 +59,15 @@ describe("getFeatureData", () => {
   test("it parses implicitly true args", () => {
     expect(getFeatureData("[hello]").data).toEqual({ hello: true });
   });
+
+  test("can parse data text that has special characters", () => {
+    expect(getFeatureData("[hello=world(){}]").data).toEqual({ hello: "world(){}" });
+    expect(getFeatureData("[hello=world\n]").data).toEqual({ hello: "world\n" });
+    expect(getFeatureData("[hello=world\t]").data).toEqual({ hello: "world\t" });
+    expect(getFeatureData('[label="Hello\nWorld"]').data).toEqual({ label: "Hello\nWorld" });
+  });
+
+  test("accepts new lines", () => {
+    expect(getFeatureData("[test='a\nb']").data).toEqual({ test: "a\nb" });
+  });
 });

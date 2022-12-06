@@ -10,7 +10,7 @@
   "types": "./dist/index.d.ts",
   "module": "./dist/graph-selector.module.js",
   "unpkg": "./dist/graph-selector.umd.js",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Parser flowchart fun syntax into a generalized graph syntax",
   "scripts": {
     "build": "microbundle",

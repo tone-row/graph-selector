@@ -33,6 +33,7 @@ export function CytoscapeBasic({
           selector: "node",
           style: {
             label: "data(label)",
+            "text-wrap": "wrap",
           },
         },
         {

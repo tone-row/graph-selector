@@ -114,6 +114,21 @@ describe("parse", () => {
     expect(result.nodes.length).toEqual(2);
   });
 
+  test("should create node with label in attribute", () => {
+    const result = parse(`[label=a]`);
+    expect(result.nodes[0].data.label).toEqual("a");
+  });
+
+  test("allows newline in raw label", () => {
+    const result = parse(`a\\nb`);
+    expect(result.nodes[0].data.label).toEqual("a\nb");
+  });
+
+  test("should allow newline in label attribute", () => {
+    const result = parse(`[label="a\\nb"]`);
+    expect(result.nodes[0].data.label).toEqual("a\nb");
+  });
+
   /* Pointers */
   test("can parse pointer to label", () => {
     const result = parse(`a\n  (a)`);

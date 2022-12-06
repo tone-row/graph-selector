@@ -3,7 +3,7 @@ import { Data, Descriptor } from "./types";
 export function getFeatureData(_line: string) {
   let line = _line.slice(0);
   const re =
-    /(?<replace>(?<id>#[\w-]+)?(?<classes>(\.[a-zA-Z]{1}[\w-]*)*)?(?<attributes>(\[\w+(?<attributeValue>=['"]?[\w. ]+['"]?)?\])*))/g;
+    /(?<replace>(?<id>#[\w-]+)?(?<classes>(\.[a-zA-Z]{1}[\w-]*)*)?(?<attributes>(\[\w+(?<attributeValue>=['"]?[^'"]+['"]?)?\])*))/g;
   let match: RegExpExecArray | null;
   let id = "";
   let classes = "";
@@ -27,7 +27,8 @@ export function getFeatureData(_line: string) {
   if (attributes) {
     // We capture the rawValue (possibly with quotes) and the value inside potential quotes
     // to determine if the user wanted it to be parsed as a string or not
-    const attrRe = /\[(?<key>\w+)(?<attributeValue>=(?<rawValue>['"]?(?<value>[\w. ]+)['"]?))?\]/g;
+    const attrRe =
+      /\[(?<key>\w+)(?<attributeValue>=(?<rawValue>['"]?(?<value>[\w. {}()\s]+)['"]?))?\]/g;
     let attrMatch: RegExpExecArray | null;
     while ((attrMatch = attrRe.exec(attributes)) != null) {
       if (!attrMatch.groups) continue;

@@ -22,8 +22,15 @@ export function parse(text: string): Graph {
   const nodes: Graph["nodes"] = [];
   const edges: Graph["edges"] = [];
 
+  // TODO: determine if we can use this to accept unescaped newlines from user text
+  // escape backslashes in text
+  // text = text.replace(/\\/g, "\\\\");
+
   // break into lines
-  const lines = text.split(/\n/g);
+  let lines = text.split(/\n/g);
+
+  // unescape backslashes in lines
+  lines = lines.map((line) => line.replace(/\\n/g, "\n"));
 
   // start line number count
   let lineNumber = 0;
