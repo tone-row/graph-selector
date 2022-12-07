@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "private": true,
   "scripts": {
     "build": "pnpm -F graph-selector build && pnpm -F examples build",
     "dev": "pnpm --parallel dev",
@@ -10,7 +11,8 @@
     "test:coverage": "pnpm --parallel test:coverage",
     "test:watch": "pnpm --parallel test:watch",
     "lint": "pnpm -F graph-selector lint",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "publish": "echo \"This is a monorepo. Please publish from the graph-selector directory.\" && exit 1"
   },
   "keywords": [],
   "author": "",
