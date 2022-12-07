@@ -6,10 +6,10 @@ import {
 
 import { AssociativeModel } from "./pages/AssociativeModel";
 import { ClassConnections } from "./pages/ClassConnections";
+import { CreatingEdgesLabels } from "./pages/CreatingEdgesLabels";
 import { D3BarGraph } from "./pages/D3BarGraph";
 import { IdsClasses } from "./pages/IDsClasses";
 import { Index } from "./pages/Index";
-import { LabelsOnly } from "./pages/LabelsOnly";
 import { NodeSize } from "./pages/NodeSize";
 import { SankeyDiagram } from "./pages/SankeyDiagram";
 import { TabularData } from "./pages/TabularData";
@@ -25,9 +25,9 @@ export type Route = {
 
 export const routes: Route[] = [
   {
-    title: "Labels & Edges",
-    path: "/labels-and-edges",
-    element: <LabelsOnly />,
+    title: "Nodes & Edges",
+    path: "/nodes-edges",
+    element: <CreatingEdgesLabels />,
     type: "cyto",
   },
   {

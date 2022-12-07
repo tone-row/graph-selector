@@ -1,7 +1,7 @@
 import { Graph, parse } from "graph-selector";
 import { useEffect, useState } from "react";
 
-import { CytoscapeBasic } from "../components/CytoscapeBasic";
+import { CyGraph } from "../components/CyGraph";
 import { Editor } from "../components/Editor";
 import { ErrorBoundary } from "react-error-boundary";
 import { NextExample } from "../components/NextExample";
@@ -9,14 +9,14 @@ import { ShowParsed } from "../components/ShowParsed";
 import { TitleDescription } from "../components/TitleDescription";
 import { isError } from "../utils/isError";
 
-const startingCode = `[size=2439] Mercury
-  [size=6052] Venus
-    [size=6371] Earth
-      [size=3390] Mars
-        [size=69911] Jupiter
-          [size=58232] Saturn
-            [size=25362] Uranus
-              [size=24622] Neptune`;
+const startingCode = `Mercury [size=2439]
+  Venus [size=6052]
+    Earth [size=6371]
+      Mars [size=3390]
+        Jupiter [size=69911]
+          Saturn [size=58232]
+            Uranus [size=25362]
+              Neptune [size=24622]`;
 
 export function NodeSize() {
   const [code, setCode] = useState(startingCode);
@@ -77,11 +77,17 @@ export function NodeSize() {
         <ShowParsed parsed={parsed} />
       )}
       <ErrorBoundary
-        FallbackComponent={() => <div>Failed to render</div>}
+        FallbackComponent={({ error, resetErrorBoundary }) => (
+          <div>
+            Failed to render: {error.message}{" "}
+            <button onClick={resetErrorBoundary}>Reset</button>
+          </div>
+        )}
         key={code}
       >
-        <CytoscapeBasic
+        <CyGraph
           elements={[...nodes, ...edges] as any}
+          containerStyle={{ backgroundColor: "#000" }}
           style={[
             {
               selector: "node",
@@ -89,6 +95,20 @@ export function NodeSize() {
                 width: "data(width)",
                 height: "data(width)",
                 label: "data(label)",
+                backgroundColor: "#fac39a",
+                color: "white",
+              },
+            },
+            {
+              selector: "edge",
+              style: {
+                "target-arrow-shape": "triangle",
+                width: 1,
+                "target-distance-from-node": 10,
+                "source-distance-from-node": 10,
+                "line-style": "dashed",
+                "line-color": "#fff",
+                "target-arrow-color": "#fff",
               },
             },
           ]}

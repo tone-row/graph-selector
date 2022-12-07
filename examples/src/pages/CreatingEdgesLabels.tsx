@@ -3,23 +3,16 @@ import * as Collapsible from "@radix-ui/react-collapsible";
 import { Graph, parse } from "graph-selector";
 import { useEffect, useState } from "react";
 
-import { CytoscapeBasic } from "../components/CytoscapeBasic";
+import { CyGraph } from "../components/CyGraph";
 import { Editor } from "../components/Editor";
 import { ErrorBoundary } from "react-error-boundary";
 import { NextExample } from "../components/NextExample";
 import { TitleDescription } from "../components/TitleDescription";
 import { toCytoscapeElements } from "../utils/toCytoscapeElements";
 
-const startingCode = `a
-e
-    (c) (d)
-b
-c
-d
-    f
-        (a)`;
+const startingCode = `Node A\n\tNode B\nthis\n\tgoes to: that`;
 
-export function LabelsOnly() {
+export function CreatingEdgesLabels() {
   const [code, setCode] = useState(startingCode);
   const [error, setError] = useState("");
   const [parsed, setParsed] = useState<null | Graph>(null);
@@ -36,14 +29,14 @@ export function LabelsOnly() {
   return (
     <div className="page">
       <TitleDescription
-        pageTitle="Labels and Edges"
+        pageTitle="Creating Edges and Labels"
         pageDescription={
           <p>
-            Using{" "}
-            <a href="https://js.cytoscape.org/" target="_blank">
-              cytoscape.js
-            </a>{" "}
-            to render graph. Uses dagre layout.
+            This example demonstrates how to create a graph from a text outline
+            by turning each line into a node and using indentation to create
+            directed edges between nodes. Labels for edges can be added by
+            writing text before the colon (:). The example uses cytoscape.js to
+            render the graph.
           </p>
         }
       />
@@ -67,10 +60,15 @@ export function LabelsOnly() {
       )}
 
       <ErrorBoundary
-        FallbackComponent={() => <div>Failed to render</div>}
+        FallbackComponent={({ error, resetErrorBoundary }) => (
+          <div>
+            Failed to render: {error.message}{" "}
+            <button onClick={resetErrorBoundary}>Reset</button>
+          </div>
+        )}
         key={code}
       >
-        <CytoscapeBasic elements={elements as any} />
+        <CyGraph key={JSON.stringify(elements)} elements={elements as any} />
       </ErrorBoundary>
       <NextExample />
     </div>

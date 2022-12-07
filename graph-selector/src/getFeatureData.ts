@@ -1,7 +1,7 @@
 import { Data, Descriptor } from "./types";
 
 export function getFeatureData(_line: string) {
-  let line = _line.slice(0);
+  let line = _line.slice(0).trim();
   const re =
     /(?<replace>(?<id>#[\w-]+)?(?<classes>(\.[a-zA-Z]{1}[\w-]*)*)?(?<attributes>(\[\w+(?<attributeValue>=['"]?[^'"]+['"]?)?\])*))/g;
   let match: RegExpExecArray | null;

@@ -66,7 +66,7 @@ export function Index() {
       </div>
 
       <Link
-        to="/labels-and-edges"
+        to="/nodes-edges"
         className="link-to-example"
         aria-label="Open First Example"
       >
