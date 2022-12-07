@@ -9,10 +9,10 @@ import { ShowParsed } from "../components/ShowParsed";
 import { TitleDescription } from "../components/TitleDescription";
 import { isError } from "../utils/isError";
 
-const startingCode = `[price=4] label a
-[price=3] label b
-[price=5] label c
-[price=2] label d
+const startingCode = `label a [price=4]
+label b [price=3]
+label c [price=5]
+label d [price=2]
 `;
 
 export function D3BarGraph() {

@@ -16,13 +16,13 @@ import { Editor } from "../components/Editor";
 import { NextExample } from "../components/NextExample";
 import { TitleDescription } from "../components/TitleDescription";
 
-const startingCode = `[c2us=200894][us2c=53361] 1955 to 1959
-[c2us=240033][us2c=58707] 1960 to 1964
-[c2us=193095][us2c=94902] 1965 to 1969
-[c2us=95252][us2c=123191] 1970 to 1974
-[c2us=84333][us2c=69920] 1975 to 1979
-[c2us=83059][us2c=44148] 1980 to 1984
-[c2us=64976][us2c=28438] 1985 to 1988`;
+const startingCode = `1955 to 1959 [c2us=200894][us2c=53361]
+1960 to 1964 [c2us=240033][us2c=58707]
+1965 to 1969 [c2us=193095][us2c=94902]
+1970 to 1974 [c2us=95252][us2c=123191]
+1975 to 1979 [c2us=84333][us2c=69920]
+1980 to 1984 [c2us=83059][us2c=44148]
+1985 to 1988 [c2us=64976][us2c=28438]`;
 
 const toPercent = (decimal: number, fixed = 0) =>
   `${(decimal * 100).toFixed(0)}%`;

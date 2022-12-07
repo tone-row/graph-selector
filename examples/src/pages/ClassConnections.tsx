@@ -1,7 +1,7 @@
 import { Graph, parse } from "graph-selector";
 import { useEffect, useState } from "react";
 
-import { CytoscapeBasic } from "../components/CytoscapeBasic";
+import { CyGraph } from "../components/CyGraph";
 import { Editor } from "../components/Editor";
 import { ErrorBoundary } from "react-error-boundary";
 import { NextExample } from "../components/NextExample";
@@ -10,24 +10,24 @@ import { TitleDescription } from "../components/TitleDescription";
 import { isError } from "../utils/isError";
 import { toCytoscapeElements } from "../utils/toCytoscapeElements";
 
-const startingCode = `.a X
-.a Y
-.a Z
+const startingCode = `X .a
+Y .a
+Z .a
 
 one to many
   (.a)
 
-.b X
-.b Y
-.b Z
+X .b
+Y .b
+Z .b
 
 (.b)
   many to one
 
-.c many to many
-.c X
-.d Y
-.d Z
+many to many .c
+X .c
+Y .d
+Z .d
 
 (.c)
   (.d)`;
@@ -73,7 +73,7 @@ export function ClassConnections() {
         FallbackComponent={() => <div>Failed to render</div>}
         key={code}
       >
-        <CytoscapeBasic
+        <CyGraph
           elements={elements as any}
           style={[
             {

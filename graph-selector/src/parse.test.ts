@@ -27,25 +27,25 @@ describe("parse", () => {
   });
 
   test("allow custom ID", () => {
-    const result = parse(`#x a\n  #y b`);
+    const result = parse(`a #x\n  b #y`);
     expect(result.nodes[0].data.id).toEqual("x");
     expect(result.nodes[1].data.id).toEqual("y");
   });
 
   test("custom id not included in label", () => {
-    const result = parse(`#x a`);
+    const result = parse(`a #x`);
     expect(result.nodes[0].data.id).toEqual("x");
     expect(result.nodes[0].data.label).toEqual("a");
   });
 
   test("can read classes without id", () => {
-    const result = parse(`.class1.class2 a`);
+    const result = parse(`a .class1.class2`);
     expect(result.nodes[0].data.classes).toEqual(".class1.class2");
     expect(result.nodes[0].data.label).toEqual("a");
   });
 
   test("can read classes with id", () => {
-    const result = parse(`#x.class1.class2 a`);
+    const result = parse(`a #x.class1.class2`);
     expect(result.nodes[0].data.id).toEqual("x");
     expect(result.nodes[0].data.classes).toEqual(".class1.class2");
     expect(result.nodes[0].data.label).toEqual("a");
@@ -67,7 +67,7 @@ describe("parse", () => {
   });
 
   test("can parse id, classes when edge label", () => {
-    const result = parse(`a\n  b: #x.class1.class2 c`);
+    const result = parse(`a\n  b: c #x.class1.class2`);
     const edge = result.edges[0];
     const node = result.nodes[1];
     expect(edge.source).toEqual("a1");
@@ -79,7 +79,7 @@ describe("parse", () => {
   });
 
   test("should preserve spaces in labels", () => {
-    let result = parse(`#b a long label`);
+    let result = parse(`a long label #b`);
     const node = result.nodes[0];
     expect(node.data.label).toEqual("a long label");
 
@@ -95,7 +95,7 @@ describe("parse", () => {
   });
 
   test("can parse all node qualities", () => {
-    expect(parse(`#long-id.class1.class2[d=e][f=a] c`).nodes[0]).toEqual({
+    expect(parse(`c #long-id.class1.class2[d=e][f=a]`).nodes[0]).toEqual({
       data: {
         classes: ".class1.class2",
         d: "e",
@@ -145,7 +145,7 @@ describe("parse", () => {
   });
 
   test("can parse pointer to class", () => {
-    const result = parse(`.c c\na\n  (.c)`);
+    const result = parse(`c .c\na\n  (.c)`);
     expect(result.edges[0].source).toEqual("a1");
     expect(result.edges[0].target).toEqual("c1");
     expect(result.edges.length).toEqual(1);
@@ -166,7 +166,7 @@ describe("parse", () => {
   });
 
   test("can parse pointer source to class", () => {
-    const result = parse(`a\n.red some color\n(a)\n  (.red)`);
+    const result = parse(`a\nsome color .red\n(a)\n  (.red)`);
     expect(result.edges[0].source).toEqual("a1");
     expect(result.edges[0].target).toEqual("some color1");
     expect(result.edges.length).toEqual(1);

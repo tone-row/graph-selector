@@ -14,8 +14,8 @@ import { isError } from "../utils/isError";
 const startingCode = `Thing One
 Thing Two
 Thing Three
-.a Thing Four
-.a Thing Five
+Thing Four .a
+Thing Five .a
 
 (Thing One)
   [amt=15]: (Thing Two)

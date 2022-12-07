@@ -1,7 +1,7 @@
 import { Graph, parse } from "graph-selector";
 import { useEffect, useState } from "react";
 
-import { CytoscapeBasic } from "../components/CytoscapeBasic";
+import { CyGraph } from "../components/CyGraph";
 import { Editor } from "../components/Editor";
 import { ErrorBoundary } from "react-error-boundary";
 import { NextExample } from "../components/NextExample";
@@ -10,11 +10,11 @@ import { TitleDescription } from "../components/TitleDescription";
 import { isError } from "../utils/isError";
 import { toCytoscapeElements } from "../utils/toCytoscapeElements";
 
-const startingCode = `#a long label text
+const startingCode = `long label text #a
   (#c)
-#b longer label text
+longer label text #b
   (#c)
-#c.large.fantasy the longest label text of all`;
+the longest label text of all #c.large.fantasy`;
 
 export function IdsClasses() {
   const [code, setCode] = useState(startingCode);
@@ -58,7 +58,7 @@ export function IdsClasses() {
         <ShowParsed parsed={parsed} />
       )}
       <ErrorBoundary FallbackComponent={() => <div>oops!</div>} key={code}>
-        <CytoscapeBasic
+        <CyGraph
           elements={elements as any}
           style={[
             { selector: ".large", style: { "font-size": "24px" } },

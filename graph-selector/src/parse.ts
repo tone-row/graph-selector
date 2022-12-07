@@ -83,9 +83,12 @@ export function parse(text: string): Graph {
     // remove indent from line
     line = line.trim();
 
-    const { classes, data, ...rest } = getFeatureData(line);
+    // get index where features (id, classes, data) start
+    const m = /(^|\s)(#|\.|\[)/.exec(line);
+    const indexOfFeatures = m?.index ?? line.length;
+    const { classes, data, ...rest } = getFeatureData(line.slice(indexOfFeatures));
     let id = rest.id;
-    line = rest.line;
+    line = line.slice(0, indexOfFeatures);
 
     // parse all pointers
     const [pointers, lineWithPointersRemoved] = matchAndRemovePointers(line);
