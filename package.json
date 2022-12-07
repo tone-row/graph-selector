@@ -11,8 +11,7 @@
     "test:coverage": "pnpm --parallel test:coverage",
     "test:watch": "pnpm --parallel test:watch",
     "lint": "pnpm -F graph-selector lint",
-    "prepare": "husky install",
-    "publish": "echo \"This is a monorepo. Please publish from the graph-selector directory.\" && exit 1"
+    "prepare": "husky install"
   },
   "keywords": [],
   "author": "",
