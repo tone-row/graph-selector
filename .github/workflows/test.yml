@@ -18,6 +18,7 @@ jobs:
       - name: Upload Coverage
         uses: codecov/codecov-action@v2
         with:
-          root_dir: ./parser
+          root_dir: ./graph-selector # optional (default = .)
           fail_ci_if_error: false # optional (default = false)
           verbose: true # optional (default = false)
+          token: ${{ secrets.CODECOV_TOKEN }} # optional
