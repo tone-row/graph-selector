@@ -2,6 +2,7 @@ import { Data, Graph, Pointer } from "./types";
 
 import { getFeatureData } from "./getFeatureData";
 import { matchAndRemovePointers } from "./matchAndRemovePointers";
+import strip from "strip-comments";
 
 // TODO: these types could probably be improved to match the target types (in ./types.ts) more closely
 
@@ -27,7 +28,7 @@ export function parse(text: string): Graph {
   // text = text.replace(/\\/g, "\\\\");
 
   // break into lines
-  let lines = text.split(/\n/g);
+  let lines = strip(text, { preserveNewlines: true }).split(/\n/g);
 
   // unescape backslashes in lines
   lines = lines.map((line) => line.replace(/\\n/g, "\n"));
