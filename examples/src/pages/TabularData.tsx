@@ -12,7 +12,7 @@ import {
 import { Graph, parse } from "graph-selector";
 import { useEffect, useState } from "react";
 
-import { Editor } from "../components/Editor";
+import { CustomEditor } from "../components/CustomEditor";
 import { NextExample } from "../components/NextExample";
 import { TitleDescription } from "../components/TitleDescription";
 
@@ -83,7 +83,7 @@ export function TabularData() {
         }
       />
       <h2>Input</h2>
-      <Editor
+      <CustomEditor
         value={code}
         onChange={(newCode) => newCode && setCode(newCode)}
       />

@@ -3,7 +3,7 @@ import * as d3 from "d3";
 import { Graph, parse } from "graph-selector";
 import { useEffect, useRef, useState } from "react";
 
-import { Editor } from "../components/Editor";
+import { CustomEditor } from "../components/CustomEditor";
 import { NextExample } from "../components/NextExample";
 import { ShowParsed } from "../components/ShowParsed";
 import { TitleDescription } from "../components/TitleDescription";
@@ -40,7 +40,7 @@ export function D3BarGraph() {
         }
       />
       <h2>Input</h2>
-      <Editor
+      <CustomEditor
         h={140}
         value={code}
         onChange={(newCode) => newCode && setCode(newCode)}

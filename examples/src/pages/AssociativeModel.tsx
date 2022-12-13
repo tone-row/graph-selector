@@ -1,8 +1,8 @@
 import { Graph, parse } from "graph-selector";
 import { useEffect, useState } from "react";
 
+import { CustomEditor } from "../components/CustomEditor";
 import { CytoscapeAssociative } from "../components/CytoscapeAssociative";
-import { Editor } from "../components/Editor";
 import { ErrorBoundary } from "react-error-boundary";
 import { NextExample } from "../components/NextExample";
 import { ShowParsed } from "../components/ShowParsed";
@@ -48,7 +48,7 @@ export function AssociativeModel() {
         }
       />
       <h2>Input</h2>
-      <Editor
+      <CustomEditor
         h={180}
         value={code}
         onChange={(newCode) => newCode && setCode(newCode)}
