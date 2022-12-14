@@ -1,5 +1,4 @@
 import { Graph, parse } from "graph-selector";
-import { id, registerHighlighter, theme } from "../utils/highlighting";
 import { useEffect, useState } from "react";
 
 import { CustomEditor } from "../components/CustomEditor";

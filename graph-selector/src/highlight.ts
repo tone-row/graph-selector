@@ -1,18 +1,17 @@
-import { Monaco } from "@monaco-editor/react";
+import * as Monaco from "monaco-editor/esm/vs/editor/editor.api";
 
-export const id = "graphselector";
-export const theme = "graphselector-theme";
-
-const tokens = {
+export const languageId = "graphselector";
+export const defaultTheme = "graphselector-theme";
+export const languageTokens = {
   edgeFeatures: "edgeFeatures",
   nodeOrPointer: "nodeOrPointer",
   pointer: "pointer",
 };
 
-export function registerHighlighter(monaco: Monaco) {
-  monaco.languages.register({ id });
+export function registerHighlighter(monaco: typeof Monaco) {
+  monaco.languages.register({ id: languageId });
 
-  monaco.languages.setMonarchTokensProvider(id, {
+  monaco.languages.setMonarchTokensProvider(languageId, {
     defaultToken: "invalid",
     tokenizer: {
       root: [
@@ -25,34 +24,33 @@ export function registerHighlighter(monaco: Monaco) {
       ],
       noEdge: [[/.*/, "@rematch", "nodeOrPointer"]],
       edgeFeatures: [
-        [/^.*[^\\]:/, tokens.edgeFeatures],
+        [/^.*[^\\]:/, languageTokens.edgeFeatures],
         [/.*\S+.*$/, "@rematch", "nodeOrPointer"],
       ],
       nodeOrPointer: [
         // whitespace
-        [/\s+/, tokens.nodeOrPointer],
-        [/\(/, tokens.pointer, "@pointer"],
-        [/.*$/, tokens.nodeOrPointer, "@popall"],
+        [/\s+/, languageTokens.nodeOrPointer],
+        [/\(/, languageTokens.pointer, "@pointer"],
+        [/.*$/, languageTokens.nodeOrPointer, "@popall"],
       ],
       pointer: [
-        [/\)$/, tokens.pointer, "@popall"],
-        [/\)/, tokens.pointer, "@pop"],
-        [/[^\(\)]+/, tokens.pointer],
+        [/\)$/, languageTokens.pointer, "@popall"],
+        [/\)/, languageTokens.pointer, "@pop"],
+        [/[^\(\)]+/, languageTokens.pointer],
       ],
     },
   });
 
-  monaco.editor.defineTheme(theme, {
+  monaco.editor.defineTheme(defaultTheme, {
     base: "vs",
     inherit: false,
     rules: [
-      { token: "a", foreground: "#000000" },
       {
-        token: tokens.edgeFeatures,
+        token: languageTokens.edgeFeatures,
         foreground: "#0000FF",
       },
       {
-        token: tokens.pointer,
+        token: languageTokens.pointer,
         foreground: "#00CCCC",
       },
     ],

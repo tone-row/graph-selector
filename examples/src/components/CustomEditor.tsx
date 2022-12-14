@@ -1,5 +1,6 @@
 import Editor, { EditorProps } from "@monaco-editor/react";
-import { id, registerHighlighter, theme } from "../utils/highlighting";
+
+import { highlight } from "graph-selector";
 
 function E(props: EditorProps) {
   return <Editor {...props} />;
@@ -14,14 +15,14 @@ export function CustomEditor({
     <div style={{ height: h }}>
       <E
         className="editor"
-        theme={theme}
-        beforeMount={registerHighlighter}
-        defaultLanguage={id}
+        theme={highlight.defaultTheme}
+        beforeMount={highlight.registerHighlighter}
+        defaultLanguage={highlight.languageId}
         onMount={(_editor, monaco) => {
-          monaco.editor.setTheme(theme);
+          monaco.editor.setTheme(highlight.defaultTheme);
         }}
         options={{
-          theme,
+          theme: highlight.defaultTheme,
           fontSize: 18,
           lineNumbersMinChars: 0,
           tabSize: 2,
