@@ -3,14 +3,19 @@ import * as Collapsible from "@radix-ui/react-collapsible";
 import { Graph, parse } from "graph-selector";
 import { useEffect, useState } from "react";
 
+import { CustomEditor } from "../components/CustomEditor";
 import { CyGraph } from "../components/CyGraph";
-import { Editor } from "../components/Editor";
-import { ErrorBoundary } from "react-error-boundary";
 import { NextExample } from "../components/NextExample";
 import { TitleDescription } from "../components/TitleDescription";
 import { toCytoscapeElements } from "../utils/toCytoscapeElements";
 
-const startingCode = `Node A\n\tNode B\nthis\n\tgoes to: that`;
+const startingCode = `a\n\tto: b\n\tc\n\t\tgoes to: d`;
+
+declare global {
+  interface Window {
+    monaco: any;
+  }
+}
 
 export function CreatingEdgesLabels() {
   const [code, setCode] = useState(startingCode);
@@ -41,7 +46,7 @@ export function CreatingEdgesLabels() {
         }
       />
       <h2>Input</h2>
-      <Editor
+      <CustomEditor
         value={code}
         onChange={(newCode) => newCode && setCode(newCode)}
       />
@@ -58,18 +63,7 @@ export function CreatingEdgesLabels() {
           </Collapsible.Content>
         </Collapsible.Root>
       )}
-
-      <ErrorBoundary
-        FallbackComponent={({ error, resetErrorBoundary }) => (
-          <div>
-            Failed to render: {error.message}{" "}
-            <button onClick={resetErrorBoundary}>Reset</button>
-          </div>
-        )}
-        key={code}
-      >
-        <CyGraph key={JSON.stringify(elements)} elements={elements as any} />
-      </ErrorBoundary>
+      <CyGraph key={JSON.stringify(elements)} elements={elements as any} />
       <NextExample />
     </div>
   );

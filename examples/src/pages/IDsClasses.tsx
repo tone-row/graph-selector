@@ -1,9 +1,8 @@
 import { Graph, parse } from "graph-selector";
 import { useEffect, useState } from "react";
 
+import { CustomEditor } from "../components/CustomEditor";
 import { CyGraph } from "../components/CyGraph";
-import { Editor } from "../components/Editor";
-import { ErrorBoundary } from "react-error-boundary";
 import { NextExample } from "../components/NextExample";
 import { ShowParsed } from "../components/ShowParsed";
 import { TitleDescription } from "../components/TitleDescription";
@@ -46,7 +45,7 @@ export function IdsClasses() {
         }
       />
       <h2>Input</h2>
-      <Editor
+      <CustomEditor
         h={180}
         value={code}
         onChange={(newCode) => newCode && setCode(newCode)}
@@ -57,23 +56,21 @@ export function IdsClasses() {
       ) : (
         <ShowParsed parsed={parsed} />
       )}
-      <ErrorBoundary FallbackComponent={() => <div>oops!</div>} key={code}>
-        <CyGraph
-          elements={elements as any}
-          style={[
-            { selector: ".large", style: { "font-size": "24px" } },
-            {
-              selector: ".fantasy",
-              style: {
-                "font-family": "fantasy",
-                color: "hotpink",
-                "text-background-color": "orange",
-                "text-background-opacity": 0.5,
-              },
+      <CyGraph
+        elements={elements as any}
+        style={[
+          { selector: ".large", style: { "font-size": "24px" } },
+          {
+            selector: ".fantasy",
+            style: {
+              "font-family": "fantasy",
+              color: "hotpink",
+              "text-background-color": "orange",
+              "text-background-opacity": 0.5,
             },
-          ]}
-        />
-      </ErrorBoundary>
+          },
+        ]}
+      />
       <NextExample />
     </div>
   );

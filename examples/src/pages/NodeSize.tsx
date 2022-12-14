@@ -1,8 +1,8 @@
 import { Graph, parse } from "graph-selector";
 import { useEffect, useState } from "react";
 
+import { CustomEditor } from "../components/CustomEditor";
 import { CyGraph } from "../components/CyGraph";
-import { Editor } from "../components/Editor";
 import { ErrorBoundary } from "react-error-boundary";
 import { NextExample } from "../components/NextExample";
 import { ShowParsed } from "../components/ShowParsed";
@@ -65,7 +65,7 @@ export function NodeSize() {
         }
       />
       <h2>Input</h2>
-      <Editor
+      <CustomEditor
         h={400}
         value={code}
         onChange={(newCode) => newCode && setCode(newCode)}

@@ -1,9 +1,8 @@
 import { Graph, parse } from "graph-selector";
 import { useEffect, useState } from "react";
 
+import { CustomEditor } from "../components/CustomEditor";
 import { CyGraph } from "../components/CyGraph";
-import { Editor } from "../components/Editor";
-import { ErrorBoundary } from "react-error-boundary";
 import { NextExample } from "../components/NextExample";
 import { ShowParsed } from "../components/ShowParsed";
 import { TitleDescription } from "../components/TitleDescription";
@@ -58,7 +57,7 @@ export function ClassConnections() {
         }
       />
       <h2>Input</h2>
-      <Editor
+      <CustomEditor
         h={400}
         value={code}
         onChange={(newCode) => newCode && setCode(newCode)}
@@ -69,44 +68,39 @@ export function ClassConnections() {
       ) : (
         <ShowParsed parsed={parsed} />
       )}
-      <ErrorBoundary
-        FallbackComponent={() => <div>Failed to render</div>}
-        key={code}
-      >
-        <CyGraph
-          elements={elements as any}
-          style={[
-            {
-              selector: "edge",
-              style: { "target-arrow-shape": "triangle", "arrow-scale": 3 },
+      <CyGraph
+        elements={elements as any}
+        style={[
+          {
+            selector: "edge",
+            style: { "target-arrow-shape": "triangle", "arrow-scale": 3 },
+          },
+          {
+            selector: ".a",
+            style: {
+              "background-color": "#f00",
             },
-            {
-              selector: ".a",
-              style: {
-                "background-color": "#f00",
-              },
+          },
+          {
+            selector: ".b",
+            style: {
+              "background-color": "#0f0",
             },
-            {
-              selector: ".b",
-              style: {
-                "background-color": "#0f0",
-              },
+          },
+          {
+            selector: ".c",
+            style: {
+              "background-color": "#00f",
             },
-            {
-              selector: ".c",
-              style: {
-                "background-color": "#00f",
-              },
+          },
+          {
+            selector: ".d",
+            style: {
+              "background-color": "#f0f",
             },
-            {
-              selector: ".d",
-              style: {
-                "background-color": "#f0f",
-              },
-            },
-          ]}
-        />
-      </ErrorBoundary>
+          },
+        ]}
+      />
       <NextExample />
     </div>
   );
