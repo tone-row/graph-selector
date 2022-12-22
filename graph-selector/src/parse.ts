@@ -16,7 +16,7 @@ type UnresolvedEdges = {
   id: string;
   otherData: Data;
 }[];
-type Ancestor = Pointer[] | string | null;
+type Ancestor = Pointer[] | ID | null;
 type Ancestors = Ancestor[];
 
 export function parse(text: string): Graph {
@@ -60,8 +60,7 @@ export function parse(text: string): Graph {
       // parse pointers
       const [pointers] = matchAndRemovePointers(line);
       // Update array of ancestors
-      ancestors[indentSize] = pointers;
-      ancestors = ancestors.slice(0, indentSize + 1);
+      ancestors = [pointers];
       continue;
     }
 
@@ -208,7 +207,11 @@ export function parse(text: string): Graph {
     }
 
     // Update array of ancestors
-    ancestors[indentSize] = id;
+    if (!lineDeclaresNode) {
+      ancestors[indentSize] = pointers;
+    } else {
+      ancestors[indentSize] = id;
+    }
     ancestors = ancestors.slice(0, indentSize + 1);
   }
 
