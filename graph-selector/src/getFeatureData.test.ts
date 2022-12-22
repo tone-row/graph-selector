@@ -70,4 +70,12 @@ describe("getFeatureData", () => {
   test("accepts new lines", () => {
     expect(getFeatureData("[test='a\nb']").data).toEqual({ test: "a\nb" });
   });
+
+  test("emojis should be valid in attribute value", () => {
+    expect(getFeatureData(`#a[att=👍]`).data).toEqual({ att: "👍" });
+  });
+
+  test("emojis should be valid in attribute key", () => {
+    expect(getFeatureData(`#a[👍=1]`).data).toEqual({ "👍": 1 });
+  });
 });

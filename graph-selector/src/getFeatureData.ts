@@ -3,7 +3,7 @@ import { Data, Descriptor } from "./types";
 export function getFeatureData(_line: string) {
   let line = _line.slice(0).trim();
   const re =
-    /(?<replace>(?<id>#[\w-]+)?(?<classes>(\.[a-zA-Z]{1}[\w-]*)*)?(?<attributes>(\[\w+(?<attributeValue>=['"]?[^'"]+['"]?)?\])*))/g;
+    /(?<replace>(?<id>#[\w-]+)?(?<classes>(\.[a-zA-Z]{1}[\w-]*)*)?(?<attributes>(\[[^\]=]+(?<attributeValue>=['"]?[^'"]+['"]?)?\])*))/g;
   let match: RegExpExecArray | null;
   let id = "";
   let classes = "";
@@ -28,7 +28,7 @@ export function getFeatureData(_line: string) {
     // We capture the rawValue (possibly with quotes) and the value inside potential quotes
     // to determine if the user wanted it to be parsed as a string or not
     const attrRe =
-      /\[(?<key>\w+)(?<attributeValue>=(?<rawValue>['"]?(?<value>[\w. {}()\s]+)['"]?))?\]/g;
+      /\[(?<key>[^\]=]+)(?<attributeValue>=(?<rawValue>'(?<value1>[^']+)'|"(?<value2>[^"]+)"|(?<value3>[^\]]+)))?\]/g;
     let attrMatch: RegExpExecArray | null;
     while ((attrMatch = attrRe.exec(attributes)) != null) {
       if (!attrMatch.groups) continue;
@@ -39,8 +39,9 @@ export function getFeatureData(_line: string) {
         continue;
       }
 
-      const userSuppliedString = attrMatch.groups.rawValue !== attrMatch.groups.value;
-      let value: Descriptor = attrMatch.groups.value;
+      let value: Descriptor =
+        attrMatch.groups.value1 ?? attrMatch.groups.value2 ?? attrMatch.groups.value3;
+      const userSuppliedString = attrMatch.groups.rawValue !== value;
       // if value is a number and user didn't supply a string (e.g. [hello=1] instead of [hello="1"])
       // then parse it as a number
       if (!userSuppliedString && !isNaN(Number(value))) {
