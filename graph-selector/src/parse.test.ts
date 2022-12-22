@@ -321,6 +321,11 @@ to edge
     expect(result.nodes[0].data.label).toEqual("this line has two slashes // in it");
   });
 
+  test("emojis should be valid in labels", () => {
+    const result = parse(`👍`);
+    expect(result.nodes[0].data.label).toEqual("👍");
+  });
+
   /* Errors */
   test("should error labeled edge width no indent", () => {
     const label = `A\ntest: B`;
