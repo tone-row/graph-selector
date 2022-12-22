@@ -22,6 +22,7 @@ export function CreatingEdgesLabels() {
   const [error, setError] = useState("");
   const [parsed, setParsed] = useState<null | Graph>(null);
   useEffect(() => {
+    setError("");
     try {
       setParsed(parse(code));
     } catch (e) {

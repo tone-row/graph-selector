@@ -21,6 +21,7 @@ export function CyGraph({
   const container = useRef<HTMLDivElement>(null);
   const [error, setError] = useState<string>("");
   useEffect(() => {
+    setError("");
     try {
       let options: CytoscapeOptions = {
         elements,
@@ -68,9 +69,8 @@ export function CyGraph({
         cyE?.destroy();
       };
     } catch (e) {
+      console.error(e);
       setError((e as Error).message);
-
-      // destroy the error cy
       return () => {
         cyError.current?.destroy();
       };

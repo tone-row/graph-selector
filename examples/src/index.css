@@ -228,3 +228,10 @@ p.large {
 .page.home h1 {
   text-align: center;
 }
+
+.error {
+  background-color: red;
+  color: white;
+  padding: 1rem;
+  border-radius: 8px;
+}

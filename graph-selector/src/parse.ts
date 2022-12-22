@@ -69,8 +69,8 @@ export function parse(text: string): Graph {
 
     // get edge label if parent
     let edgeLabel = "";
-    if (line.match(/.+[:：].+/)) {
-      const parts = line.split(/[:：]/);
+    if (line.match(/.+(?<!\\)[:：].+/)) {
+      const parts = line.split(/(?<!\\)[:：]/);
       edgeLabel = parts[0].trim();
       line = parts[1].trim();
     }
@@ -100,7 +100,10 @@ export function parse(text: string): Graph {
     }
 
     // the lable is what is left after everything is removed
-    const label = line;
+    let label = line;
+
+    // safe remove escape from characters now
+    label = label.replace(/\\([:：])/g, "$1").replace(/\\([#\.\/])/g, "$1");
 
     const lineDeclaresNode = !!id || !!label || !!classes || Object.keys(data).length > 0;
 
