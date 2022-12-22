@@ -173,9 +173,7 @@ describe("parse", () => {
   });
 
   test("gets the right number of nodes", () => {
-    const result = parse(`a
-e
-    (a) (e)`);
+    const result = parse(`a\ne\n\t(a)\n\t(e)`);
     expect(result.nodes.length).toEqual(2);
   });
 
@@ -291,7 +289,7 @@ to edge
   });
 
   test("should find edges created later by label", () => {
-    const result = parse(`a\n\t(b) (c)\nb\nc`);
+    const result = parse(`a\n\t(b)\n\t(c)\nb\nc`);
     expect(result.edges[0].source).toEqual("a1");
     expect(result.edges[0].target).toEqual("b1");
     expect(result.edges[1].source).toEqual("a1");
@@ -332,5 +330,15 @@ to edge
   test("should error intentional duplicate edge Id", () => {
     const getResult = () => parse(`a\n b\n #a1-b1-1: (b)`);
     expect(getResult).toThrow('Line 3: Duplicate edge id "a1-b1-1"');
+  });
+
+  test("should error if user creates pointers and node on same line", () => {
+    const getResult = () => parse(`a\n\t(b) c`);
+    expect(getResult).toThrow("Line 2: Can't create node and pointer on same line");
+  });
+
+  test("should error if single line contains multiple pointers", () => {
+    const getResult = () => parse(`b\nc\na\n\t(b) (c)`);
+    expect(getResult).toThrow("Line 4: Can't create multiple pointers on same line");
   });
 });

@@ -94,10 +94,20 @@ export function parse(text: string): Graph {
     const [pointers, lineWithPointersRemoved] = matchAndRemovePointers(line);
     line = lineWithPointersRemoved;
 
+    // error if more than one pointer
+    if (pointers.length > 1) {
+      throw new Error(`Line ${lineNumber}: Can't create multiple pointers on same line`);
+    }
+
     // the lable is what is left after everything is removed
     const label = line;
 
     const lineDeclaresNode = !!id || !!label || !!classes || Object.keys(data).length > 0;
+
+    // error if line declares node and pointers
+    if (lineDeclaresNode && pointers.length > 0) {
+      throw new Error(`Line ${lineNumber}: Can't create node and pointer on same line`);
+    }
 
     // create a unique ID from label
     // if no user-supplied id
