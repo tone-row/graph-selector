@@ -311,6 +311,16 @@ to edge
     expect(result.edges.length).toEqual(1);
   });
 
+  test("should allow escaped colons in labels", () => {
+    const result = parse(`this line has a colon \\: in it`);
+    expect(result.nodes[0].data.label).toEqual("this line has a colon : in it");
+  });
+
+  test("should allow escaped slashes in labels", () => {
+    const result = parse(`this line has two slashes \\/\\/ in it`);
+    expect(result.nodes[0].data.label).toEqual("this line has two slashes // in it");
+  });
+
   /* Errors */
   test("should error labeled edge width no indent", () => {
     const label = `A\ntest: B`;
