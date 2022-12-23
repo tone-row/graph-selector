@@ -1,6 +1,7 @@
 import { FiArrowRight } from "react-icons/fi";
 import { Link } from "@tanstack/react-location";
 import { TitleDescription } from "../components/TitleDescription";
+import { routes } from "../Router";
 
 export function Index() {
   return (
@@ -66,7 +67,7 @@ export function Index() {
       </div>
 
       <Link
-        to="/nodes-edges"
+        to={routes[0].path}
         className="link-to-example"
         aria-label="Open First Example"
       >
