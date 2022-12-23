@@ -48,6 +48,15 @@ export function CyGraph({
               "target-arrow-shape": "triangle",
             },
           },
+          {
+            selector: ":parent",
+            style: {
+              "background-opacity": 0.333,
+              "text-valign": "top",
+              "text-halign": "center",
+              "text-margin-y": -10,
+            },
+          },
           ...style,
         ],
       };

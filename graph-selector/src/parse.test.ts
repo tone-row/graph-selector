@@ -356,4 +356,56 @@ to edge
     const getResult = () => parse(`b\nc\na\n\t(b) (c)`);
     expect(getResult).toThrow("Line 4: Can't create multiple pointers on same line");
   });
+
+  // Containers
+  test("should create containers from curly brackets", () => {
+    const result = parse(`a {\n\tb\n\tc\n}`);
+    expect(result.nodes.length).toEqual(3);
+    expect(result.nodes[1].data.parent).toEqual("a1");
+    expect(result.nodes[2].data.parent).toEqual("a1");
+  });
+
+  test("should create edges inside of containers", () => {
+    const result = parse(`a {\n\tb\n\t\tc\n}`);
+    expect(result.edges.length).toEqual(1);
+    expect(result.edges[0].source).toEqual("b1");
+    expect(result.edges[0].target).toEqual("c1");
+    expect(result.nodes.slice(1).every((n) => n.data.parent === "a1")).toEqual(true);
+  });
+
+  test("can create edges to a container", () => {
+    const result = parse(`
+a {
+  b
+}
+c
+  (a)`);
+    expect(result.edges.length).toEqual(1);
+    expect(result.edges[0].source).toEqual("c1");
+    expect(result.edges[0].target).toEqual("a1");
+    expect(result.nodes[1].data.parent).toEqual("a1");
+  });
+
+  test("should allow nesting containers", () => {
+    const result = parse(`
+a {
+  b {
+    c
+  }
+}
+    `);
+    expect(result.nodes.length).toEqual(3);
+    expect(result.nodes[1].data.parent).toEqual("a1");
+    expect(result.nodes[2].data.parent).toEqual("b1");
+  });
+
+  test("should create a parent node with no label if none given", () => {
+    const result = parse(`
+{
+  a
+}`);
+    expect(result.nodes.length).toEqual(2);
+    expect(result.nodes[0].data.label).toEqual("");
+    expect(result.nodes[1].data.parent).toEqual("ghost1");
+  });
 });

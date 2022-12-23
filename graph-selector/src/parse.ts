@@ -41,10 +41,16 @@ export function parse(text: string): Graph {
   const edgeIds: string[] = [];
 
   // store ancestors (ids at indent size)
-  let ancestors: Ancestors = [];
+  // Because of containers, we need to keep track of indents at different levels
+  // So we will turn this into a stack
+  // And always reference the top of the stack
+  const Ancestors: Ancestors[] = [[]];
 
   // store pointer edges to be resolved when all nodes parsed
   const unresolvedEdges: UnresolvedEdges = [];
+
+  // pop container state on and off stack
+  const containerParentIds: ID[] = [];
 
   for (let line of lines) {
     ++lineNumber;
@@ -52,15 +58,36 @@ export function parse(text: string): Graph {
     // continue from empty line
     if (!line.trim()) continue;
 
+    // if the very last character of the line is an open curly bracket
+    // mark it as a container and remove the bracket
+    let isContainerStart = false;
+    let isContainerEnd = false;
+    if (line[line.length - 1] === "{") {
+      line = line.slice(0, -1);
+      isContainerStart = true;
+    }
+
+    // if the first non-whitespace character of the line is a close curly bracket
+    // mark it as a container and remove the bracket
+    if (/^\s*\}/.test(line)) {
+      // just replace the first closing curly bracket
+      line = line.replace("}", "");
+      isContainerEnd = true;
+      containerParentIds.pop();
+    }
+
     // get indent size
     const indentSize = getIndentSize(line);
+
+    // get our relevant set of ancestors to work with indents
+    let ancestors = Ancestors[Ancestors.length - 1];
 
     // check if line is a "source-pointer" (i.e. a reference, like (x), with no indent)
     if (indentSize === 0 && line[0] === "(") {
       // parse pointers
       const [pointers] = matchAndRemovePointers(line);
       // Update array of ancestors
-      ancestors = [pointers];
+      Ancestors[Ancestors.length - 1] = [pointers];
       continue;
     }
 
@@ -105,11 +132,24 @@ export function parse(text: string): Graph {
     // safe remove escape from characters now
     label = label.replace(/\\([:：])/g, "$1").replace(/\\([#\.\/])/g, "$1");
 
-    const lineDeclaresNode = !!id || !!label || !!classes || Object.keys(data).length > 0;
+    let lineDeclaresNode = !!id || !!label || !!classes || Object.keys(data).length > 0;
+
+    // Create a ghost node to be the container parent if none given
+    if (!lineDeclaresNode && isContainerStart) {
+      let inc = 1;
+      id = "ghost" + inc;
+      while (nodeIds.includes(id)) id = "ghost" + ++inc;
+      lineDeclaresNode = true;
+    }
 
     // error if line declares node and pointers
     if (lineDeclaresNode && pointers.length > 0) {
       throw new Error(`Line ${lineNumber}: Can't create node and pointer on same line`);
+    }
+
+    // Throw if line has pointers and also opens container
+    if (pointers.length > 0 && isContainerStart) {
+      throw new Error(`Line ${lineNumber}: Can't create pointer and container on same line`);
     }
 
     // create a unique ID from label
@@ -130,7 +170,7 @@ export function parse(text: string): Graph {
 
     // create node if label is not empty
     if (lineDeclaresNode) {
-      nodes.push({
+      const node: Graph["nodes"][number] = {
         data: {
           label,
           id,
@@ -140,7 +180,29 @@ export function parse(text: string): Graph {
         parser: {
           lineNumber,
         },
-      });
+      };
+
+      // see if there is an active container parent
+      const containerParentId = containerParentIds[containerParentIds.length - 1];
+
+      // if container, add parent to data
+      if (containerParentId) {
+        node.data.parent = containerParentId;
+      }
+
+      nodes.push(node);
+    }
+
+    // if container, set parent id
+    // and add to ancestors
+    if (isContainerStart) {
+      containerParentIds.push(id);
+      Ancestors.push([]);
+    }
+
+    // if container end, pop ancestors
+    if (isContainerEnd) {
+      Ancestors.pop();
     }
 
     // If ancestor, create edge (or unresolvedEdge)
