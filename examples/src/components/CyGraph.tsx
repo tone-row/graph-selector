@@ -61,16 +61,12 @@ export function CyGraph({
         ],
       };
       // test with error first
+      cyError.current = cytoscape({ ...options, headless: true });
       let cyE = cyError.current;
-      cyE = cytoscape({ ...options, headless: true });
 
       // if that works, then do it for real
+      cy.current = cytoscape({ ...options, container: container.current });
       let cyC = cy.current;
-      cyC = cytoscape({ ...options, container: container.current });
-
-      // do associations
-      // @ts-ignore
-      cyC.edgeConnections({ maxPasses: 10 });
 
       // destroy both
       return () => {

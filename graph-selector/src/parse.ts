@@ -142,14 +142,14 @@ export function parse(text: string): Graph {
       lineDeclaresNode = true;
     }
 
-    // error if line declares node and pointers
-    if (lineDeclaresNode && pointers.length > 0) {
-      throw new Error(`Line ${lineNumber}: Can't create node and pointer on same line`);
-    }
-
     // Throw if line has pointers and also opens container
     if (pointers.length > 0 && isContainerStart) {
       throw new Error(`Line ${lineNumber}: Can't create pointer and container on same line`);
+    }
+
+    // error if line declares node and pointers
+    if (lineDeclaresNode && pointers.length > 0) {
+      throw new Error(`Line ${lineNumber}: Can't create node and pointer on same line`);
     }
 
     // create a unique ID from label
@@ -293,20 +293,16 @@ export function parse(text: string): Graph {
   // resolve unresolved edges
   for (const { source, target, lineNumber, label, otherData, ...rest } of unresolvedEdges) {
     const sourceNodes = isPointerArray(source)
-      ? source[0] === "id"
-        ? [{ id: source[1] }]
-        : getNodesFromPointerArray(nodes, source)
+      ? getNodesFromPointerArray(nodes, edges, source)
       : nodes.filter((n) => n.data.id === source);
     const targetNodes = isPointerArray(target)
-      ? target[0] === "id"
-        ? [{ id: target[1] }]
-        : getNodesFromPointerArray(nodes, target)
+      ? getNodesFromPointerArray(nodes, edges, target)
       : nodes.filter((n) => n.data.id === target);
     if (sourceNodes.length === 0 || targetNodes.length === 0) continue;
     for (const sourceNode of sourceNodes) {
       for (const targetNode of targetNodes) {
-        const source = "id" in sourceNode ? sourceNode.id : sourceNode.data.id;
-        const target = "id" in targetNode ? targetNode.id : targetNode.data.id;
+        const source = sourceNode.data.id;
+        const target = targetNode.data.id;
         const data = {
           ...rest,
           ...otherData,
@@ -361,18 +357,29 @@ function findParent(indentSize: number, ancestors: Ancestors): Ancestor {
   }
   return parent;
 }
-
-function getNodesFromPointerArray(nodes: Graph["nodes"], [pointerType, value]: Pointer) {
+/**
+ * Returns the nodes or edges that match a given pointer array
+ *
+ * Note: Because we only resolve unresolved edges once, we can't
+ * resolve pointers to edges that haven't been created yet. This is something
+ * potentially worth fixing in the future.
+ */
+function getNodesFromPointerArray(
+  nodes: Graph["nodes"],
+  edges: Graph["edges"],
+  [pointerType, value]: Pointer,
+) {
+  const entities = [...nodes, ...edges];
   switch (pointerType) {
     case "id":
-      return nodes.filter((node) => node.data.id === value);
+      return entities.filter((node) => node.data.id === value);
     case "class":
-      return nodes.filter(
+      return entities.filter(
         (node) =>
           typeof node.data.classes === "string" && node.data.classes.split(".").includes(value),
       );
     case "label":
-      return nodes.filter((node) => node.data.label === value);
+      return entities.filter((node) => node.data.label === value);
   }
 }
 
