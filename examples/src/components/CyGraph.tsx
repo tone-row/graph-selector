@@ -48,20 +48,25 @@ export function CyGraph({
               "target-arrow-shape": "triangle",
             },
           },
+          {
+            selector: ":parent",
+            style: {
+              "background-opacity": 0.333,
+              "text-valign": "top",
+              "text-halign": "center",
+              "text-margin-y": -10,
+            },
+          },
           ...style,
         ],
       };
       // test with error first
+      cyError.current = cytoscape({ ...options, headless: true });
       let cyE = cyError.current;
-      cyE = cytoscape({ ...options, headless: true });
 
       // if that works, then do it for real
+      cy.current = cytoscape({ ...options, container: container.current });
       let cyC = cy.current;
-      cyC = cytoscape({ ...options, container: container.current });
-
-      // do associations
-      // @ts-ignore
-      cyC.edgeConnections({ maxPasses: 10 });
 
       // destroy both
       return () => {

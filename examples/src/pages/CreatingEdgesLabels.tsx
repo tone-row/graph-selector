@@ -9,7 +9,7 @@ import { NextExample } from "../components/NextExample";
 import { TitleDescription } from "../components/TitleDescription";
 import { toCytoscapeElements } from "../utils/toCytoscapeElements";
 
-const startingCode = `a\n\tto: b\n\tc\n\t\tgoes to: d`;
+const startingCode = `a\n\tto: b\n\tc\n\t\tgoes to: d\n\nA Container {\n\thello world\n\t\t(b)\n}`;
 
 declare global {
   interface Window {
@@ -35,7 +35,7 @@ export function CreatingEdgesLabels() {
   return (
     <div className="page">
       <TitleDescription
-        pageTitle="Creating Edges and Labels"
+        pageTitle="Edges, Labels, Containers"
         pageDescription={
           <p>
             This example demonstrates how to create a graph from a text outline

@@ -25,8 +25,8 @@ export type Route = {
 
 export const routes: Route[] = [
   {
-    title: "Nodes & Edges",
-    path: "/nodes-edges",
+    title: "Edges, Labels, Containers",
+    path: "/edges-labels-containers",
     element: <CreatingEdgesLabels />,
     type: "cyto",
   },

@@ -151,24 +151,31 @@ describe("parse", () => {
     expect(result.edges.length).toEqual(1);
   });
 
-  test("can parse pointer source to raw node", () => {
+  test("can parse source pointer to raw node", () => {
     const result = parse(`a\n(a)\n  c`);
     expect(result.edges[0].source).toEqual("a1");
     expect(result.edges[0].target).toEqual("c1");
     expect(result.edges.length).toEqual(1);
   });
 
-  test("can parse pointer source to id", () => {
+  test("can parse source pointer to id", () => {
     const result = parse(`a\n(a)\n  #myid c`);
     expect(result.edges[0].source).toEqual("a1");
     expect(result.edges[0].target).toEqual("myid");
     expect(result.edges.length).toEqual(1);
   });
 
-  test("can parse pointer source to class", () => {
+  test("can parse source pointer to class", () => {
     const result = parse(`a\nsome color .red\n(a)\n  (.red)`);
     expect(result.edges[0].source).toEqual("a1");
     expect(result.edges[0].target).toEqual("some color1");
+    expect(result.edges.length).toEqual(1);
+  });
+
+  test("can parse source pointer when using id", () => {
+    const result = parse(`(#a)\n  c\na #a`);
+    expect(result.edges[0].source).toEqual("a");
+    expect(result.edges[0].target).toEqual("c1");
     expect(result.edges.length).toEqual(1);
   });
 
@@ -243,16 +250,17 @@ describe("parse", () => {
   });
 
   test("parse edge data", () => {
-    let result = parse(`a\n  #x.fun.fun-2[att=15] still the label: b`);
+    const result = parse(`a\n  #x.fun.fun-2[att=15] still the label: b`);
     expect(result.edges[0].data.id).toEqual("x");
     expect(result.edges[0].source).toEqual("a1");
     expect(result.edges[0].target).toEqual("b1");
     expect(result.edges[0].data.att).toEqual(15);
     expect(result.edges[0].data.classes).toEqual(".fun.fun-2");
     expect(result.edges[0].data.label).toEqual("still the label");
+  });
 
-    result = parse(`#b longer label text
-    #xxx edge label: (#c)`);
+  test("self edge has id", () => {
+    const result = parse(`#b longer label text\n\t#xxx edge label: (#b)`);
 
     expect(result.edges[0].data.id).toEqual("xxx");
   });
@@ -263,7 +271,7 @@ describe("parse", () => {
     expect(result.nodes.length).toEqual(0);
   });
 
-  test("should allow edge to edge if specified by id", () => {
+  test("should allow edge to edge", () => {
     const result = parse(`a
   #c : cool
 
@@ -355,5 +363,62 @@ to edge
   test("should error if single line contains multiple pointers", () => {
     const getResult = () => parse(`b\nc\na\n\t(b) (c)`);
     expect(getResult).toThrow("Line 4: Can't create multiple pointers on same line");
+  });
+
+  test("should error if you try to open a container on a line with pointers", () => {
+    const getResult = () => parse(`a\n\t(b) {\n\t\tc\n\t}`);
+    expect(getResult).toThrow("Line 2: Can't create pointer and container on same line");
+  });
+
+  // Containers
+  test("should create containers from curly brackets", () => {
+    const result = parse(`a {\n\tb\n\tc\n}`);
+    expect(result.nodes.length).toEqual(3);
+    expect(result.nodes[1].data.parent).toEqual("a1");
+    expect(result.nodes[2].data.parent).toEqual("a1");
+  });
+
+  test("should create edges inside of containers", () => {
+    const result = parse(`a {\n\tb\n\t\tc\n}`);
+    expect(result.edges.length).toEqual(1);
+    expect(result.edges[0].source).toEqual("b1");
+    expect(result.edges[0].target).toEqual("c1");
+    expect(result.nodes.slice(1).every((n) => n.data.parent === "a1")).toEqual(true);
+  });
+
+  test("can create edges to a container", () => {
+    const result = parse(`
+a {
+  b
+}
+c
+  (a)`);
+    expect(result.edges.length).toEqual(1);
+    expect(result.edges[0].source).toEqual("c1");
+    expect(result.edges[0].target).toEqual("a1");
+    expect(result.nodes[1].data.parent).toEqual("a1");
+  });
+
+  test("should allow nesting containers", () => {
+    const result = parse(`
+a {
+  b {
+    c
+  }
+}
+    `);
+    expect(result.nodes.length).toEqual(3);
+    expect(result.nodes[1].data.parent).toEqual("a1");
+    expect(result.nodes[2].data.parent).toEqual("b1");
+  });
+
+  test("should create a parent node with no label if none given", () => {
+    const result = parse(`
+{
+  a
+}`);
+    expect(result.nodes.length).toEqual(2);
+    expect(result.nodes[0].data.label).toEqual("");
+    expect(result.nodes[1].data.parent).toEqual("ghost1");
   });
 });

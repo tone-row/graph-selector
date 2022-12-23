@@ -41,10 +41,16 @@ export function parse(text: string): Graph {
   const edgeIds: string[] = [];
 
   // store ancestors (ids at indent size)
-  let ancestors: Ancestors = [];
+  // Because of containers, we need to keep track of indents at different levels
+  // So we will turn this into a stack
+  // And always reference the top of the stack
+  const Ancestors: Ancestors[] = [[]];
 
   // store pointer edges to be resolved when all nodes parsed
   const unresolvedEdges: UnresolvedEdges = [];
+
+  // pop container state on and off stack
+  const containerParentIds: ID[] = [];
 
   for (let line of lines) {
     ++lineNumber;
@@ -52,15 +58,36 @@ export function parse(text: string): Graph {
     // continue from empty line
     if (!line.trim()) continue;
 
+    // if the very last character of the line is an open curly bracket
+    // mark it as a container and remove the bracket
+    let isContainerStart = false;
+    let isContainerEnd = false;
+    if (line[line.length - 1] === "{") {
+      line = line.slice(0, -1);
+      isContainerStart = true;
+    }
+
+    // if the first non-whitespace character of the line is a close curly bracket
+    // mark it as a container and remove the bracket
+    if (/^\s*\}/.test(line)) {
+      // just replace the first closing curly bracket
+      line = line.replace("}", "");
+      isContainerEnd = true;
+      containerParentIds.pop();
+    }
+
     // get indent size
     const indentSize = getIndentSize(line);
+
+    // get our relevant set of ancestors to work with indents
+    let ancestors = Ancestors[Ancestors.length - 1];
 
     // check if line is a "source-pointer" (i.e. a reference, like (x), with no indent)
     if (indentSize === 0 && line[0] === "(") {
       // parse pointers
       const [pointers] = matchAndRemovePointers(line);
       // Update array of ancestors
-      ancestors = [pointers];
+      Ancestors[Ancestors.length - 1] = [pointers];
       continue;
     }
 
@@ -105,7 +132,20 @@ export function parse(text: string): Graph {
     // safe remove escape from characters now
     label = label.replace(/\\([:：])/g, "$1").replace(/\\([#\.\/])/g, "$1");
 
-    const lineDeclaresNode = !!id || !!label || !!classes || Object.keys(data).length > 0;
+    let lineDeclaresNode = !!id || !!label || !!classes || Object.keys(data).length > 0;
+
+    // Create a ghost node to be the container parent if none given
+    if (!lineDeclaresNode && isContainerStart) {
+      let inc = 1;
+      id = "ghost" + inc;
+      while (nodeIds.includes(id)) id = "ghost" + ++inc;
+      lineDeclaresNode = true;
+    }
+
+    // Throw if line has pointers and also opens container
+    if (pointers.length > 0 && isContainerStart) {
+      throw new Error(`Line ${lineNumber}: Can't create pointer and container on same line`);
+    }
 
     // error if line declares node and pointers
     if (lineDeclaresNode && pointers.length > 0) {
@@ -130,7 +170,7 @@ export function parse(text: string): Graph {
 
     // create node if label is not empty
     if (lineDeclaresNode) {
-      nodes.push({
+      const node: Graph["nodes"][number] = {
         data: {
           label,
           id,
@@ -140,7 +180,29 @@ export function parse(text: string): Graph {
         parser: {
           lineNumber,
         },
-      });
+      };
+
+      // see if there is an active container parent
+      const containerParentId = containerParentIds[containerParentIds.length - 1];
+
+      // if container, add parent to data
+      if (containerParentId) {
+        node.data.parent = containerParentId;
+      }
+
+      nodes.push(node);
+    }
+
+    // if container, set parent id
+    // and add to ancestors
+    if (isContainerStart) {
+      containerParentIds.push(id);
+      Ancestors.push([]);
+    }
+
+    // if container end, pop ancestors
+    if (isContainerEnd) {
+      Ancestors.pop();
     }
 
     // If ancestor, create edge (or unresolvedEdge)
@@ -231,20 +293,16 @@ export function parse(text: string): Graph {
   // resolve unresolved edges
   for (const { source, target, lineNumber, label, otherData, ...rest } of unresolvedEdges) {
     const sourceNodes = isPointerArray(source)
-      ? source[0] === "id"
-        ? [{ id: source[1] }]
-        : getNodesFromPointerArray(nodes, source)
+      ? getNodesFromPointerArray(nodes, edges, source)
       : nodes.filter((n) => n.data.id === source);
     const targetNodes = isPointerArray(target)
-      ? target[0] === "id"
-        ? [{ id: target[1] }]
-        : getNodesFromPointerArray(nodes, target)
+      ? getNodesFromPointerArray(nodes, edges, target)
       : nodes.filter((n) => n.data.id === target);
     if (sourceNodes.length === 0 || targetNodes.length === 0) continue;
     for (const sourceNode of sourceNodes) {
       for (const targetNode of targetNodes) {
-        const source = "id" in sourceNode ? sourceNode.id : sourceNode.data.id;
-        const target = "id" in targetNode ? targetNode.id : targetNode.data.id;
+        const source = sourceNode.data.id;
+        const target = targetNode.data.id;
         const data = {
           ...rest,
           ...otherData,
@@ -299,18 +357,29 @@ function findParent(indentSize: number, ancestors: Ancestors): Ancestor {
   }
   return parent;
 }
-
-function getNodesFromPointerArray(nodes: Graph["nodes"], [pointerType, value]: Pointer) {
+/**
+ * Returns the nodes or edges that match a given pointer array
+ *
+ * Note: Because we only resolve unresolved edges once, we can't
+ * resolve pointers to edges that haven't been created yet. This is something
+ * potentially worth fixing in the future.
+ */
+function getNodesFromPointerArray(
+  nodes: Graph["nodes"],
+  edges: Graph["edges"],
+  [pointerType, value]: Pointer,
+) {
+  const entities = [...nodes, ...edges];
   switch (pointerType) {
     case "id":
-      return nodes.filter((node) => node.data.id === value);
+      return entities.filter((node) => node.data.id === value);
     case "class":
-      return nodes.filter(
+      return entities.filter(
         (node) =>
           typeof node.data.classes === "string" && node.data.classes.split(".").includes(value),
       );
     case "label":
-      return nodes.filter((node) => node.data.label === value);
+      return entities.filter((node) => node.data.label === value);
   }
 }
 
