@@ -1,13 +1,12 @@
 import * as Collapsible from "@radix-ui/react-collapsible";
 
-import { Graph, parse } from "graph-selector";
+import { Graph, parse, toCytoscapeElements } from "graph-selector";
 import { useEffect, useState } from "react";
 
 import { CustomEditor } from "../components/CustomEditor";
 import { CyGraph } from "../components/CyGraph";
 import { NextExample } from "../components/NextExample";
 import { TitleDescription } from "../components/TitleDescription";
-import { toCytoscapeElements } from "../utils/toCytoscapeElements";
 
 const startingCode = `a\n\tto: b\n\tc\n\t\tgoes to: d\n\nA Container {\n\thello world\n\t\t(b)\n}`;
 
