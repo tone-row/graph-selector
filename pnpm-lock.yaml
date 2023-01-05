@@ -69,6 +69,7 @@ importers:
 
   graph-selector:
     specifiers:
+      '@tone-row/strip-comments': ^2.0.1
       '@types/jest': ^28.1.7
       '@types/strip-comments': ^2.0.1
       '@typescript-eslint/eslint-plugin': ^5.33.0
@@ -80,11 +81,10 @@ importers:
       microbundle: ^0.15.0
       monaco-editor: ^0.34.0
       prettier: ^2.7.1
-      strip-comments: ^2.0.1
       ts-jest: ^28.0.8
       typescript: ^4.7.4
     dependencies:
-      strip-comments: 2.0.1
+      '@tone-row/strip-comments': 2.0.1
     devDependencies:
       '@types/jest': 28.1.7
       '@types/strip-comments': 2.0.1
@@ -2018,6 +2018,11 @@ packages:
       history: 5.3.0
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
+    dev: false
+
+  /@tone-row/strip-comments/2.0.1:
+    resolution: {integrity: sha512-CV0hy6tVqtjsGWNVjs9MclBmfvoBsjll3Vih/6aIK+qRd3qOxVnqL05WXqTNWuEtRKat2l67e1mikplrVDFdJg==}
+    engines: {node: '>=10'}
     dev: false
 
   /@trysound/sax/0.2.0:
@@ -6907,11 +6912,6 @@ packages:
     resolution: {integrity: sha512-3xurFv5tEgii33Zi8Jtp55wEIILR9eh34FAW00PZf+JnSsTmV/ioewSgQl97JHvgjoRGwPShsWm+IdrxB35d0w==}
     engines: {node: '>=8'}
     dev: true
-
-  /strip-comments/2.0.1:
-    resolution: {integrity: sha512-ZprKx+bBLXv067WTCALv8SSz5l2+XhpYCsVtSqlMnkAXMWDq+/ekVbl1ghqP9rUHTzv6sm/DwCOiYutU/yp1fw==}
-    engines: {node: '>=10'}
-    dev: false
 
   /strip-final-newline/2.0.0:
     resolution: {integrity: sha512-BrpvfNAE3dcvq7ll3xVumzjKjZQ5tI1sEUIKr3Uoks0XUl45St3FlatVqef9prk4jRDzhW6WZg+3bk93y6pLjA==}

@@ -2,7 +2,7 @@ import { Data, Graph, Pointer } from "./types";
 
 import { getFeatureData } from "./getFeatureData";
 import { matchAndRemovePointers } from "./matchAndRemovePointers";
-import strip from "strip-comments";
+import strip from "@tone-row/strip-comments";
 
 // TODO: these types could probably be improved to match the target types (in ./types.ts) more closely
 
