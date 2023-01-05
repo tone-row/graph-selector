@@ -96,10 +96,10 @@ export function parse(text: string): Graph {
 
     // get edge label if parent
     let edgeLabel = "";
-    if (line.match(/.+(?<!\\)[:：].+/)) {
-      const parts = line.split(/(?<!\\)[:：]/);
-      edgeLabel = parts[0].trim();
-      line = parts[1].trim();
+    const edgeBreakIndex = line.search(/[^\\][:：]/);
+    if (edgeBreakIndex > -1) {
+      edgeLabel = line.slice(0, edgeBreakIndex + 1);
+      line = line.slice(edgeBreakIndex + 2).trim();
     }
 
     // throw if edge label and no indent
