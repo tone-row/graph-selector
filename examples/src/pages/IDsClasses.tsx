@@ -1,4 +1,4 @@
-import { Graph, parse } from "graph-selector";
+import { Graph, parse, toCytoscapeElements } from "graph-selector";
 import { useEffect, useState } from "react";
 
 import { CustomEditor } from "../components/CustomEditor";
@@ -7,7 +7,6 @@ import { NextExample } from "../components/NextExample";
 import { ShowParsed } from "../components/ShowParsed";
 import { TitleDescription } from "../components/TitleDescription";
 import { isError } from "../utils/isError";
-import { toCytoscapeElements } from "../utils/toCytoscapeElements";
 
 const startingCode = `long label text #a
   (#c)

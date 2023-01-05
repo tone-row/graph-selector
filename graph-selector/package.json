@@ -28,6 +28,7 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@types/cytoscape": "^3.19.7",
     "@types/jest": "^28.1.7",
     "@types/strip-comments": "^2.0.1",
     "@typescript-eslint/eslint-plugin": "^5.33.0",

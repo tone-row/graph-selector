@@ -70,6 +70,7 @@ importers:
   graph-selector:
     specifiers:
       '@tone-row/strip-comments': ^2.0.1
+      '@types/cytoscape': ^3.19.7
       '@types/jest': ^28.1.7
       '@types/strip-comments': ^2.0.1
       '@typescript-eslint/eslint-plugin': ^5.33.0
@@ -87,6 +88,7 @@ importers:
     dependencies:
       '@tone-row/strip-comments': 2.0.1
     devDependencies:
+      '@types/cytoscape': 3.19.7
       '@types/jest': 28.1.7
       '@types/strip-comments': 2.0.1
       '@typescript-eslint/eslint-plugin': 5.33.1_vsoshirnpb7xw6mr7xomgfas2i
