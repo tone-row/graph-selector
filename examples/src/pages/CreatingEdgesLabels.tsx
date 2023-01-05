@@ -27,6 +27,7 @@ export function CreatingEdgesLabels() {
       setParsed(parse(code));
     } catch (e) {
       setParsed(null);
+      console.error(e);
       if (isError(e)) setError(e.message);
     }
   }, [code]);

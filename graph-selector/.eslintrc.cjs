@@ -7,9 +7,13 @@ module.exports = {
   extends: [
     "plugin:@typescript-eslint/recommended", // Uses the recommended rules from the @typescript-eslint/eslint-plugin
     "plugin:prettier/recommended",
+    "plugin:no-lookahead-lookbehind-regexp/recommended",
   ],
   rules: {
     // Place to specify ESLint rules. Can be used to overwrite rules specified from the extended configs
     // e.g. "@typescript-eslint/explicit-function-return-type": "off",
+  },
+  env: {
+    browser: true,
   },
 };

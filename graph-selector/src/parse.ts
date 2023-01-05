@@ -2,7 +2,7 @@ import { Data, Graph, Pointer } from "./types";
 
 import { getFeatureData } from "./getFeatureData";
 import { matchAndRemovePointers } from "./matchAndRemovePointers";
-import strip from "strip-comments";
+import strip from "@tone-row/strip-comments";
 
 // TODO: these types could probably be improved to match the target types (in ./types.ts) more closely
 
@@ -96,10 +96,10 @@ export function parse(text: string): Graph {
 
     // get edge label if parent
     let edgeLabel = "";
-    if (line.match(/.+(?<!\\)[:：].+/)) {
-      const parts = line.split(/(?<!\\)[:：]/);
-      edgeLabel = parts[0].trim();
-      line = parts[1].trim();
+    const edgeBreakIndex = line.search(/[^\\][:：]/);
+    if (edgeBreakIndex > -1) {
+      edgeLabel = line.slice(0, edgeBreakIndex + 1);
+      line = line.slice(edgeBreakIndex + 2).trim();
     }
 
     // throw if edge label and no indent
