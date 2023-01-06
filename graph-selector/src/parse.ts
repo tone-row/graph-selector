@@ -136,10 +136,8 @@ export function parse(text: string): Graph {
 
     // Create a ghost node to be the container parent if none given
     if (!lineDeclaresNode && isContainerStart) {
-      let inc = 1;
-      id = "ghost" + inc;
-      while (nodeIds.includes(id)) id = "ghost" + ++inc;
       lineDeclaresNode = true;
+      id = `n${lineNumber}`;
     }
 
     // Throw if line has pointers and also opens container
@@ -152,12 +150,10 @@ export function parse(text: string): Graph {
       throw new Error(`Line ${lineNumber}: Can't create node and pointer on same line`);
     }
 
-    // create a unique ID from label
+    // create a unique ID from line number
     // if no user-supplied id
     if (lineDeclaresNode && !id) {
-      let inc = 1;
-      while (nodeIds.includes(label + inc)) ++inc;
-      id = label + inc;
+      id = `n${lineNumber}`;
     }
 
     // Throw if id already exists
