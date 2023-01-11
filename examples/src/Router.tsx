@@ -8,6 +8,7 @@ import { AssociativeModel } from "./pages/AssociativeModel";
 import { ClassConnections } from "./pages/ClassConnections";
 import { CreatingEdgesLabels } from "./pages/CreatingEdgesLabels";
 import { D3BarGraph } from "./pages/D3BarGraph";
+import { FreeStyle } from "./pages/FreeStyle";
 import { IdsClasses } from "./pages/IDsClasses";
 import { Index } from "./pages/Index";
 import { NodeSize } from "./pages/NodeSize";
@@ -52,6 +53,12 @@ export const routes: Route[] = [
     title: "Associative Model",
     path: "/associative-model",
     element: <AssociativeModel />,
+    type: "cyto",
+  },
+  {
+    title: "Freestyle",
+    path: "/freestyle",
+    element: <FreeStyle />,
     type: "cyto",
   },
   {

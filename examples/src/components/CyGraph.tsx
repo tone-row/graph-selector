@@ -10,10 +10,12 @@ cytoscape.use(dagre);
 export function CyGraph({
   elements,
   style = [],
+  styleString = "",
   containerStyle = {},
 }: {
   elements: cytoscape.ElementDefinition[];
   style?: cytoscape.Stylesheet[];
+  styleString?: string;
   containerStyle?: React.CSSProperties;
 }) {
   const cy = useRef<cytoscape.Core>();
@@ -81,6 +83,11 @@ export function CyGraph({
       };
     }
   }, [elements, style]);
+  useEffect(() => {
+    if (!cy.current || !styleString) return;
+    // @ts-ignore
+    cy.current.style().fromString(styleString).update();
+  }, [styleString]);
   return (
     <>
       {error && <div className="error">{error}</div>}

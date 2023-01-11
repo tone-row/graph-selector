@@ -323,6 +323,16 @@ a
     expect(result.edges[1].target).toEqual("n5");
   });
 
+  test("if an edges source and target are both in a container, the edge should also be given the parent", () => {
+    const result = parse(`
+a #x {
+  b
+    to: c
+}
+`);
+    expect(result.edges[0].data.parent).toEqual("x");
+  });
+
   /* Misc */
   test("should ignore empty lines", () => {
     const result = parse(`a\n\n\tb`);

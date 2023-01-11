@@ -1,4 +1,4 @@
-import { Data, Graph, Pointer } from "./types";
+import { Data, Edge, Graph, Pointer } from "./types";
 
 import { getFeatureData } from "./getFeatureData";
 import { matchAndRemovePointers } from "./matchAndRemovePointers";
@@ -217,7 +217,7 @@ export function parse(text: string): Graph {
             throw new Error(`Line ${lineNumber}: Duplicate edge id "${edgeId}"`);
           }
           edgeIds.push(edgeId);
-          edges.push({
+          const edge: Edge = {
             source: ancestor,
             target: id,
             parser: {
@@ -229,7 +229,17 @@ export function parse(text: string): Graph {
               classes: edgeData.classes,
               ...edgeData.data,
             },
-          });
+          };
+          // get ancestore node
+          const ancestorNode = nodes.find((n) => n.data.id === ancestor);
+          const targetNode = nodes.find((n) => n.data.id === id);
+          // if ancestor and target have the same parent
+          // (are in the same container), add parent to edge
+          if (ancestorNode?.data.parent && ancestorNode.data.parent === targetNode?.data.parent) {
+            edge.data.parent = ancestorNode.data.parent;
+          }
+
+          edges.push(edge);
         }
 
         // add all pointers to future edges
