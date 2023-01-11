@@ -96,7 +96,7 @@ export function parse(text: string): Graph {
 
     // get edge label if parent
     let edgeLabel = "";
-    const edgeBreakIndex = line.search(/[^\\][:：]/);
+    const edgeBreakIndex = line.search(/[^\\][:：] /);
     if (edgeBreakIndex > -1) {
       edgeLabel = line.slice(0, edgeBreakIndex + 1);
       line = line.slice(edgeBreakIndex + 2).trim();

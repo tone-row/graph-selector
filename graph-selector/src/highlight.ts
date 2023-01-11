@@ -19,12 +19,12 @@ export function registerHighlighter(monaco: typeof Monaco) {
         [/^[^\n]*$/, "@rematch", "noEdge"],
       ],
       edge: [
-        [/^.*[^\\]:.*\S+.*/, "@rematch", "edgeFeatures"],
+        [/^.*[^\\]: .*\S+.*/, "@rematch", "edgeFeatures"],
         [/.*/, "@rematch", "nodeOrPointer"], // should be invalid
       ],
       noEdge: [[/.*/, "@rematch", "nodeOrPointer"]],
       edgeFeatures: [
-        [/^.*[^\\]:/, languageTokens.edgeFeatures],
+        [/^.*[^\\]: /, languageTokens.edgeFeatures],
         [/.*\S+.*$/, "@rematch", "nodeOrPointer"],
       ],
       nodeOrPointer: [
