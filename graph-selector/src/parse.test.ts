@@ -185,7 +185,7 @@ describe("parse", () => {
   });
 
   test("should work with chinese colon and parentheses", () => {
-    const result = parse(`中文\n to：（中文）`);
+    const result = parse(`中文\n to： （中文）`);
     expect(result.edges).toEqual([
       {
         source: "n1",
@@ -217,6 +217,12 @@ describe("parse", () => {
   test("works with two-letter label pointer", () => {
     const result = parse(`bb\nc\n\t(bb)`);
     expect(result.edges.length).toEqual(1);
+  });
+
+  test("can parse node with url in attribute", () => {
+    expect(parse(`[url="http://www.google.com"]`).nodes[0].data.url).toEqual(
+      "http://www.google.com",
+    );
   });
 
   /* Edges */

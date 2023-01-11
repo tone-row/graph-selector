@@ -13,6 +13,7 @@ import { Index } from "./pages/Index";
 import { NodeSize } from "./pages/NodeSize";
 import { SankeyDiagram } from "./pages/SankeyDiagram";
 import { TabularData } from "./pages/TabularData";
+import { WithImages } from "./pages/WithImages";
 
 const location = new ReactLocation();
 
@@ -52,6 +53,12 @@ export const routes: Route[] = [
     title: "Associative Model",
     path: "/associative-model",
     element: <AssociativeModel />,
+    type: "cyto",
+  },
+  {
+    title: "With Images",
+    path: "/with-images",
+    element: <WithImages />,
     type: "cyto",
   },
   {
