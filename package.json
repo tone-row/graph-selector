@@ -5,7 +5,7 @@
   "main": "index.js",
   "private": true,
   "scripts": {
-    "build": "pnpm -F graph-selector build && pnpm -F examples build",
+    "build": "pnpm -F graph-selector build && pnpm -F examples-next build",
     "dev": "pnpm --parallel dev",
     "test": "pnpm -F graph-selector test --",
     "test:coverage": "pnpm --parallel test:coverage",
