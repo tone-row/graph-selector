@@ -18,7 +18,8 @@
   "license": "ISC",
   "devDependencies": {
     "husky": "^8.0.0",
-    "lint-staged": "^13.0.3"
+    "lint-staged": "^13.0.3",
+    "next": "13.1.2"
   },
   "lint-staged": {
     "graph-selector/**/*.{js,ts}": [
