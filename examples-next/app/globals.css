@@ -1,0 +1,55 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html {
+  font-size: 20px;
+}
+
+body {
+  background-blend-mode: normal;
+  background-color: #0000;
+  background-image: repeating-radial-gradient(
+      circle at -62% 25%,
+      #ffffff1f,
+      #ffffff1f 8%,
+      #d1d1d187 8% calc(8% + 3px)
+    ),
+    repeating-radial-gradient(
+      circle at -63% -220%,
+      #ffffff1f,
+      #ffffff1f 3%,
+      #d1d1d187 3% calc(3% + 3px)
+    ),
+    linear-gradient(23deg, #ececec70, #ececec70 0% 100%);
+  background-position: 0 0;
+  background-repeat: repeat, repeat, repeat;
+  background-size: 102% 100%;
+  background-attachment: scroll, scroll, scroll;
+  background-origin: padding-box, padding-box, padding-box;
+  background-clip: border-box, border-box, border-box;
+}
+
+@media (min-width: 640px) {
+  .main {
+    grid-template-columns: auto minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 639px) {
+  ul.menu {
+    display: none;
+  }
+
+  ul.menu.menu-open {
+    display: block;
+  }
+}
+
+/* when not prefers reduced motion */
+@media (prefers-reduced-motion: no-preference) {
+  /* scroll behavior smooth */
+  html {
+    scroll-behavior: smooth;
+  }
+}
