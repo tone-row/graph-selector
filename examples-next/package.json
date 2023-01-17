@@ -14,6 +14,7 @@
     "@types/node": "18.11.18",
     "@types/react": "^18.0.17",
     "@types/react-dom": "^18.0.6",
+    "@vercel/og": "^0.0.27",
     "cytoscape": "^3.23.0",
     "cytoscape-dagre": "^2.5.0",
     "cytoscape-edge-connections": "^0.4.2",
