@@ -210,6 +210,12 @@ Item 4 [price=12]
 `;
 export function D3BarGraph() {
   const [state, dispatch] = useCode(d3BarGraph);
+  const prices = state.result.nodes
+    .filter((node) => node.data?.price)
+    .map((node) => ({
+      price: parseInt(node.data.price.toString(), 10),
+      name: node.data.label,
+    }));
   return (
     <PanelGroup direction="horizontal">
       <Panel>
@@ -222,17 +228,7 @@ export function D3BarGraph() {
         <FaGripLinesVertical />
       </PanelResizeHandle>
       <Panel>
-        <D3Graph
-          id="bar-graph"
-          data={
-            state.result
-              ? state.result.nodes.map((node) => ({
-                  price: parseInt(node.data.price.toString(), 10),
-                  name: node.data.label,
-                }))
-              : []
-          }
-        />
+        <D3Graph id="bar-graph" data={prices} />
       </Panel>
     </PanelGroup>
   );

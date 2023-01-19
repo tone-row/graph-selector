@@ -131,15 +131,18 @@ function Banner() {
       </p>
       <div className="flex justify-start gap-2">
         <a
-          className="flex justify-start items-center gap-2 py-2 px-4 bg-purple-700 text-white rounded"
+          className="flex justify-start items-center gap-2 py-2 px-4 bg-purple-700 text-white rounded active:bg-purple-900 hover:bg-purple-800"
           href="#installation"
         >
           Get started <FaArrowRight size={16} />
         </a>
-        <button className="flex justify-start items-center gap-2 py-2 px-4 bg-white text-purple-700 rounded border-2 border-purple-700 hover:bg-purple-700 hover:text-white">
+        <a
+          href="https://github.com/tone-row/graph-selector"
+          className="flex justify-start items-center gap-2 py-2 px-4 bg-white text-purple-700 rounded border-2 border-purple-700 hover:bg-purple-700 hover:text-white active:bg-purple-800"
+        >
           <FaGithub size={20} />
           Github
-        </button>
+        </a>
       </div>
       <p className="text-sm">
         Made with ❤️ by{" "}
