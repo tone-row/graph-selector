@@ -268,7 +268,6 @@ export function SankeyDiagram() {
         };
       })
     : [];
-  console.log(links);
   return (
     <PanelGroup direction="horizontal">
       <Panel>
