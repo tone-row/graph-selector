@@ -3,9 +3,9 @@
 # graph-selector
 
 ![Version](https://img.shields.io/npm/v/graph-selector)
-![Coverage](https://img.shields.io/codecov/c/github/tone-row/graph-selector-syntax)
-![License](https://img.shields.io/github/license/tone-row/graph-selector-syntax)
-![Build](https://img.shields.io/github/checks-status/tone-row/graph-selector-syntax/main)
+![Coverage](https://img.shields.io/codecov/c/github/tone-row/graph-selector)
+![License](https://img.shields.io/github/license/tone-row/graph-selector)
+![Build](https://img.shields.io/github/checks-status/tone-row/graph-selector/main)
 
 Graph Selector is a language for describing graphs (nodes and edges) and storing arbitrary data on those nodes and edges in plaintext.
 
