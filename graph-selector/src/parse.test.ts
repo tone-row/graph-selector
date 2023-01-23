@@ -129,6 +129,21 @@ describe("parse", () => {
     expect(result.nodes[0].data.label).toEqual("a\nb");
   });
 
+  test("should allow escaped parentheses in label attribute", () => {
+    const result = parse(`Hello\\(World\\)`);
+    expect(result.nodes[0].data.label).toEqual("Hello(World)");
+  });
+
+  test("allow escaped brackets in label attribute", () => {
+    const result = parse(`Hello\\[World\\]`);
+    expect(result.nodes[0].data.label).toEqual("Hello[World]");
+  });
+
+  test("allow escaped curly braces in label attribute", () => {
+    const result = parse(`Hello\\{World\\}`);
+    expect(result.nodes[0].data.label).toEqual("Hello{World}");
+  });
+
   /* Pointers */
   test("can parse pointer to label", () => {
     const result = parse(`a\n  (a)`);

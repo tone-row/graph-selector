@@ -3,7 +3,7 @@ import { Pointer } from "./types";
 export function matchAndRemovePointers(line: string): [Pointer[], string] {
   // parse all pointers
   const pointerRe =
-    /(?<replace>[(（](?<pointer>((?<id>#[\w-]+)|(?<class>\.[a-zA-Z]{1}[\w]*)|(?<label>[^)）]+)))[)）])/g;
+    /(?<replace>(^|[^\\])[(（](?<pointer>((?<id>#[\w-]+)|(?<class>\.[a-zA-Z]{1}[\w]*)|(?<label>[^)）]+)))[)）])/g;
   let pointerMatch: RegExpExecArray | null;
   const pointers: Pointer[] = [];
   let lineWithPointersRemoved = line.slice(0);
