@@ -11,6 +11,23 @@ export const languageTokens = {
 export function registerHighlighter(monaco: typeof Monaco) {
   monaco.languages.register({ id: languageId });
 
+  monaco.languages.setLanguageConfiguration(languageId, {
+    /* make sure curly braces are automatically closed */
+    autoClosingPairs: [
+      { open: "{", close: "}" },
+      { open: "[", close: "]" },
+      { open: "(", close: ")" },
+    ],
+    /* indent after opening curly brace */
+    onEnterRules: [
+      {
+        beforeText: new RegExp(`^((?!.*?\\/\\*).*\\{[^}"']*(\\/\\*(.*?)\\*\\/)?)[^}"']*$`, "s"),
+        afterText: /^.*\}.*$/,
+        action: { indentAction: monaco.languages.IndentAction.IndentOutdent },
+      },
+    ],
+  });
+
   monaco.languages.setMonarchTokensProvider(languageId, {
     defaultToken: "invalid",
     tokenizer: {
