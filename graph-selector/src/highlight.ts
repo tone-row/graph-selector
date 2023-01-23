@@ -2,6 +2,18 @@ import * as Monaco from "monaco-editor/esm/vs/editor/editor.api";
 
 export const languageId = "graphselector";
 export const defaultTheme = "graphselector-theme";
+export const defaultThemeDark = "graphselector-theme-dark";
+enum Tokens {
+  edgeFeatures = "edgeFeatures",
+  nodeOrPointer = "nodeOrPointer",
+  pointer = "pointer",
+}
+export const colors: { [key in Tokens]: { light: string; dark: string } } = {
+  nodeOrPointer: { light: "#202020", dark: "#d4d4d4" },
+  edgeFeatures: { light: "#5c6fff", dark: "#5c6fff" },
+  pointer: { light: "#00c722", dark: "#00c722" },
+};
+
 export const languageTokens = {
   edgeFeatures: "edgeFeatures",
   nodeOrPointer: "nodeOrPointer",
@@ -37,23 +49,23 @@ export function registerHighlighter(monaco: typeof Monaco) {
       ],
       edge: [
         [/^.*[^\\]: .*\S+.*/, "@rematch", "edgeFeatures"],
-        [/.*/, "@rematch", "nodeOrPointer"], // should be invalid
+        [/.*/, "@rematch", Tokens.nodeOrPointer], // should be invalid
       ],
-      noEdge: [[/.*/, "@rematch", "nodeOrPointer"]],
+      noEdge: [[/.*/, "@rematch", Tokens.nodeOrPointer]],
       edgeFeatures: [
-        [/^.*[^\\]: /, languageTokens.edgeFeatures],
-        [/.*\S+.*$/, "@rematch", "nodeOrPointer"],
+        [/^.*[^\\]: /, Tokens.edgeFeatures],
+        [/.*\S+.*$/, "@rematch", Tokens.nodeOrPointer],
       ],
       nodeOrPointer: [
         // whitespace
-        [/\s+/, languageTokens.nodeOrPointer],
-        [/\(/, languageTokens.pointer, "@pointer"],
-        [/.*$/, languageTokens.nodeOrPointer, "@popall"],
+        [/\s+/, Tokens.nodeOrPointer],
+        [/\(/, Tokens.pointer, "@pointer"],
+        [/.*$/, Tokens.nodeOrPointer, "@popall"],
       ],
       pointer: [
-        [/\)$/, languageTokens.pointer, "@popall"],
-        [/\)/, languageTokens.pointer, "@pop"],
-        [/[^\(\)]+/, languageTokens.pointer],
+        [/\)$/, Tokens.pointer, "@popall"],
+        [/\)/, Tokens.pointer, "@pop"],
+        [/[^\(\)]+/, Tokens.pointer],
       ],
     },
   });
@@ -61,18 +73,20 @@ export function registerHighlighter(monaco: typeof Monaco) {
   monaco.editor.defineTheme(defaultTheme, {
     base: "vs",
     inherit: false,
-    rules: [
-      {
-        token: languageTokens.edgeFeatures,
-        foreground: "#0000FF",
-      },
-      {
-        token: languageTokens.pointer,
-        foreground: "#00CCCC",
-      },
-    ],
-    colors: {
-      "editor.background": "#ffffff",
-    },
+    colors: {},
+    rules: Object.entries(languageTokens).map(([token, value]) => ({
+      token: value,
+      foreground: colors[token as Tokens].light,
+    })),
+  });
+
+  monaco.editor.defineTheme(defaultThemeDark, {
+    base: "vs-dark",
+    inherit: false,
+    colors: {},
+    rules: Object.entries(languageTokens).map(([token, value]) => ({
+      token: value,
+      foreground: colors[token as Tokens].dark,
+    })),
   });
 }
