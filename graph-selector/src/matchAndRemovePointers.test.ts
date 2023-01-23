@@ -24,4 +24,10 @@ describe("matchAndRemovePointers", () => {
     expect(pointers).toEqual([["label", "aa"]]);
     expect(line).toEqual("");
   });
+
+  test("doesn't extract escaped parentheses", () => {
+    const [pointers, line] = matchAndRemovePointers("\\(test\\)");
+    expect(pointers).toEqual([]);
+    expect(line).toEqual("\\(test\\)");
+  });
 });

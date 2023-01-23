@@ -130,7 +130,7 @@ export function parse(text: string): Graph {
     let label = line;
 
     // safe remove escape from characters now
-    label = label.replace(/\\([:：])/g, "$1").replace(/\\([#\.\/])/g, "$1");
+    label = label.replace(/\\([:：\(\)\（\）{}\[\]])/g, "$1").replace(/\\([#\.\/])/g, "$1");
 
     let lineDeclaresNode = !!id || !!label || !!classes || Object.keys(data).length > 0;
 
