@@ -83,7 +83,7 @@ importers:
 
   graph-selector:
     specifiers:
-      '@tone-row/strip-comments': ^2.0.1
+      '@tone-row/strip-comments': ^2.0.6
       '@types/cytoscape': ^3.19.7
       '@types/jest': ^28.1.7
       '@types/strip-comments': ^2.0.1
@@ -100,7 +100,7 @@ importers:
       ts-jest: ^28.0.8
       typescript: ^4.7.4
     dependencies:
-      '@tone-row/strip-comments': 2.0.1
+      '@tone-row/strip-comments': 2.0.6
     devDependencies:
       '@types/cytoscape': 3.19.7
       '@types/jest': 28.1.7
@@ -2025,8 +2025,8 @@ packages:
     dependencies:
       tslib: 2.4.0
 
-  /@tone-row/strip-comments/2.0.1:
-    resolution: {integrity: sha512-CV0hy6tVqtjsGWNVjs9MclBmfvoBsjll3Vih/6aIK+qRd3qOxVnqL05WXqTNWuEtRKat2l67e1mikplrVDFdJg==}
+  /@tone-row/strip-comments/2.0.6:
+    resolution: {integrity: sha512-Fg21Nu+RDQ4NBEYP8vJyDg5TMjdGEQQSKbW8nfipQZo/cmP6l7MFJpdIqJfLHQoRSxWqqKtkWXWiMqxcVgY4pg==}
     engines: {node: '>=10'}
     dev: false
 
