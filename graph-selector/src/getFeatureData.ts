@@ -1,5 +1,6 @@
 import { Data, Descriptor } from "./types";
 
+// TODO: not sure if getFeatureData still needs to remove the features from the line and return what's left of the line
 export function getFeatureData(_line: string) {
   let line = _line.slice(0).trim();
   const re =
