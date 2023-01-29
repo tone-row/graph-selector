@@ -3,7 +3,7 @@ import { getEdgeBreakIndex, getFeaturesIndex } from "../regexps";
 import { dataToString } from "./dataToString";
 import { getFeatureData } from "../getFeatureData";
 
-export function addClassToNode({ line, className }: { line: string; className: string }) {
+export function addClassesToNode({ line, classNames }: { line: string; classNames: string[] }) {
   // remove initial indent
   const indent = line.match(/^\s*/)?.[0] || "";
   line = line.replace(/^\s*/, "");
@@ -29,6 +29,8 @@ export function addClassToNode({ line, className }: { line: string; className: s
     features = line.slice(featuresIndex);
     line = line.slice(0, featuresIndex);
   }
+
+  const className = classNames.join(".");
 
   if (!features) {
     return indent + edge + line + ` .${className}` + containerStart;

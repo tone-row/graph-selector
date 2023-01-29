@@ -4,11 +4,11 @@ describe("operate", () => {
   test("should return a string", () => {
     expect(
       operate("hello .world", {
-        lineNumber: 0,
+        lineNumber: 1,
         operation: [
-          "removeClassFromNode",
+          "removeClassesFromNode",
           {
-            className: "world",
+            classNames: ["world"],
           },
         ],
       }),
@@ -18,14 +18,23 @@ describe("operate", () => {
   test("leaves comments intact", () => {
     expect(
       operate("// some comment\nhello .world\n// some other comment", {
-        lineNumber: 1,
+        lineNumber: 2,
         operation: [
-          "removeClassFromNode",
+          "removeClassesFromNode",
           {
-            className: "world",
+            classNames: ["world"],
           },
         ],
       }),
     ).toBe("// some comment\nhello\n// some other comment");
+  });
+
+  test("line number should be 1-indexed", () => {
+    const run = () =>
+      operate("hello .world", {
+        lineNumber: 0,
+        operation: ["addClassesToNode", { classNames: ["c"] }],
+      });
+    expect(run).toThrow("lineNumber must be 1-indexed");
   });
 });
