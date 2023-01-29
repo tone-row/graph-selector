@@ -5,9 +5,9 @@
   "main": "index.js",
   "private": true,
   "scripts": {
-    "build": "pnpm -F graph-selector build && pnpm -F examples build",
-    "dev": "pnpm --parallel dev",
-    "test": "pnpm -F graph-selector test --",
+    "build": "turbo run build",
+    "dev": "turbo run dev",
+    "test": "turbo run test",
     "test:coverage": "pnpm --parallel test:coverage",
     "test:watch": "pnpm --parallel test:watch",
     "lint": "pnpm -F graph-selector lint",
