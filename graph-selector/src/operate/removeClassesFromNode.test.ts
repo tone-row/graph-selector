@@ -1,58 +1,66 @@
-import { removeClassFromNode } from "./removeClassFromNode";
+import { removeClassesFromNode } from "./removeClassesFromNode";
 
 describe("removeClassFromNode", () => {
   it("removes a class from a node", () => {
-    const result = removeClassFromNode({
+    const result = removeClassesFromNode({
       line: "my node .some-class",
-      className: "some-class",
+      classNames: ["some-class"],
     });
     expect(result).toBe("my node");
   });
 
   it("doesn't alter if class isn't present", () => {
-    const result = removeClassFromNode({
+    const result = removeClassesFromNode({
       line: "my node",
-      className: "some-class",
+      classNames: ["some-class"],
     });
     expect(result).toBe("my node");
   });
 
   it("removes a class from a node with trailing classes", () => {
-    const result = removeClassFromNode({
+    const result = removeClassesFromNode({
       line: "my node .some-class.another-class",
-      className: "some-class",
+      classNames: ["some-class"],
     });
     expect(result).toBe("my node .another-class");
   });
 
   it("removes a class from a node with leading classes", () => {
-    const result = removeClassFromNode({
+    const result = removeClassesFromNode({
       line: "my node .some-class.another-class",
-      className: "another-class",
+      classNames: ["another-class"],
     });
     expect(result).toBe("my node .some-class");
   });
 
   it("removes a class from a node with leading and trailing classes", () => {
-    const result = removeClassFromNode({
+    const result = removeClassesFromNode({
       line: "my node .some-class.another-class.yet-another-class",
-      className: "another-class",
+      classNames: ["another-class"],
     });
     expect(result).toBe("my node .some-class.yet-another-class");
   });
 
   it("removes a class from a node and doesn't affect indentation", () => {
-    const result = removeClassFromNode({
+    const result = removeClassesFromNode({
       line: "  my node .some-class",
-      className: "some-class",
+      classNames: ["some-class"],
     });
     expect(result).toBe("  my node");
   });
 
   it("removes a class from a node without affecting the edge", () => {
-    const result = removeClassFromNode({
+    const result = removeClassesFromNode({
       line: "  edge .some-class: my node .some-class",
-      className: "some-class",
+      classNames: ["some-class"],
+    });
+    expect(result).toBe("  edge .some-class: my node");
+  });
+
+  it("can remove multiple classes at once", () => {
+    const result = removeClassesFromNode({
+      line: "  edge .some-class: my node .some-class.another-class",
+      classNames: ["some-class", "another-class"],
     });
     expect(result).toBe("  edge .some-class: my node");
   });

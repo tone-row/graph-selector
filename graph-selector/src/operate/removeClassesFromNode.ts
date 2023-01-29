@@ -1,6 +1,14 @@
 import { getEdgeBreakIndex } from "../regexps";
 
-export function removeClassFromNode({ line, className }: { line: string; className: string }) {
+export function removeClassesFromNode({
+  line,
+  classNames,
+}: {
+  /** The line text */
+  line: string;
+  /** Array of string *without* the dot (.) */
+  classNames: string[];
+}) {
   // remove initial indent and store
   const indent = line.match(/^\s*/)?.[0] ?? "";
   line = line.replace(/^\s*/, "");
@@ -14,8 +22,10 @@ export function removeClassFromNode({ line, className }: { line: string; classNa
     line = line.slice(edgeBreakIndex + 1);
   }
 
-  // remove class name
-  line = line.replace(new RegExp(`\.${className}`), "");
+  // remove class names
+  for (const className of classNames) {
+    line = line.replace(new RegExp(`\.${className}`), "");
+  }
 
   // remove trailing whitespace before end of line if it exists
   line = line.replace(/\s*$/, "");
