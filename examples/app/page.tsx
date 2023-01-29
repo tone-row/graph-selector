@@ -173,10 +173,7 @@ function Section({
     .replace(/ {2,}/g, " ")
     .replace(/\s/g, "-");
   return (
-    <section
-      id={slug}
-      className="section grid gap-4 bg-white shadow p-4 rounded-lg"
-    >
+    <section id={slug} className="section grid gap-4 bg-white p-4 rounded">
       <header className="grid">
         <h3 className="text-2xl font-bold">{title}</h3>
         {description && (

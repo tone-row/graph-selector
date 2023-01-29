@@ -1,4 +1,5 @@
 import { Data, Graph, Pointer } from "./types";
+import { getEdgeBreakIndex, getFeaturesIndex } from "./regexps";
 
 import { getFeatureData } from "./getFeatureData";
 import { matchAndRemovePointers } from "./matchAndRemovePointers";
@@ -22,10 +23,6 @@ type Ancestors = Ancestor[];
 export function parse(text: string): Graph {
   const nodes: Graph["nodes"] = [];
   const edges: Graph["edges"] = [];
-
-  // TODO: determine if we can use this to accept unescaped newlines from user text
-  // escape backslashes in text
-  // text = text.replace(/\\/g, "\\\\");
 
   // break into lines
   let lines = strip(text, { preserveNewlines: true }).split(/\n/g);
@@ -96,7 +93,7 @@ export function parse(text: string): Graph {
 
     // get edge label if parent
     let edgeLabel = "";
-    const edgeBreakIndex = line.search(/[^\\][:：] /);
+    const edgeBreakIndex = getEdgeBreakIndex(line);
     if (edgeBreakIndex > -1) {
       edgeLabel = line.slice(0, edgeBreakIndex + 1);
       line = line.slice(edgeBreakIndex + 2).trim();
@@ -111,11 +108,10 @@ export function parse(text: string): Graph {
     line = line.trim();
 
     // get index where features (id, classes, data) start
-    const m = /(^|\s)(#|\.|\[)/.exec(line);
-    const indexOfFeatures = m?.index ?? line.length;
-    const { classes, data, ...rest } = getFeatureData(line.slice(indexOfFeatures));
+    const featuresIndex = getFeaturesIndex(line);
+    const { classes, data, ...rest } = getFeatureData(line.slice(featuresIndex));
     let id = rest.id;
-    line = line.slice(0, indexOfFeatures);
+    line = line.slice(0, featuresIndex);
 
     // parse all pointers
     const [pointers, lineWithPointersRemoved] = matchAndRemovePointers(line);
