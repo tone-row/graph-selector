@@ -1,5 +1,5 @@
 import * as Monaco from "monaco-editor/esm/vs/editor/editor.api";
-
+import { parse } from "./parse";
 export const languageId = "graphselector";
 export const defaultTheme = "graphselector-theme";
 export const defaultThemeDark = "graphselector-theme-dark";
@@ -67,6 +67,41 @@ export function registerHighlighter(monaco: typeof Monaco) {
         [/\)/, Tokens.pointer, "@pop"],
         [/[^\(\)]+/, Tokens.pointer],
       ],
+    },
+  });
+
+  // Register a completions provider that suggests words inside of parantheses
+  monaco.languages.registerCompletionItemProvider(languageId, {
+    triggerCharacters: ["("],
+    provideCompletionItems: (model, position) => {
+      // If there is a ( before the cursor
+      const textUntilPosition = model.getValueInRange({
+        startLineNumber: position.lineNumber,
+        startColumn: 1,
+        endLineNumber: position.lineNumber,
+        endColumn: position.column,
+      });
+      if (textUntilPosition.indexOf("(") >= 0) {
+        // parse complete text for node labels
+        const parsed = parse(model.getValue());
+        const suggestions = parsed.nodes
+          .filter((node) => !!node.data.label && node.data.label !== "()")
+          .map((node) => ({
+            label: node.data.label,
+            kind: monaco.languages.CompletionItemKind.Value,
+            insertText: node.data.label,
+            range: {
+              startLineNumber: position.lineNumber,
+              endLineNumber: position.lineNumber,
+              startColumn: position.column,
+              endColumn: position.column,
+            },
+          }));
+        return {
+          suggestions,
+        };
+      }
+      return { suggestions: [] };
     },
   });
 
