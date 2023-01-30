@@ -21,6 +21,11 @@ export const languageTokens = {
 };
 
 export function registerHighlighter(monaco: typeof Monaco) {
+  // Check if language is already registered
+  if (monaco.languages.getLanguages().some((l) => l.id === languageId)) {
+    return;
+  }
+
   monaco.languages.register({ id: languageId });
 
   monaco.languages.setLanguageConfiguration(languageId, {
