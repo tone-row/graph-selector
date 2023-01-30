@@ -1,6 +1,4 @@
-<img src="https://raw.githubusercontent.com/tone-row/graph-selector/main/examples/public/graph-selector-logo.png" width="200" />
-
-# graph-selector
+# Graph Selector
 
 ![Version](https://img.shields.io/npm/v/graph-selector)
 ![Coverage](https://img.shields.io/codecov/c/github/tone-row/graph-selector)
@@ -9,15 +7,25 @@
 
 Graph Selector is a language for describing graphs (nodes and edges) and storing arbitrary data on those nodes and edges in plaintext.
 
-### [Check out the Demos 💫](http://graph-selector-syntax.tone-row.com/)
+## 💫 Check out the Demos
 
-## Installation
+Visit the demo page at [graph-selector-syntax.tone-row.com](http://graph-selector-syntax.tone-row.com/) to see how it works.
+
+## Introduction
+
+Graph Selector is a syntax for defining graphs and the data associated with them. Graphs are defined in plain-text and can be parsed into a programmable JavaScript object. This makes it easier for developers to work with graphs when building applications like web applications, database applications, and process-visualization systems.
+
+Graph Selector uses indentation and context-free grammars to create edges between nodes and store data. It also has features like matchers and models to make modeling complex graphs easier and faster.
+
+## Usage
+
+You can use Graph Selector in your projects by installing it using npm:
 
 ```bash
 npm install graph-selector
 ```
 
-## Usage
+You can then use Graph Selector in your code to parse Graph Selector strings:
 
 ```js
 import { parse } from "graph-selector";
@@ -34,148 +42,70 @@ const { nodes, edges } = graph;
 
 ## Language Overview
 
-- **Uses indentation to create edges**
+Graph Selector has a few rules that make it easy to understand and use:
 
-  ```
-  Node A
-    Node B
-  ```
-
-  This creates an edge from Node A to Node B.
-
-- **Edge info is stored before a colon `:`**
-
-  ```
-  Node A
-    goes to: Node B
-  ```
-
-  This creates an edge from Node A to Node B with the label `goes to`.
-
-- **Uses CSS Selector syntax encode data on nodes & edges**
-
-  Parses strings like `#id.class1.class2[n=4][m]` into:
-
-  ```js
-  {
-    id: "id",
-    classes: ".class1.class2",
-    n: 4,
-    m: true
-  }
-  ```
-
-- **Uses parentheses to refer to nodes created elsewhere**
-
-  For example, `(ref by label)` `(#ref-by-id)` `(.ref-by-class)`
-
-  ```
-  a
-  #id b
-  .class c
-  d
-    (a)
-    (#id)
-    (.class)
-  ```
-
-  This creates a graph with 4 nodes and 3 edges.
-
-## Parsing Example
+Indentation is used to create edges between nodes.
 
 ```
-#a.class1[boolAttr] node 1 label
- the edge label [weight=100]: .class1[attr2="test"] node 2 label
+Node A
+  Node B
 ```
 
-<center>⤵️⤵️⤵️</center>
+This creates an edge from Node A to Node B.
 
-```jsonc
-/* Output from example above */
+Edge info is stored before a colon (`:`) and is separated from the node info by a space.
+
+```
+Node A
+  goes to: Node B
+```
+
+This creates an edge from Node A to Node B with the label `goes to`.
+
+Data can be stored on the nodes and edges using CSS Selector syntax. For example, `#id.class1.class2[n=4][m]` would be parsed into:
+
+```js
 {
-  "nodes": [
-    {
-      "data": {
-        "label": "node 1 label",
-        "id": "a",
-        "classes": ".class1",
-        "boolAttr": true
-      },
-      "parser": {
-        "lineNumber": 1
-      }
-    },
-    {
-      "data": {
-        "label": "node 2 label",
-        "id": "node 2 label1",
-        "classes": ".class1",
-        "attr2": "test"
-      },
-      "parser": {
-        "lineNumber": 2
-      }
-    }
-  ],
-  "edges": [
-    {
-      "source": "a",
-      "target": "node 2 label1",
-      "parser": {
-        "lineNumber": 2
-      },
-      "data": {
-        "id": "a-node 2 label1-1",
-        "label": "the edge label [weight=100]",
-        "classes": ""
-      }
-    }
-  ]
+  "id": "id",
+  "classes": ".class1.class2",
+  "n": 4,
+  "m": true
 }
 ```
 
+Parentheses can be used to reference nodes that have already been declared.
+
+```
+a
+b  #id
+c .class
+d
+  (a)
+  (#id)
+  (.class)
+```
+
+This creates a graph with 4 nodes and 3 edges.
+
 ## Context
 
-[A blog post](https://tone-row.com/blog/graph-syntax-css-selectors) explaining the thought-process behind this language.
-
-## Developing
-
-This is a monorepo containing a `/parser` (written in TS) and a website of `/examples` illustrating how you can use it.
-
-Git clone, then install dependencies with `pnpm install`. Then you can start both the parser and the examples websites with `pnpm dev`.
-
-### Debugging Tests
-
-In VS Code, debugging tests can be done by selecting `Javascript Debug Terminal` from the command palette. Then you can run `pnpm test:watch` to run the tests in debug mode and stop on breakpoints. (Leaving this here because I haven't been able to make it work any other way!)
-
-If you want to run a single test you can use the `-t` flag on the command line and pass the test's name `pnpm test -- -t "the name of my test"`
-
-## Project Goals
-
-Become stable-enough to migrate https://flowchart.fun to this syntax and use it as the basis for a new version of the site.
-
-### Next Steps
-
-- Add benchmarks
-- Add syntax highlighter packages that can be used with Monaco & CodeMirror
+If you would like to find out more about the development and thought process behind this language, [A blog post](https://tone-row.com/blog/graph-syntax-css-selectors) has been published.
 
 ## Contributing
 
-The goal of this project was to improve upon and separately-publish the parser used in Flowchart Fun. I want to make it more robust and more flexible. I also want to make it accessible to other projects.
+Constructive feedback on the syntax and how it can be improved is the primary contribution sought by this project. You can contribute by having a discussion via Github discissions or opening an issue. Additionally, pull requests will be welcomed to help make the project more robust and flexible for developers.
 
-I'm very open to contributions! Specifically in the following ways...
+You can also contribute examples that show how Graph Selector can be used to render various types of graphs with a variety of libraries, including [D3](https://d3js.org/), [Cytoscape JS](https://js.cytoscape.org/), and [Recharts](https://recharts.org/).
 
-### Contributing to the Conversation
+## Developing
 
-I'm really interested in feedback on the syntax and how it can be improved. Join the conversation via Github discussions or by opening an issue. Some open problems I'm interested in solving:
+Clone the repo, then install dependencies with `pnpm install`. You can then start both the parser and the examples website with `pnpm dev`.
 
-1. Automatic ID's by position vs. by label
-1. Indenting below pointers
+## Goals
 
-_I realize this is a bit vague. I intend to write a blog post explaining these problems and their inherent tradeoffs soon!_
+The goal of this project is to become stable enough to migrate the [Flowchart Fun](https://flowchart.fun) website to this syntax and use it as the basis for a new version.
 
-### Contributing an Example
+### Next Steps
 
-Examples show how this syntax and parser can be used to render different types of graphs using a variety of libraries, including [D3](https://d3js.org/), [Cytoscape JS](https://js.cytoscape.org/), and [Recharts](https://recharts.org/).
-
-Add an example by first adding a route to `examples/src/Router.tsx` and then adding a page `examples/src/pages`. If your example uses a different renderer, you'll need to set the `type` property in the route, and then add that type to the side bar in `examples/src/App.tsx`.
+- ~~Add syntax highlighter packages that can be used with Monaco & CodeMirror.~~
+- Add benchmarks
