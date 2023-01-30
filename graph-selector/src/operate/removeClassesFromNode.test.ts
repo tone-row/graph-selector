@@ -64,4 +64,13 @@ describe("removeClassFromNode", () => {
     });
     expect(result).toBe("  edge .some-class: my node");
   });
+
+  test("shouldn't grow when removing class on containers", () => {
+    let line = "hello .world {";
+    line = removeClassesFromNode({
+      line,
+      classNames: ["world"],
+    });
+    expect(line).toBe("hello {");
+  });
 });

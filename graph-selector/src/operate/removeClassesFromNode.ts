@@ -13,6 +13,13 @@ export function removeClassesFromNode({
   const indent = line.match(/^\s*/)?.[0] ?? "";
   line = line.replace(/^\s*/, "");
 
+  // remove container start ("{" as last character)
+  let containerStart = "";
+  if (line.endsWith(" {")) {
+    containerStart = " {";
+    line = line.slice(0, -2);
+  }
+
   // check for unescaped colon that's not at the start of the line
   // if it exists, we're dealing with an edge
   let edge = "";
@@ -30,5 +37,5 @@ export function removeClassesFromNode({
   // remove trailing whitespace before end of line if it exists
   line = line.replace(/\s*$/, "");
 
-  return indent + edge + line;
+  return indent + edge + line + containerStart;
 }

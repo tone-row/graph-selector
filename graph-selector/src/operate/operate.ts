@@ -30,6 +30,8 @@ export function operate(graphText: string, instruction: Instruction): string {
   const lines = graphText.split("\n");
   const { operation } = instruction;
   if (instruction.lineNumber < 1) throw new Error("lineNumber must be 1-indexed");
+  if (instruction.lineNumber > lines.length)
+    throw new Error("lineNumber must be less than the number of lines");
   const lineNumber = instruction.lineNumber - 1;
   const [operationKey, operationParams] = operation;
   const operationFunction = operations[operationKey];
