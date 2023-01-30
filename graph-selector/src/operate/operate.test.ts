@@ -37,4 +37,13 @@ describe("operate", () => {
       });
     expect(run).toThrow("lineNumber must be 1-indexed");
   });
+
+  test("should throw if line number is out of bounds", () => {
+    const run = () =>
+      operate("hello .world", {
+        lineNumber: 2,
+        operation: ["addClassesToNode", { classNames: ["c"] }],
+      });
+    expect(run).toThrow("lineNumber must be less than the number of lines");
+  });
 });
