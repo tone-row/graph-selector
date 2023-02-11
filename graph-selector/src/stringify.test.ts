@@ -290,4 +290,124 @@ describe("stringify", () => {
       }),
     ).toBe("a\n  custom label: (#x)\nb #x");
   });
+
+  it("should stringify an edge with classes", () => {
+    expect(
+      stringify({
+        nodes: [
+          {
+            data: {
+              id: "a",
+              label: "a",
+              classes: "",
+            },
+          },
+          {
+            data: {
+              id: "b",
+              label: "b",
+              classes: "",
+            },
+          },
+        ],
+        edges: [
+          {
+            source: "a",
+            target: "b",
+            data: {
+              id: "",
+              label: "",
+              classes: "foo bar",
+            },
+          },
+        ],
+      }),
+    ).toBe("a\n  .foo.bar: (b)\nb");
+  });
+
+  it("should stringify an edge with data", () => {
+    expect(
+      stringify({
+        nodes: [
+          {
+            data: {
+              id: "a",
+              label: "a",
+              classes: "",
+            },
+          },
+          {
+            data: {
+              id: "b",
+              label: "b",
+              classes: "",
+            },
+          },
+        ],
+        edges: [
+          {
+            source: "a",
+            target: "b",
+            data: {
+              id: "",
+              label: "",
+              classes: "",
+              foo: "bar",
+              baz: 1,
+              fizz: true,
+            },
+          },
+        ],
+      }),
+    ).toBe('a\n  [foo="bar"][baz=1][fizz]: (b)\nb');
+  });
+
+  it("should ignore an edge with an invalid target", () => {
+    expect(
+      stringify({
+        nodes: [
+          {
+            data: {
+              id: "a",
+              label: "a",
+              classes: "",
+            },
+          },
+        ],
+        edges: [
+          {
+            source: "a",
+            target: "b",
+            data: {
+              id: "",
+              label: "",
+              classes: "",
+            },
+          },
+        ],
+      }),
+    ).toBe("a");
+  });
+
+  it("should throw an error if node data passed that isn't a valid type", () => {
+    expect(() => {
+      stringify({
+        nodes: [
+          {
+            data: {
+              id: "a",
+              label: "a",
+              classes: "",
+              foo: "bar",
+              baz: 1,
+              fizz: true,
+              // @ts-expect-error - invalid data type
+              buzz: undefined,
+            },
+          },
+        ],
+        edges: [],
+      });
+    }).toThrowError('Invalid data type for property "buzz": undefined');
+  });
 });

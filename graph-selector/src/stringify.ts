@@ -89,7 +89,7 @@ export function stringifyData(data: Record<string, string | number | boolean>) {
       if (typeof value === "boolean") return `[${key}]`;
       if (typeof value === "number") return `[${key}=${value}]`;
       if (typeof value === "string") return `[${key}="${value.replace(/"/g, '\\"')}"]`;
-      throw new Error(`Unsupported data type: ${typeof value}: ${value}`);
+      throw new Error(`Invalid data type for property "${key}": ${typeof value}`);
     })
     .join("");
 }
