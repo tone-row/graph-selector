@@ -36,14 +36,14 @@ export type Parser = {
 
 export type Node = {
   data: FeatureData;
-  parser: Parser;
+  parser?: Parser;
 };
 
 export type Edge = {
   source: string;
   target: string;
   data: FeatureData;
-  parser: Parser;
+  parser?: Parser;
 };
 
 export type Graph = {
