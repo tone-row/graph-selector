@@ -1,7 +1,7 @@
 {
   "name": "graph-selector",
   "type": "module",
-  "version": "0.8.3",
+  "version": "0.8.4",
   "source": "src/index.ts",
   "exports": {
     "require": "./dist/graph-selector.cjs",
