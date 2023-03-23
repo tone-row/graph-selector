@@ -94,12 +94,14 @@ export function registerHighlighter(monaco: typeof Monaco) {
           .map((node) => ({
             label: node.data.label,
             kind: monaco.languages.CompletionItemKind.Value,
-            insertText: node.data.label,
+            // insert the label, replacing the closing parenthesis
+            insertText: node.data.label + ")",
             range: {
               startLineNumber: position.lineNumber,
               endLineNumber: position.lineNumber,
               startColumn: position.column,
-              endColumn: position.column,
+              // replace the closing parenthesis
+              endColumn: position.column + 1,
             },
           }));
         return {
