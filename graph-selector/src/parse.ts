@@ -1,4 +1,4 @@
-import { Data, Graph, Pointer } from "./types";
+import { Data, FeatureData, Graph, Pointer } from "./types";
 import { getEdgeBreakIndex, getFeaturesIndex } from "./regexps";
 
 import { getFeatureData } from "./getFeatureData";
@@ -160,15 +160,22 @@ export function parse(text: string): Graph {
     // Store id
     nodeIds.push(id);
 
-    // create node if label is not empty
+    // create node if line declares node
     if (lineDeclaresNode) {
+      const _data: FeatureData = {
+        label,
+        id,
+        classes,
+        ...data,
+      };
+
+      // if parent, add isParent flag
+      if (isContainerStart) {
+        _data.isParent = true;
+      }
+
       const node: Graph["nodes"][number] = {
-        data: {
-          label,
-          id,
-          classes,
-          ...data,
-        },
+        data: _data,
         parser: {
           lineNumber,
         },

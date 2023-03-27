@@ -8,15 +8,62 @@ export function toMermaid({ nodes, edges }: Graph) {
     return s.replace(/\s+/g, "_");
   }
 
+  /**
+   * Push and pop container parents as we traverse the graph
+   */
+  const parents: string[] = [];
+
   for (const node of nodes) {
-    const { id, label } = node.data;
+    const { id, label, classes, ...rest } = node.data;
     if (!id) continue;
     const safeId = getSafe(id);
 
-    const before = "[";
-    const after = "]";
+    // end subgraph
+    if (parents.length) {
+      if (rest.parent !== parents[parents.length - 1]) {
+        parents.pop();
+        lines.push(`${whitespace()}end`);
+      }
+    }
 
-    lines.push(`\t${safeId}${before}"${getSafeLabel(label) || " "}"${after}`);
+    // start subgraph
+    if (rest.isParent) {
+      lines.push(`${whitespace()}subgraph ${safeId} ["${getSafeLabel(label)}"]`);
+      parents.push(safeId);
+      continue;
+    }
+
+    let before = "[";
+    let after = "]";
+
+    // Support shape classes
+    if (classes.includes("rounded-rectangle")) {
+      before = "(";
+      after = ")";
+    } else if (classes.includes("ellipse")) {
+      before = "([";
+      after = "])";
+    } else if (classes.includes("circle")) {
+      before = "((";
+      after = "))";
+    } else if (classes.includes("diamond")) {
+      before = "{";
+      after = "}";
+    } else if (classes.includes("hexagon")) {
+      before = "{{";
+      after = "}}";
+    } else if (classes.includes("rhomboid")) {
+      before = "[/";
+      after = "/]";
+    }
+
+    lines.push(`${whitespace()}${safeId}${before}"${getSafeLabel(label) || " "}"${after}`);
+  }
+
+  // Close any open subgraphs
+  while (parents.length) {
+    parents.pop();
+    lines.push(`${whitespace()}end`);
   }
 
   for (const edge of edges) {
@@ -29,6 +76,12 @@ export function toMermaid({ nodes, edges }: Graph) {
   }
 
   return lines.concat(styleLines).join("\n");
+
+  function whitespace() {
+    return Array(parents.length + 1)
+      .fill("\t")
+      .join("");
+  }
 }
 
 function getSafeLabel(unsafe: string) {

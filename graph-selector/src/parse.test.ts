@@ -453,4 +453,12 @@ a {
     expect(result.nodes[0].data.label).toEqual("");
     expect(result.nodes[1].data.parent).toEqual("n2");
   });
+
+  test("nodes that are containers should have an isParent flag", () => {
+    const result = parse(`
+a {
+  b
+}`);
+    expect(result.nodes[0].data.isParent).toEqual(true);
+  });
 });
