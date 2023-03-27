@@ -26,10 +26,14 @@ describe("toMermaid", () => {
     expect(mermaid).toEqual(`flowchart\n\tn1[" "]`);
   });
 
-  test("supports shape classes", () => {
-    const graph = parse(`ellipse .ellipse\ncircle .circle\ndiamond .diamond\n`);
+  test("supports shapes classes", () => {
+    const graph = parse(
+      `ellipse .ellipse\ncircle .circle\ndiamond .diamond\nrounded-rectangle .rounded-rectangle\nroundedrectangle .roundedrectangle\nhexagon .hexagon\nrhomboid .rhomboid`,
+    );
     const mermaid = toMermaid(graph);
-    expect(mermaid).toEqual(`flowchart\n\tn1(["ellipse"])\n\tn2(("circle"))\n\tn3{"diamond"}`);
+    expect(mermaid).toEqual(
+      `flowchart\n\tn1(["ellipse"])\n\tn2(("circle"))\n\tn3{"diamond"}\n\tn4("rounded-rectangle")\n\tn5("roundedrectangle")\n\tn6{{"hexagon"}}\n\tn7[/"rhomboid"/]`,
+    );
   });
 
   test("Escapes characters in labels", () => {
@@ -68,5 +72,13 @@ describe("toMermaid", () => {
     expect(mermaid).toEqual(
       `flowchart\n\tsubgraph n1 ["a"]\n\t\tn2["b"]\n\tend\n\tsubgraph n5 ["c"]\n\t\tn6["d"]\n\tend\n\tn1 --> n5\n\tn6 --> n2`,
     );
+  });
+
+  test("Ignores nodes with no id", () => {
+    const mermaid = toMermaid({
+      nodes: [{ data: { label: "a", classes: "", id: "" } }],
+      edges: [],
+    });
+    expect(mermaid).toEqual(`flowchart`);
   });
 });

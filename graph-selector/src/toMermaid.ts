@@ -37,7 +37,7 @@ export function toMermaid({ nodes, edges }: Graph) {
     let after = "]";
 
     // Support shape classes
-    if (classes.includes("rounded-rectangle")) {
+    if (classes.includes("rounded-rectangle") || classes.includes("roundedrectangle")) {
       before = "(";
       after = ")";
     } else if (classes.includes("ellipse")) {
