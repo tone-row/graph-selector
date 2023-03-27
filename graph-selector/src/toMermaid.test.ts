@@ -37,10 +37,10 @@ describe("toMermaid", () => {
   });
 
   test("Escapes characters in labels", () => {
-    const graph = parse(`a\n  b & c < d > e \" f`);
+    const graph = parse(`a\n  b & c < d > e \" f it's a label`);
     const mermaid = toMermaid(graph);
     expect(mermaid).toEqual(
-      `flowchart\n\tn1["a"]\n\tn2["b &amp; c &lt; d &gt; e &quot; f"]\n\tn1 --> n2`,
+      `flowchart\n\tn1["a"]\n\tn2["b &amp; c &lt; d &gt; e &quot; f it&apos;s a label"]\n\tn1 --> n2`,
     );
   });
 

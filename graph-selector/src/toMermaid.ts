@@ -1,4 +1,5 @@
 import { Graph } from "./types";
+import { encode } from "html-entities";
 
 export function toMermaid({ nodes, edges }: Graph) {
   const styleLines: string[] = [];
@@ -85,10 +86,5 @@ export function toMermaid({ nodes, edges }: Graph) {
 }
 
 function getSafeLabel(unsafe: string) {
-  return unsafe
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#039;");
+  return encode(unsafe);
 }
