@@ -1,9 +1,13 @@
 import { addClassesToNode } from "./addClassToNode";
+import { addDataAttributeToNode } from "./addDataAttributeToNode";
 import { removeClassesFromNode } from "./removeClassesFromNode";
+import { removeDataAttributeFromNode } from "./removeDataAttributeFromNode";
 
 export const operations = {
   removeClassesFromNode,
   addClassesToNode,
+  addDataAttributeToNode,
+  removeDataAttributeFromNode,
 };
 
 export type OperationKey = keyof typeof operations;
@@ -36,8 +40,8 @@ export function operate(graphText: string, instruction: Instruction): string {
   const [operationKey, operationParams] = operation;
   const operationFunction = operations[operationKey];
   const line = lines[lineNumber];
-  // TODO: this type isn't error because our operations have the same interface right now, but as soon as they don't...
-  const newLine = operationFunction({ line, ...operationParams });
+  // 'as never' because "Correspondence Problem", basically TS can't infer
+  const newLine = operationFunction({ line, ...operationParams } as never);
   lines[lineNumber] = newLine;
   return lines.join("\n");
 }
