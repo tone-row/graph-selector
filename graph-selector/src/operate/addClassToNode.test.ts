@@ -120,4 +120,12 @@ describe("addClassToNode", () => {
     });
     expect(result).toEqual("my node .foo.bar");
   });
+
+  it("should not add class if class already present", () => {
+    const result = addClassesToNode({
+      line: "my node .foo",
+      classNames: ["foo"],
+    });
+    expect(result).toEqual("my node .foo");
+  });
 });
