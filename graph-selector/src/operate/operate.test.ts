@@ -46,4 +46,31 @@ describe("operate", () => {
       });
     expect(run).toThrow("lineNumber must be less than the number of lines");
   });
+
+  test("can add/remove data attributes", () => {
+    expect(
+      operate("hello .world", {
+        lineNumber: 1,
+        operation: [
+          "addDataAttributeToNode",
+          {
+            name: "foo",
+            value: "bar",
+          },
+        ],
+      }),
+    ).toBe('hello .world[foo="bar"]');
+
+    expect(
+      operate('hello .world[foo="bar"]', {
+        lineNumber: 1,
+        operation: [
+          "removeDataAttributeFromNode",
+          {
+            name: "foo",
+          },
+        ],
+      }),
+    ).toBe("hello .world");
+  });
 });

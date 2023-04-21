@@ -38,6 +38,11 @@ describe("parse", () => {
     expect(result.nodes[0].data.label).toEqual("a");
   });
 
+  test("allow percentages in label attribute", () => {
+    const result = parse(`5%`);
+    expect(result.nodes[0].data.label).toEqual("5%");
+  });
+
   test("can read classes without id", () => {
     const result = parse(`a .class1.class2`);
     expect(result.nodes[0].data.classes).toEqual(".class1.class2");
