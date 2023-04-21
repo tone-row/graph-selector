@@ -30,10 +30,8 @@ export function addClassesToNode({ line, classNames }: { line: string; className
     line = line.slice(0, featuresIndex);
   }
 
-  const className = classNames.join(".");
-
   if (!features) {
-    return indent + edge + line + ` .${className}` + containerStart;
+    return indent + edge + line + ` .${classNames.join(".")}` + containerStart;
   }
 
   const { classes, data, id = "" } = getFeatureData(features);
@@ -41,7 +39,11 @@ export function addClassesToNode({ line, classNames }: { line: string; className
   let newFeatureString = " ";
   if (id) newFeatureString += `#${id}`;
   if (classes) newFeatureString += classes;
-  newFeatureString += `.${className}`;
+  let classNameString = "";
+  // for each class in classNames, if it's not already in classes, add it to the new class string
+  for (const className of classNames)
+    if (!classes.includes(className)) classNameString += `.${className}`;
+  newFeatureString += classNameString;
   if (Object.keys(data).length) newFeatureString += dataToString(data);
 
   return indent + edge + line + newFeatureString + containerStart;
