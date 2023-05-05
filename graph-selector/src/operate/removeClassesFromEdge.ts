@@ -1,6 +1,6 @@
 import { getEdgeBreakIndex } from "../regexps";
 
-export function removeClassesFromNode({
+export function removeClassesFromEdge({
   line,
   classNames,
 }: {
@@ -29,13 +29,19 @@ export function removeClassesFromNode({
     line = line.slice(edgeBreakIndex + 1);
   }
 
-  // remove class names
+  // remove class names from edge
   for (const className of classNames) {
-    line = line.replace(new RegExp(`\.${className}`), "");
+    edge = edge.replace(new RegExp(`\.${className}`), "");
   }
 
-  // remove trailing whitespace before end of line if it exists
-  line = line.replace(/\s*$/, "");
+  // remove leading whitespace before beginning of line if it exists
+  edge = edge.replace(/^\s*/, "");
+
+  // if the edge is empty and the line begins with a colon,
+  if (edge === "" && line.startsWith(":")) {
+    // remove the colon and whitespace
+    line = line.replace(/^[:：]\s*/, "");
+  }
 
   return indent + edge + line + containerStart;
 }
