@@ -1,5 +1,7 @@
-import { addClassesToNode } from "./addClassToNode";
+import { addClassesToEdge } from "./addClassesToEdge";
+import { addClassesToNode } from "./addClassesToNode";
 import { addDataAttributeToNode } from "./addDataAttributeToNode";
+import { removeClassesFromEdge } from "./removeClassesFromEdge";
 import { removeClassesFromNode } from "./removeClassesFromNode";
 import { removeDataAttributeFromNode } from "./removeDataAttributeFromNode";
 
@@ -8,6 +10,8 @@ export const operations = {
   addClassesToNode,
   addDataAttributeToNode,
   removeDataAttributeFromNode,
+  addClassesToEdge,
+  removeClassesFromEdge,
 };
 
 export type OperationKey = keyof typeof operations;
