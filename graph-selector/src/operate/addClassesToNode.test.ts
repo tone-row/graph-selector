@@ -1,6 +1,6 @@
-import { addClassesToNode } from "./addClassToNode";
+import { addClassesToNode } from "./addClassesToNode";
 
-describe("addClassToNode", () => {
+describe("addClassesToNode", () => {
   it("should add class to node", () => {
     const result = addClassesToNode({
       line: "  to: my node",

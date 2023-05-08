@@ -1,4 +1,4 @@
-import { addClassesToNode } from "./addClassToNode";
+import { addClassesToNode } from "./addClassesToNode";
 import { addDataAttributeToNode } from "./addDataAttributeToNode";
 import { removeClassesFromNode } from "./removeClassesFromNode";
 import { removeDataAttributeFromNode } from "./removeDataAttributeFromNode";

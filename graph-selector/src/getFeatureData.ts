@@ -1,16 +1,15 @@
+import { featuresRe } from "./regexps";
 import { Data, Descriptor } from "./types";
 
 // TODO: not sure if getFeatureData still needs to remove the features from the line and return what's left of the line
 export function getFeatureData(_line: string) {
   let line = _line.slice(0).trim();
-  const re =
-    /(?<replace>(?<id>#[\w-]+)?(?<classes>(\.[a-zA-Z]{1}[\w-]*)*)?(?<attributes>(\[[^\]=]+(?<attributeValue>=['"]?[^'"]+['"]?)?\])*))/g;
   let match: RegExpExecArray | null;
   let id = "";
   let classes = "";
   let attributes = "";
 
-  while ((match = re.exec(line)) != null) {
+  while ((match = featuresRe.exec(line)) != null) {
     if (!match.groups) continue;
     if (!match.groups.replace) break;
 
