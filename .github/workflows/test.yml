@@ -5,12 +5,15 @@ jobs:
     name: Test
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
+      - name: Install Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16.17.0
       - uses: pnpm/action-setup@v2.2.2
         with:
-          version: 7.11.0
-      - name: Install Dependencies
-        run: pnpm install
+          version: 8.4.0
+          run_install: true
       - name: Lint
         run: pnpm -F graph-selector lint:ci
       - name: Run Tests
