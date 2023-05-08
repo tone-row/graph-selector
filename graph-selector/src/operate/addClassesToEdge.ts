@@ -23,6 +23,9 @@ export function addClassesToEdge({ line, classNames }: { line: string; className
     line = line.slice(edgeBreakIndex + 1);
   }
 
+  // if there's no edge, note it
+  const noEdge = !edge;
+
   // separate features and label
   const startOfFeatures = getFeaturesIndex(edge);
   let features = "";
@@ -34,8 +37,11 @@ export function addClassesToEdge({ line, classNames }: { line: string; className
     featuresRe.lastIndex = 0;
   }
 
+  const divider = noEdge ? ": " : "";
+
   if (!features) {
-    return indent + `.${classNames.join(".")} ` + edge.trim() + line + containerStart;
+    const completeEdge = [`.${classNames.join(".")}`, edge.trim()].filter(Boolean).join(" ").trim();
+    return indent + completeEdge + divider + line + containerStart;
   }
 
   // extract features from string
