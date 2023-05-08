@@ -73,4 +73,13 @@ describe("removeClassFromNode", () => {
     });
     expect(line).toBe("hello {");
   });
+
+  test("doesn't remove a partial class", () => {
+    let line = "hello .some-class";
+    line = removeClassesFromNode({
+      line,
+      classNames: ["some"],
+    });
+    expect(line).toBe("hello .some-class");
+  });
 });

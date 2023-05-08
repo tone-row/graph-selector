@@ -73,4 +73,27 @@ describe("operate", () => {
       }),
     ).toBe("hello .world");
   });
+
+  /* This test is combatting a specific bug found in the wild. */
+  test("can add/remove classes from edges with similar names", () => {
+    const classes = ["triangle", "source-triangle-tee", "source-circle-triangle"];
+
+    // removes all classes and then adds one
+    function addClass(text: string, c: string) {
+      let newText = operate(text, {
+        lineNumber: 1,
+        operation: ["removeClassesFromEdge", { classNames: classes }],
+      });
+      newText = operate(newText, {
+        lineNumber: 1,
+        operation: ["addClassesToEdge", { classNames: [c] }],
+      });
+      return newText;
+    }
+
+    let text = "  foo";
+    text = addClass(text, "source-triangle-tee");
+    text = addClass(text, "source-circle-triangle");
+    expect(text).toBe("  .source-circle-triangle: foo");
+  });
 });

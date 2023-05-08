@@ -31,7 +31,19 @@ export function removeClassesFromNode({
 
   // remove class names
   for (const className of classNames) {
-    line = line.replace(new RegExp(`\.${className}`), "");
+    // need to match class and stop character to avoid partial matching
+    const match = new RegExp(`\.${className}(?<stopCharacter>\\.|$| |:|：)`).exec(line);
+    // if no match, continue
+    if (!match) continue;
+
+    // get the stop character
+    const stopCharacter = match.groups?.stopCharacter || "";
+
+    // get the index of the match
+    const index = match.index;
+
+    // remove the match up to the stop character
+    line = line.slice(0, index) + stopCharacter + line.slice(index + match[0].length);
   }
 
   // remove trailing whitespace before end of line if it exists
