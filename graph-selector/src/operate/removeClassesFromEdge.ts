@@ -1,4 +1,4 @@
-import { getEdgeBreakIndex } from "../regexps";
+import { getEdgeBreakIndex, getFeaturesIndex } from "../regexps";
 
 export function removeClassesFromEdge({
   line,
@@ -29,9 +29,33 @@ export function removeClassesFromEdge({
     line = line.slice(edgeBreakIndex + 1);
   }
 
+  // need to check for start of label
+  // if label start is before feature data start, then everything that
+  // looks like a feature is actually in the label
+  // and we don't have anything to change
+  if (edge.trim()) {
+    const labelStart = /\w/.exec(edge)?.index ?? -1;
+    const featuresStart = getFeaturesIndex(edge);
+    if (labelStart < featuresStart) {
+      return indent + edge + line + containerStart;
+    }
+  }
+
   // remove class names from edge
   for (const className of classNames) {
-    edge = edge.replace(new RegExp(`\.${className}`), "");
+    // match class and stop character
+    const match = new RegExp(`\.${className}(?<stopCharacter>\\.|$| |:|：)`).exec(edge);
+    // if it's not there, continue
+    if (!match) continue;
+
+    // get stop character
+    const stopCharacter = match.groups?.stopCharacter || "";
+
+    // get the index of the match
+    const index = match.index;
+
+    // remove the match up to the stop character
+    edge = edge.slice(0, index) + stopCharacter + edge.slice(index + match[0].length);
   }
 
   // remove leading whitespace before beginning of line if it exists
