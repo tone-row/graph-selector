@@ -100,4 +100,8 @@ describe("addClassesToEdge", () => {
       "  .bar edge: foo",
     );
   });
+
+  test("if there is no edge, it should add the colon", () => {
+    expect(addClassesToEdge({ line: "  foo", classNames: ["bar"] })).toBe("  .bar: foo");
+  });
 });

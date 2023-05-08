@@ -80,4 +80,14 @@ describe("removeClassesFromEdge", () => {
     });
     expect(result).toBe("  edge: container {");
   });
+
+  it.todo("should not remove partial class");
+  // 👇
+  // it("should not remove partial class", () => {
+  //   const result = removeClassesFromEdge({
+  //     line: "  .some-class edge: my node",
+  //     classNames: ["some"],
+  //   });
+  //   expect(result).toBe("  .some-class edge: my node");
+  // });
 });
