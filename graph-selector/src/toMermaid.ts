@@ -53,6 +53,9 @@ export function toMermaid({ nodes, edges }: Graph) {
     } else if (classes.includes("hexagon")) {
       before = "{{";
       after = "}}";
+    } else if (classes.includes("right-rhomboid")) {
+      before = "[\\";
+      after = "\\]";
     } else if (classes.includes("rhomboid")) {
       before = "[/";
       after = "/]";
