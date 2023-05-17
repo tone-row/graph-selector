@@ -81,4 +81,12 @@ describe("toMermaid", () => {
     });
     expect(mermaid).toEqual(`flowchart`);
   });
+
+  test("Creates right rhomboid", () => {
+    const mermaid = toMermaid({
+      nodes: [{ data: { label: "a", classes: "right-rhomboid", id: "a" } }],
+      edges: [],
+    });
+    expect(mermaid).toEqual(`flowchart\n\ta[\\"a"\\]`);
+  });
 });
