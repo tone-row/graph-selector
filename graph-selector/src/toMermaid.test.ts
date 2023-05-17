@@ -32,7 +32,7 @@ describe("toMermaid", () => {
     );
     const mermaid = toMermaid(graph);
     expect(mermaid).toEqual(
-      `flowchart\n\tn1(["ellipse"])\n\tn2(("circle"))\n\tn3{"diamond"}\n\tn4("rounded-rectangle")\n\tn5("roundedrectangle")\n\tn6{{"hexagon"}}\n\tn7[/"rhomboid"/]`,
+      `flowchart\n\tn1(["ellipse"])\n\tn2(("circle"))\n\tn3{"diamond"}\n\tn4("rounded-rectangle")\n\tn5("roundedrectangle")\n\tn6{{"hexagon"}}\n\tn7[\\"rhomboid"\\]`,
     );
   });
 
@@ -82,9 +82,9 @@ describe("toMermaid", () => {
     expect(mermaid).toEqual(`flowchart`);
   });
 
-  test("Creates right rhomboid", () => {
+  test("Creates the correct rhomboid", () => {
     const mermaid = toMermaid({
-      nodes: [{ data: { label: "a", classes: "right-rhomboid", id: "a" } }],
+      nodes: [{ data: { label: "a", classes: "rhomboid", id: "a" } }],
       edges: [],
     });
     expect(mermaid).toEqual(`flowchart\n\ta[\\"a"\\]`);

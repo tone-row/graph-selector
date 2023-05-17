@@ -54,11 +54,11 @@ export function toMermaid({ nodes, edges }: Graph) {
       before = "{{";
       after = "}}";
     } else if (classes.includes("right-rhomboid")) {
-      before = "[\\";
-      after = "\\]";
-    } else if (classes.includes("rhomboid")) {
       before = "[/";
       after = "/]";
+    } else if (classes.includes("rhomboid")) {
+      before = "[\\";
+      after = "\\]";
     }
 
     lines.push(`${whitespace()}${safeId}${before}"${getSafeLabel(label) || " "}"${after}`);
