@@ -87,9 +87,13 @@ d
 
 This creates a graph with 4 nodes and 3 edges.
 
+## Monaco Editor
+
+Graph Selector has an export named `highlight` which contains a lot of the tools for using this language with the [Monaco Editor]([https://www.npmjs.com/package/@monaco-editor/react](https://github.com/microsoft/monaco-editor)). Check out this for a complete example of using this language in a Monaco editor in React, with syntax highlighting and error reporting: https://stackblitz-starters-me6lmw.stackblitz.io
+
 ## Errors
 
-In order to capture and display parsing errors in the editor, errors conform to the type `ParsingError` in `graph-selector/src/ParseError.ts`. Because in most application we imagine parsing will occur outside of the editor, displaying errors must also happen outside the error. A simple version of what that would look with monaco is below:
+In order to capture and display parsing errors in the editor, errors conform to the type `ParsingError` in `graph-selector/src/ParseError.ts`. Because in most application we imagine parsing will occur outside of the editor, displaying errors must also happen outside the error. Refer to the monaco example for what this looks like.
 
 ## Context
 
