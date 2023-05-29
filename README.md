@@ -87,6 +87,10 @@ d
 
 This creates a graph with 4 nodes and 3 edges.
 
+## Errors
+
+In order to capture and display parsing errors in the editor, errors conform to the type `ParsingError` in `graph-selector/src/ParseError.ts`. Because in most application we imagine parsing will occur outside of the editor, displaying errors must also happen outside the error. A simple version of what that would look with monaco is below:
+
 ## Context
 
 If you would like to find out more about the development and thought process behind this language, [A blog post](https://tone-row.com/blog/graph-syntax-css-selectors) has been published.
