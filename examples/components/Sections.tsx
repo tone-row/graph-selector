@@ -10,7 +10,7 @@ import {
   YAxis,
 } from "recharts";
 import { CustomizedAxisTick, toPercent } from "./ReCharts";
-import { Graph, parse, toCytoscapeElements } from "graph-selector";
+import { Graph, ParseError, parse, toCytoscapeElements } from "graph-selector";
 import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
 
 import { CytoscapeGraph } from "./CytoscapeGraph";
@@ -18,7 +18,14 @@ import { D3Graph } from "./D3Graph";
 import { Editor } from "./Editor";
 import { FaGripLinesVertical } from "react-icons/fa";
 import { SankeyChart } from "./SankeyChart";
-import { useReducer } from "react";
+import { useCallback, useReducer, useRef } from "react";
+import { EditorProps } from "@monaco-editor/react";
+import type { editor } from "monaco-editor";
+
+type MonacoRefs = {
+  editor: editor.IStandaloneCodeEditor;
+  monaco: typeof import("monaco-editor");
+};
 
 type State = {
   result: Graph;
@@ -26,12 +33,48 @@ type State = {
   code: string;
 };
 const useCode = (initialCode: string) => {
-  return useReducer(
+  const refs = useRef<MonacoRefs | null>(null);
+  const onMount = useCallback<NonNullable<EditorProps["onMount"]>>(
+    (editor, monaco) => {
+      refs.current = { editor, monaco };
+    },
+    []
+  );
+  const reducer = useReducer(
     (s: State, n: string): State => {
       try {
+        // remove modal markers
+        if (refs.current) {
+          const { editor, monaco } = refs.current;
+          const model = editor.getModel();
+          if (model) {
+            monaco.editor.setModelMarkers(model, "graph-selector", []);
+          }
+        }
         const result = parse(n);
         return { result, error: "", code: n };
       } catch (e) {
+        console.log(e);
+        if (refs.current && isParseError(e)) {
+          const { editor, monaco } = refs.current;
+          const model = editor.getModel();
+          if (model) {
+            const { startLineNumber, endLineNumber, startColumn, endColumn } =
+              e;
+            const message = e.message;
+            const severity = monaco.MarkerSeverity.Error;
+            monaco.editor.setModelMarkers(model, "graph-selector", [
+              {
+                startLineNumber,
+                endLineNumber,
+                message,
+                severity,
+                startColumn,
+                endColumn,
+              },
+            ]);
+          }
+        }
         return {
           result: { nodes: [], edges: [] },
           error: (e as Error).message,
@@ -57,7 +100,13 @@ const useCode = (initialCode: string) => {
       }
     }
   );
+
+  return [reducer[0], reducer[1], onMount] as const;
 };
+
+function isParseError(e: unknown): e is ParseError {
+  return e instanceof Error && e.name === "ParseError";
+}
 
 const idsClasses = `This is a label #a.large
   (#c)
@@ -65,22 +114,26 @@ This is a longer label #b
   (#c)
 The longest label text of all #c`;
 export function IdsClasses() {
-  const [state, dispatch] = useCode(idsClasses);
+  const [state, dispatch, onMount] = useCode(idsClasses);
   return (
-    <PanelGroup direction="horizontal">
-      <Panel>
-        <Editor
-          value={state.code}
-          onChange={(value) => dispatch(value || "")}
-        />
-      </Panel>
-      <PanelResizeHandle className="resize-handle grid place-content-center text-neutral-300 hover:text-neutral-600">
-        <FaGripLinesVertical />
-      </PanelResizeHandle>
-      <Panel>
-        <CytoscapeGraph elements={toCytoscapeElements(state.result)} />
-      </Panel>
-    </PanelGroup>
+    <>
+      <PanelGroup direction="horizontal">
+        <Panel>
+          <Editor
+            value={state.code}
+            onChange={(value) => dispatch(value || "")}
+            onMount={onMount}
+          />
+        </Panel>
+        <PanelResizeHandle className="resize-handle grid place-content-center text-neutral-300 hover:text-neutral-600">
+          <FaGripLinesVertical />
+        </PanelResizeHandle>
+        <Panel>
+          <CytoscapeGraph elements={toCytoscapeElements(state.result)} />
+        </Panel>
+      </PanelGroup>
+      <div id="custom-container"></div>
+    </>
   );
 }
 

@@ -4,6 +4,7 @@ import { getEdgeBreakIndex, getFeaturesIndex } from "./regexps";
 import { getFeatureData } from "./getFeatureData";
 import { matchAndRemovePointers } from "./matchAndRemovePointers";
 import { strip } from "@tone-row/strip-comments";
+import { ParseError } from "./ParseError";
 
 // TODO: these types could probably be improved to match the target types (in ./types.ts) more closely
 
@@ -51,6 +52,8 @@ export function parse(text: string): Graph {
 
   for (let line of lines) {
     ++lineNumber;
+
+    const originalLine = line;
 
     // continue from empty line
     if (!line.trim()) continue;
@@ -101,7 +104,14 @@ export function parse(text: string): Graph {
 
     // throw if edge label and no indent
     if (indentSize === 0 && edgeLabel) {
-      throw new Error(`Line ${lineNumber}: Edge label without parent`);
+      throw new ParseError(
+        `Line ${lineNumber}: Edge label without parent`,
+        lineNumber,
+        lineNumber,
+        0,
+        edgeLabel.length + 1,
+        "EDGE_LABEL_WITHOUT_PARENT",
+      );
     }
 
     // remove indent from line
@@ -119,7 +129,14 @@ export function parse(text: string): Graph {
 
     // error if more than one pointer
     if (pointers.length > 1) {
-      throw new Error(`Line ${lineNumber}: Can't create multiple pointers on same line`);
+      throw new ParseError(
+        `Line ${lineNumber}: Can't create multiple pointers on same line`,
+        lineNumber,
+        lineNumber,
+        0,
+        originalLine.length + 1,
+        "MULTIPLE_POINTERS_ON_SAME_LINE",
+      );
     }
 
     // the lable is what is left after everything is removed
@@ -138,12 +155,26 @@ export function parse(text: string): Graph {
 
     // Throw if line has pointers and also opens container
     if (pointers.length > 0 && isContainerStart) {
-      throw new Error(`Line ${lineNumber}: Can't create pointer and container on same line`);
+      throw new ParseError(
+        `Line ${lineNumber}: Can't create pointer and container on same line`,
+        lineNumber,
+        lineNumber,
+        originalLine.length,
+        originalLine.length + 1,
+        "POINTER_AND_CONTAINER_ON_SAME_LINE",
+      );
     }
 
     // error if line declares node and pointers
     if (lineDeclaresNode && pointers.length > 0) {
-      throw new Error(`Line ${lineNumber}: Can't create node and pointer on same line`);
+      throw new ParseError(
+        `Line ${lineNumber}: Can't create node and pointer on same line`,
+        lineNumber,
+        lineNumber,
+        indentSize + 1,
+        originalLine.length + 1,
+        "NODE_AND_POINTER_ON_SAME_LINE",
+      );
     }
 
     // create a unique ID from line number
@@ -154,7 +185,14 @@ export function parse(text: string): Graph {
 
     // Throw if id already exists
     if (lineDeclaresNode && nodeIds.includes(id)) {
-      throw new Error(`Line ${lineNumber}: Duplicate node id "${id}"`);
+      throw new ParseError(
+        `Line ${lineNumber}: Duplicate node id "${id}"`,
+        lineNumber,
+        lineNumber,
+        indentSize + 1,
+        originalLine.length + 1,
+        "DUPLICATE_NODE_ID",
+      );
     }
 
     // Store id
@@ -217,7 +255,15 @@ export function parse(text: string): Graph {
             edgeId = `${ancestor}-${id}-1`;
           }
           if (edgeIds.includes(edgeId)) {
-            throw new Error(`Line ${lineNumber}: Duplicate edge id "${edgeId}"`);
+            throw new ParseError(
+              `Line ${lineNumber}: Duplicate edge id "${edgeId}"`,
+              lineNumber,
+              lineNumber,
+              indentSize + 1,
+              // get length of edge id
+              indentSize + 1 + edgeId.length + 1,
+              "DUPLICATE_EDGE_ID",
+            );
           }
           edgeIds.push(edgeId);
           edges.push({
@@ -320,7 +366,14 @@ export function parse(text: string): Graph {
         }
 
         if (edgeIds.includes(data.id)) {
-          throw new Error(`Line ${lineNumber}: Duplicate edge id "${data.id}"`);
+          throw new ParseError(
+            `Line ${lineNumber}: Duplicate edge id "${data.id}"`,
+            lineNumber,
+            lineNumber,
+            0,
+            lines[lineNumber - 1].length + 1,
+            "DUPLICATE_EDGE_ID",
+          );
         }
 
         edgeIds.push(data.id);

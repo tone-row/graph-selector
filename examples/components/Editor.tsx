@@ -20,9 +20,6 @@ export function Editor({
         theme={highlight.defaultTheme}
         beforeMount={highlight.registerHighlighter}
         defaultLanguage={highlight.languageId}
-        onMount={(_editor, monaco) => {
-          monaco.editor.setTheme(highlight.defaultTheme);
-        }}
         options={{
           theme: highlight.defaultTheme,
           fontSize: 16,
