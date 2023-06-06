@@ -14,4 +14,4 @@ export const getFeaturesIndex = (line: string) => {
  * This regular expression is used to match the features of a node or edge.
  */
 export const featuresRe =
-  /(?<replace>(?<id>#[\w-]+)?(?<classes>(\.[a-zA-Z]{1}[\w-]*)*)?(?<attributes>(\[[^\]=]+(?<attributeValue>=['"]?[^'"]+['"]?)?\])*))/g;
+  /(?<replace>(?<id>#[\w-]+)?(?<classes>(\.[a-zA-Z]{1}[\w-]*)*)?(?<attributes>(\[[^\]=]+(?<attributeValue>=(".*"|'.*'|.*))?\])*))/gs;

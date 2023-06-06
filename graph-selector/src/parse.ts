@@ -28,7 +28,7 @@ export function parse(text: string): Graph {
   // break into lines
   let lines = strip(text, { preserveNewlines: true }).split(/\n/g);
 
-  // unescape backslashes in lines
+  // unescape backslashes in newlines
   lines = lines.map((line) => line.replace(/\\n/g, "\n"));
 
   // start line number count
