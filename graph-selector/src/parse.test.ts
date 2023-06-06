@@ -239,6 +239,34 @@ describe("parse", () => {
     ]);
   });
 
+  test("Should work with chinese edge label and colon", () => {
+    const result = parse(`之前什么都没有做盒子\n\t它应该可以工作：但是有一个错误🐛`);
+    expect(result.edges).toEqual([
+      {
+        source: "n1",
+        target: "n2",
+        data: {
+          classes: "",
+          id: "n1-n2-1",
+          label: "它应该可以工作",
+        },
+        parser: {
+          lineNumber: 2,
+        },
+      },
+    ]);
+    expect(result.nodes[1]).toEqual({
+      data: {
+        classes: "",
+        id: "n2",
+        label: "但是有一个错误🐛",
+      },
+      parser: {
+        lineNumber: 2,
+      },
+    });
+  });
+
   test("works with two-letter label pointer", () => {
     const result = parse(`bb\nc\n\t(bb)`);
     expect(result.edges.length).toEqual(1);
