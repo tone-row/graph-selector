@@ -1,11 +1,12 @@
 {
   "name": "graph-selector",
   "type": "module",
-  "version": "0.9.8",
+  "version": "0.9.9",
   "source": "src/index.ts",
   "exports": {
     "require": "./dist/graph-selector.cjs",
-    "default": "./dist/graph-selector.modern.js"
+    "default": "./dist/graph-selector.modern.js",
+    "types": "./dist/index.d.ts"
   },
   "main": "./dist/graph-selector.cjs",
   "types": "./dist/index.d.ts",
