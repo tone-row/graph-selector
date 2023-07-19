@@ -82,4 +82,23 @@ describe("removeClassFromNode", () => {
     });
     expect(line).toBe("hello .some-class");
   });
+
+  test("should remove class when it abuts data", () => {
+    let line = "hello .e[multiple-words][x=1000]";
+    line = removeClassesFromNode({
+      line,
+      classNames: ["e"],
+    });
+    expect(line).toBe("hello [multiple-words][x=1000]");
+  });
+
+  // bug directly from flowchart.fun
+  test("shouldn't leave stray classes", () => {
+    let line = "label .roundrectangle[w=100][h=70]";
+    line = removeClassesFromNode({
+      line,
+      classNames: ["rectangle"],
+    });
+    expect(line).toBe("label .roundrectangle[w=100][h=70]");
+  });
 });
