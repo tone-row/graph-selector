@@ -44,7 +44,7 @@ export function removeClassesFromEdge({
   // remove class names from edge
   for (const className of classNames) {
     // match class and stop character
-    const match = new RegExp(`\.${className}(?<stopCharacter>\\.|$| |:|：)`).exec(edge);
+    const match = new RegExp(`\\.${className}(?<stopCharacter>\\.|$| |:|：|\\[)`).exec(edge);
     // if it's not there, continue
     if (!match) continue;
 
