@@ -17,11 +17,11 @@ jobs:
       - name: Lint
         run: pnpm -F graph-selector lint:ci
       - name: Run Tests
-        run: pnpm test:coverage
-      - name: Upload Coverage
-        uses: codecov/codecov-action@v2
-        with:
-          root_dir: ./graph-selector # optional (default = .)
-          fail_ci_if_error: false # optional (default = false)
-          verbose: true # optional (default = false)
-          token: ${{ secrets.CODECOV_TOKEN }} # optional
+        run: pnpm test
+      # - name: Upload Coverage
+      #   uses: codecov/codecov-action@v2
+      #   with:
+      #     root_dir: ./graph-selector # optional (default = .)
+      #     fail_ci_if_error: false # optional (default = false)
+      #     verbose: true # optional (default = false)
+      #     token: ${{ secrets.CODECOV_TOKEN }} # optional

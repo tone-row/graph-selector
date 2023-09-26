@@ -1,25 +1,27 @@
 {
   "name": "graph-selector",
-  "type": "module",
-  "version": "0.9.10",
-  "source": "src/index.ts",
+  "version": "0.9.11",
+  "description": "Parse indented text (flowchart.fun syntax) into a graph",
+  "source": "src/graph-selector.ts",
+  "main": "dist/graph-selector.js",
+  "umd:main": "dist/graph-selector.umd.js",
+  "module": "dist/graph-selector.mjs",
   "exports": {
-    "require": "./dist/graph-selector.cjs",
-    "types": "./dist/index.d.ts",
-    "default": "./dist/graph-selector.modern.js"
+    "types": "./dist/graph-selector.d.ts",
+    "require": "./dist/graph-selector.js",
+    "default": "./dist/graph-selector.modern.mjs"
   },
-  "main": "./dist/graph-selector.cjs",
-  "types": "./dist/index.d.ts",
-  "module": "./dist/graph-selector.module.js",
-  "unpkg": "./dist/graph-selector.umd.js",
-  "description": "Parser flowchart fun syntax into a generalized graph syntax",
+  "types": "dist/graph-selector.d.ts",
+  "files": [
+    "dist"
+  ],
   "scripts": {
-    "build": "microbundle",
+    "build": "rm -rf dist && microbundle",
     "dev": "microbundle watch",
-    "test": "jest",
-    "test:watch": "jest --watch",
-    "test:coverage": "jest --coverage",
-    "test:coverage:open": "jest --coverage && open coverage/lcov-report/index.html",
+    "test": "vitest",
+    "test:ci": "vitest run",
+    "test:coverage": "vitest --coverage",
+    "check": "tsc --noEmit",
     "lint": "eslint 'src/**/*.{js,cjs,ts}' --quiet --fix",
     "lint:staged": "eslint --fix",
     "lint:ci": "eslint 'src/**/*.{js,cjs,ts}'",
@@ -29,25 +31,23 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "@types/cytoscape": "^3.19.7",
-    "@types/jest": "^28.1.7",
-    "@types/strip-comments": "^2.0.1",
-    "@typescript-eslint/eslint-plugin": "^5.33.0",
-    "@typescript-eslint/parser": "^5.33.0",
-    "eslint": "^8.21.0",
-    "eslint-config-prettier": "^8.5.0",
-    "eslint-plugin-no-lookahead-lookbehind-regexp": "^0.1.0",
-    "eslint-plugin-prettier": "^4.2.1",
-    "jest": "^28.1.3",
-    "microbundle": "^0.15.0",
-    "monaco-editor": "^0.34.0",
-    "prettier": "^2.7.1",
-    "ts-jest": "^28.0.8",
-    "typescript": "^4.7.4"
+    "@types/strip-comments": "^2.0.2",
+    "@typescript-eslint/eslint-plugin": "^6.7.3",
+    "@typescript-eslint/parser": "^6.7.3",
+    "eslint": "^8.50.0",
+    "eslint-config-prettier": "^9.0.0",
+    "eslint-plugin-no-lookahead-lookbehind-regexp": "^0.3.0",
+    "eslint-plugin-prettier": "^5.0.0",
+    "microbundle": "^0.15.1",
+    "prettier": "^3.0.3",
+    "typescript": "^5.2.2",
+    "vitest": "^0.34.5"
   },
   "dependencies": {
-    "@tone-row/strip-comments": "^2.0.6",
-    "html-entities": "^2.3.3"
+    "@types/cytoscape": "^3.19.11",
+    "html-entities": "^2.4.0",
+    "monaco-editor": "^0.43.0",
+    "strip-comments": "^2.0.1"
   },
   "browserslist": [
     "defaults"

@@ -9,7 +9,7 @@
       "outputs": ["graph-selector/dist", "examples/.next"]
     },
     "lint": {},
-    "test": {
+    "test:ci": {
       "dependsOn": ["^build"],
       "outputs": ["coverage/**"]
     }

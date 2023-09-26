@@ -3,7 +3,7 @@ import { getEdgeBreakIndex, getFeaturesIndex } from "./regexps";
 
 import { getFeatureData } from "./getFeatureData";
 import { matchAndRemovePointers } from "./matchAndRemovePointers";
-import { strip } from "@tone-row/strip-comments";
+import strip from "strip-comments";
 import { ParseError } from "./ParseError";
 
 // TODO: these types could probably be improved to match the target types (in ./types.ts) more closely
@@ -42,7 +42,7 @@ export function parse(text: string): Graph {
   // Because of containers, we need to keep track of indents at different levels
   // So we will turn this into a stack
   // And always reference the top of the stack
-  const Ancestors: Ancestors[] = [[]];
+  const allAncestors: Ancestors[] = [[]];
 
   // store pointer edges to be resolved when all nodes parsed
   const unresolvedEdges: UnresolvedEdges = [];
@@ -80,14 +80,14 @@ export function parse(text: string): Graph {
     const indentSize = getIndentSize(line);
 
     // get our relevant set of ancestors to work with indents
-    let ancestors = Ancestors[Ancestors.length - 1];
+    let ancestors = allAncestors[allAncestors.length - 1] || [];
 
     // check if line is a "source-pointer" (i.e. a reference, like (x), with no indent)
     if (indentSize === 0 && line[0] === "(") {
       // parse pointers
       const [pointers] = matchAndRemovePointers(line);
       // Update array of ancestors
-      Ancestors[Ancestors.length - 1] = [pointers];
+      allAncestors[allAncestors.length - 1] = [pointers];
       continue;
     }
 
@@ -234,12 +234,12 @@ export function parse(text: string): Graph {
     // and add to ancestors
     if (isContainerStart) {
       containerParentIds.push(id);
-      Ancestors.push([]);
+      allAncestors.push([]);
     }
 
     // if container end, pop ancestors
     if (isContainerEnd) {
-      Ancestors.pop();
+      allAncestors.pop();
     }
 
     // If ancestor, create edge (or unresolvedEdge)
@@ -366,12 +366,14 @@ export function parse(text: string): Graph {
         }
 
         if (edgeIds.includes(data.id)) {
+          const line = lines[lineNumber - 1];
+          if (!line) continue;
           throw new ParseError(
             `Line ${lineNumber}: Duplicate edge id "${data.id}"`,
             lineNumber,
             lineNumber,
             0,
-            lines[lineNumber - 1].length + 1,
+            line.length + 1,
             "DUPLICATE_EDGE_ID",
           );
         }
@@ -404,7 +406,8 @@ function findParent(indentSize: number, ancestors: Ancestors): Ancestor {
   let parent: Ancestor = null;
   let i = indentSize - 1;
   while (!parent && i >= 0) {
-    parent = ancestors[i];
+    const ancestor = ancestors[i];
+    if (ancestor) parent = ancestor;
     i--;
   }
   return parent;

@@ -1,3 +1,5 @@
+import { describe, expect, test } from "vitest";
+
 import { parse } from "./parse";
 import { toMermaid } from "./toMermaid";
 

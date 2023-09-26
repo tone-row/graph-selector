@@ -1,3 +1,4 @@
+import { describe, expect, test } from "vitest";
 import { parse } from "./parse";
 
 describe("parse", () => {
@@ -10,64 +11,64 @@ describe("parse", () => {
   /* Nodes */
   test("nodes have label", () => {
     const result = parse(`a\nb`);
-    expect(result.nodes[0].data.label).toEqual("a");
-    expect(result.nodes[1].data.label).toEqual("b");
+    expect(result.nodes[0]?.data.label).toEqual("a");
+    expect(result.nodes[1]?.data.label).toEqual("b");
   });
 
   test("nodes have line number", () => {
     const result = parse(`a\nb`);
-    expect(result.nodes[0].parser?.lineNumber).toEqual(1);
-    expect(result.nodes[1].parser?.lineNumber).toEqual(2);
+    expect(result.nodes[0]?.parser?.lineNumber).toEqual(1);
+    expect(result.nodes[1]?.parser?.lineNumber).toEqual(2);
   });
 
   test("nodes have unique IDs", () => {
     const result = parse(`a\na`);
-    expect(result.nodes[0].data.id).toEqual("n1");
-    expect(result.nodes[1].data.id).toEqual("n2");
+    expect(result.nodes[0]?.data.id).toEqual("n1");
+    expect(result.nodes[1]?.data.id).toEqual("n2");
   });
 
   test("allow custom ID", () => {
     const result = parse(`a #x\n  b #y`);
-    expect(result.nodes[0].data.id).toEqual("x");
-    expect(result.nodes[1].data.id).toEqual("y");
+    expect(result.nodes[0]?.data.id).toEqual("x");
+    expect(result.nodes[1]?.data.id).toEqual("y");
   });
 
   test("custom id not included in label", () => {
     const result = parse(`a #x`);
-    expect(result.nodes[0].data.id).toEqual("x");
-    expect(result.nodes[0].data.label).toEqual("a");
+    expect(result.nodes[0]?.data.id).toEqual("x");
+    expect(result.nodes[0]?.data.label).toEqual("a");
   });
 
   test("allow percentages in label attribute", () => {
     const result = parse(`5%`);
-    expect(result.nodes[0].data.label).toEqual("5%");
+    expect(result.nodes[0]?.data.label).toEqual("5%");
   });
 
   test("can read classes without id", () => {
     const result = parse(`a .class1.class2`);
-    expect(result.nodes[0].data.classes).toEqual(".class1.class2");
-    expect(result.nodes[0].data.label).toEqual("a");
+    expect(result.nodes[0]?.data.classes).toEqual(".class1.class2");
+    expect(result.nodes[0]?.data.label).toEqual("a");
   });
 
   test("can read classes with id", () => {
     const result = parse(`a #x.class1.class2`);
-    expect(result.nodes[0].data.id).toEqual("x");
-    expect(result.nodes[0].data.classes).toEqual(".class1.class2");
-    expect(result.nodes[0].data.label).toEqual("a");
+    expect(result.nodes[0]?.data.id).toEqual("x");
+    expect(result.nodes[0]?.data.classes).toEqual(".class1.class2");
+    expect(result.nodes[0]?.data.label).toEqual("a");
   });
 
   test("creates edge with indentation", () => {
     const result = parse(`a\n  b`);
-    expect(result.edges[0].source).toEqual("n1");
-    expect(result.edges[0].target).toEqual("n2");
+    expect(result.edges[0]?.source).toEqual("n1");
+    expect(result.edges[0]?.target).toEqual("n2");
     expect(result.edges.length).toEqual(1);
   });
 
   test("create edge with label", () => {
     const result = parse(`a\n  b: c`);
-    expect(result.edges[0].source).toEqual("n1");
-    expect(result.edges[0].target).toEqual("n2");
-    expect(result.edges[0].data.label).toEqual("b");
+    expect(result.edges[0]?.source).toEqual("n1");
+    expect(result.edges[0]?.target).toEqual("n2");
+    expect(result.edges[0]?.data.label).toEqual("b");
     expect(result.edges.length).toEqual(1);
   });
 
@@ -75,6 +76,9 @@ describe("parse", () => {
     const result = parse(`a\n  b: c #x.class1.class2`);
     const edge = result.edges[0];
     const node = result.nodes[1];
+    if (!edge || !node) {
+      throw new Error("Expected edge and node to be defined");
+    }
     expect(edge.source).toEqual("n1");
     expect(edge.target).toEqual("x");
     expect(edge.data.label).toEqual("b");
@@ -86,17 +90,23 @@ describe("parse", () => {
   test("should preserve spaces in labels", () => {
     let result = parse(`a long label #b`);
     const node = result.nodes[0];
+    if (!node) {
+      throw new Error("Expected node to be defined");
+    }
     expect(node.data.label).toEqual("a long label");
 
     result = parse(`another one`);
     const node2 = result.nodes[0];
+    if (!node2) {
+      throw new Error("Expected node to be defined");
+    }
     expect(node2.data.label).toEqual("another one");
   });
 
   test("should parse attributes w/o quotes", () => {
     const result = parse(`[d=e][f=a] c`);
-    expect(result.nodes[0].data.d).toEqual("e");
-    expect(result.nodes[0].data.f).toEqual("a");
+    expect(result.nodes[0]?.data.d).toEqual("e");
+    expect(result.nodes[0]?.data.f).toEqual("a");
   });
 
   test("can parse all node qualities", () => {
@@ -121,86 +131,86 @@ describe("parse", () => {
 
   test("should create node with label in attribute", () => {
     const result = parse(`[label=a]`);
-    expect(result.nodes[0].data.label).toEqual("a");
+    expect(result.nodes[0]?.data.label).toEqual("a");
   });
 
   test("allows newline in raw label", () => {
     const result = parse(`a\\nb`);
-    expect(result.nodes[0].data.label).toEqual("a\nb");
+    expect(result.nodes[0]?.data.label).toEqual("a\nb");
   });
 
   test("should allow newline in label attribute", () => {
     const result = parse(`[label="a\\nb"]`);
-    expect(result.nodes[0].data.label).toEqual("a\nb");
+    expect(result.nodes[0]?.data.label).toEqual("a\nb");
   });
 
   test("should allow escaped parentheses in label attribute", () => {
     const result = parse(`Hello\\(World\\)`);
-    expect(result.nodes[0].data.label).toEqual("Hello(World)");
+    expect(result.nodes[0]?.data.label).toEqual("Hello(World)");
   });
 
   test("allow escaped brackets in label attribute", () => {
     const result = parse(`Hello\\[World\\]`);
-    expect(result.nodes[0].data.label).toEqual("Hello[World]");
+    expect(result.nodes[0]?.data.label).toEqual("Hello[World]");
   });
 
   test("allow escaped curly braces in label attribute", () => {
     const result = parse(`Hello\\{World\\}`);
-    expect(result.nodes[0].data.label).toEqual("Hello{World}");
+    expect(result.nodes[0]?.data.label).toEqual("Hello{World}");
   });
 
   test("allow apostrophe in quoted attribute", () => {
     const result = parse(`[attr="Hello's World"]`);
-    expect(result.nodes[0].data.attr).toEqual("Hello's World");
+    expect(result.nodes[0]?.data.attr).toEqual("Hello's World");
   });
 
   /* Pointers */
   test("can parse pointer to label", () => {
     const result = parse(`a\n  (a)`);
-    expect(result.edges[0].source).toEqual("n1");
-    expect(result.edges[0].target).toEqual("n1");
+    expect(result.edges[0]?.source).toEqual("n1");
+    expect(result.edges[0]?.target).toEqual("n1");
     expect(result.edges.length).toEqual(1);
   });
 
   test("can parse pointer to id", () => {
     const result = parse(`b #b\na\n  (#b)`);
-    expect(result.edges[0].source).toEqual("n2");
-    expect(result.edges[0].target).toEqual("b");
+    expect(result.edges[0]?.source).toEqual("n2");
+    expect(result.edges[0]?.target).toEqual("b");
     expect(result.edges.length).toEqual(1);
   });
 
   test("can parse pointer to class", () => {
     const result = parse(`c .c\na\n  (.c)`);
-    expect(result.edges[0].source).toEqual("n2");
-    expect(result.edges[0].target).toEqual("n1");
+    expect(result.edges[0]?.source).toEqual("n2");
+    expect(result.edges[0]?.target).toEqual("n1");
     expect(result.edges.length).toEqual(1);
   });
 
   test("can parse source pointer to raw node", () => {
     const result = parse(`a\n(a)\n  c`);
-    expect(result.edges[0].source).toEqual("n1");
-    expect(result.edges[0].target).toEqual("n3");
+    expect(result.edges[0]?.source).toEqual("n1");
+    expect(result.edges[0]?.target).toEqual("n3");
     expect(result.edges.length).toEqual(1);
   });
 
   test("can parse source pointer to id", () => {
     const result = parse(`a\n(a)\n  #myid c`);
-    expect(result.edges[0].source).toEqual("n1");
-    expect(result.edges[0].target).toEqual("myid");
+    expect(result.edges[0]?.source).toEqual("n1");
+    expect(result.edges[0]?.target).toEqual("myid");
     expect(result.edges.length).toEqual(1);
   });
 
   test("can parse source pointer to class", () => {
     const result = parse(`a\nsome color .red\n(a)\n  (.red)`);
-    expect(result.edges[0].source).toEqual("n1");
-    expect(result.edges[0].target).toEqual("n2");
+    expect(result.edges[0]?.source).toEqual("n1");
+    expect(result.edges[0]?.target).toEqual("n2");
     expect(result.edges.length).toEqual(1);
   });
 
   test("can parse source pointer when using id", () => {
     const result = parse(`(#a)\n  c\na #a`);
-    expect(result.edges[0].source).toEqual("a");
-    expect(result.edges[0].target).toEqual("n2");
+    expect(result.edges[0]?.source).toEqual("a");
+    expect(result.edges[0]?.target).toEqual("n2");
     expect(result.edges.length).toEqual(1);
   });
 
@@ -273,7 +283,7 @@ describe("parse", () => {
   });
 
   test("can parse node with url in attribute", () => {
-    expect(parse(`[url="http://www.google.com"]`).nodes[0].data.url).toEqual(
+    expect(parse(`[url="http://www.google.com"]`).nodes[0]?.data.url).toEqual(
       "http://www.google.com",
     );
   });
@@ -292,37 +302,37 @@ describe("parse", () => {
 (#b)
   (#d)
 `);
-    expect(result.edges[0].parser?.lineNumber).toEqual(7);
-    expect(result.edges[1].parser?.lineNumber).toEqual(8);
-    expect(result.edges[2].parser?.lineNumber).toEqual(10);
+    expect(result.edges[0]?.parser?.lineNumber).toEqual(7);
+    expect(result.edges[1]?.parser?.lineNumber).toEqual(8);
+    expect(result.edges[2]?.parser?.lineNumber).toEqual(10);
   });
 
   test("get correct edge label", () => {
     const result = parse(`a\nb\n\ttest: (a)`);
-    expect(result.edges[0].data.label).toEqual("test");
+    expect(result.edges[0]?.data.label).toEqual("test");
   });
 
   test("allow dashes and numbers in classes and ids", () => {
     const result = parse(`#a-1.class-1.class-2[d=e][f=a] c`);
-    expect(result.nodes[0].data.id).toEqual("a-1");
-    expect(result.nodes[0].data.classes).toEqual(".class-1.class-2");
+    expect(result.nodes[0]?.data.id).toEqual("a-1");
+    expect(result.nodes[0]?.data.classes).toEqual(".class-1.class-2");
   });
 
   test("parse edge data", () => {
     const result = parse(`a\n  #x.fun.fun-2[att=15] still the label: b`);
-    expect(result.edges[0].data.id).toEqual("x");
-    expect(result.edges[0].source).toEqual("n1");
-    expect(result.edges[0].target).toEqual("n2");
-    expect(result.edges[0].data.att).toEqual(15);
-    expect(result.edges[0].data.classes).toEqual(".fun.fun-2");
-    expect(result.edges[0].data.label).toEqual("still the label");
-    expect(result.edges[0].data.id).toEqual("x");
+    expect(result.edges[0]?.data.id).toEqual("x");
+    expect(result.edges[0]?.source).toEqual("n1");
+    expect(result.edges[0]?.target).toEqual("n2");
+    expect(result.edges[0]?.data.att).toEqual(15);
+    expect(result.edges[0]?.data.classes).toEqual(".fun.fun-2");
+    expect(result.edges[0]?.data.label).toEqual("still the label");
+    expect(result.edges[0]?.data.id).toEqual("x");
   });
 
   test("self edge has id", () => {
     const result = parse(`#b longer label text\n\t#xxx edge label: (#b)`);
 
-    expect(result.edges[0].data.id).toEqual("xxx");
+    expect(result.edges[0]?.data.id).toEqual("xxx");
   });
 
   test("shouldn't create node for empty line", () => {
@@ -338,23 +348,23 @@ describe("parse", () => {
 to edge
   (#c)`);
     expect(result.edges.length).toEqual(2);
-    expect(result.edges[1].target).toEqual("c");
+    expect(result.edges[1]?.target).toEqual("c");
   });
 
   test("unresolved edges also have unique edge ids", () => {
     const input = `a\n b\n(a)\n (b)\n(a)\n (b)`;
     expect(() => parse(input)).not.toThrow();
     const result = parse(input);
-    expect(result.edges[0].data.id).toEqual("n1-n2-1");
-    expect(result.edges[1].data.id).toEqual("n1-n2-2");
-    expect(result.edges[2].data.id).toEqual("n1-n2-3");
+    expect(result.edges[0]?.data.id).toEqual("n1-n2-1");
+    expect(result.edges[1]?.data.id).toEqual("n1-n2-2");
+    expect(result.edges[2]?.data.id).toEqual("n1-n2-3");
   });
 
   test("should auto-increment edge ids", () => {
     const result = parse(`a\n  (b)\n  (b)\n  b`);
-    expect(result.edges[0].data.id).toEqual("n1-n4-1");
-    expect(result.edges[1].data.id).toEqual("n1-n4-2");
-    expect(result.edges[2].data.id).toEqual("n1-n4-3");
+    expect(result.edges[0]?.data.id).toEqual("n1-n4-1");
+    expect(result.edges[1]?.data.id).toEqual("n1-n4-2");
+    expect(result.edges[2]?.data.id).toEqual("n1-n4-3");
   });
 
   test("should find edges created later by label", () => {
@@ -364,10 +374,10 @@ a
   (c)
 b
 c`);
-    expect(result.edges[0].source).toEqual("n2");
-    expect(result.edges[0].target).toEqual("n5");
-    expect(result.edges[1].source).toEqual("n2");
-    expect(result.edges[1].target).toEqual("n6");
+    expect(result.edges[0]?.source).toEqual("n2");
+    expect(result.edges[0]?.target).toEqual("n5");
+    expect(result.edges[1]?.source).toEqual("n2");
+    expect(result.edges[1]?.target).toEqual("n6");
   });
 
   test("indents under pointers should also produce edge to pointer", () => {
@@ -376,10 +386,10 @@ b
 a
   (b)
     c`);
-    expect(result.edges[0].source).toEqual("n3");
-    expect(result.edges[0].target).toEqual("n2");
-    expect(result.edges[1].source).toEqual("n2");
-    expect(result.edges[1].target).toEqual("n5");
+    expect(result.edges[0]?.source).toEqual("n3");
+    expect(result.edges[0]?.target).toEqual("n2");
+    expect(result.edges[1]?.source).toEqual("n2");
+    expect(result.edges[1]?.target).toEqual("n5");
   });
 
   /* Misc */
@@ -391,17 +401,17 @@ a
 
   test("should allow escaped colons in labels", () => {
     const result = parse(`this line has a colon \\: in it`);
-    expect(result.nodes[0].data.label).toEqual("this line has a colon : in it");
+    expect(result.nodes[0]?.data.label).toEqual("this line has a colon : in it");
   });
 
   test("should allow escaped slashes in labels", () => {
     const result = parse(`this line has two slashes \\/\\/ in it`);
-    expect(result.nodes[0].data.label).toEqual("this line has two slashes // in it");
+    expect(result.nodes[0]?.data.label).toEqual("this line has two slashes // in it");
   });
 
   test("emojis should be valid in labels", () => {
     const result = parse(`👍`);
-    expect(result.nodes[0].data.label).toEqual("👍");
+    expect(result.nodes[0]?.data.label).toEqual("👍");
   });
 
   /* Errors */
@@ -444,15 +454,15 @@ a
   test("should create containers from curly brackets", () => {
     const result = parse(`a {\n\tb\n\tc\n}`);
     expect(result.nodes.length).toEqual(3);
-    expect(result.nodes[1].data.parent).toEqual("n1");
-    expect(result.nodes[2].data.parent).toEqual("n1");
+    expect(result.nodes[1]?.data.parent).toEqual("n1");
+    expect(result.nodes[2]?.data.parent).toEqual("n1");
   });
 
   test("should create edges inside of containers", () => {
     const result = parse(`a {\n\tb\n\t\tc\n}`);
     expect(result.edges.length).toEqual(1);
-    expect(result.edges[0].source).toEqual("n2");
-    expect(result.edges[0].target).toEqual("n3");
+    expect(result.edges[0]?.source).toEqual("n2");
+    expect(result.edges[0]?.target).toEqual("n3");
     expect(result.nodes.slice(1).every((n) => n.data.parent === "n1")).toEqual(true);
   });
 
@@ -464,9 +474,9 @@ a {
 c
   (a)`);
     expect(result.edges.length).toEqual(1);
-    expect(result.edges[0].source).toEqual("n5");
-    expect(result.edges[0].target).toEqual("n2");
-    expect(result.nodes[1].data.parent).toEqual("n2");
+    expect(result.edges[0]?.source).toEqual("n5");
+    expect(result.edges[0]?.target).toEqual("n2");
+    expect(result.nodes[1]?.data.parent).toEqual("n2");
   });
 
   test("should allow nesting containers", () => {
@@ -478,8 +488,8 @@ a {
 }
     `);
     expect(result.nodes.length).toEqual(3);
-    expect(result.nodes[1].data.parent).toEqual("n2");
-    expect(result.nodes[2].data.parent).toEqual("n3");
+    expect(result.nodes[1]?.data.parent).toEqual("n2");
+    expect(result.nodes[2]?.data.parent).toEqual("n3");
   });
 
   test("should create a parent node with no label if none given", () => {
@@ -488,8 +498,8 @@ a {
   a
 }`);
     expect(result.nodes.length).toEqual(2);
-    expect(result.nodes[0].data.label).toEqual("");
-    expect(result.nodes[1].data.parent).toEqual("n2");
+    expect(result.nodes[0]?.data.label).toEqual("");
+    expect(result.nodes[1]?.data.parent).toEqual("n2");
   });
 
   test("nodes that are containers should have an isParent flag", () => {
@@ -497,6 +507,6 @@ a {
 a {
   b
 }`);
-    expect(result.nodes[0].data.isParent).toEqual(true);
+    expect(result.nodes[0]?.data.isParent).toEqual(true);
   });
 });

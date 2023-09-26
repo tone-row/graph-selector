@@ -1,7 +1,9 @@
 import { featuresRe } from "./regexps";
 import { Data, Descriptor } from "./types";
 
-// TODO: not sure if getFeatureData still needs to remove the features from the line and return what's left of the line
+/**
+ * Given a line, it returns the feaures from the line
+ */
 export function getFeatureData(_line: string) {
   let line = _line.slice(0).trim();
   let match: RegExpExecArray | null;
@@ -32,22 +34,24 @@ export function getFeatureData(_line: string) {
     let attrMatch: RegExpExecArray | null;
     while ((attrMatch = attrRe.exec(attributes)) != null) {
       if (!attrMatch.groups) continue;
+      const key = attrMatch.groups.key;
+      if (!key) continue;
       const hasAttributeValue = attrMatch.groups.attributeValue !== undefined;
       // if it doesn't have an attribute value, set to true and move on
       if (!hasAttributeValue) {
-        data[attrMatch.groups.key] = true;
+        data[key] = true;
         continue;
       }
 
       let value: Descriptor =
-        attrMatch.groups.value1 ?? attrMatch.groups.value2 ?? attrMatch.groups.value3;
+        attrMatch.groups.value1 ?? attrMatch.groups.value2 ?? attrMatch.groups.value3 ?? "";
       const userSuppliedString = attrMatch.groups.rawValue !== value;
       // if value is a number and user didn't supply a string (e.g. [hello=1] instead of [hello="1"])
       // then parse it as a number
       if (!userSuppliedString && !isNaN(Number(value))) {
         value = Number(value);
       }
-      data[attrMatch.groups.key] = value;
+      data[key] = value;
     }
   }
 

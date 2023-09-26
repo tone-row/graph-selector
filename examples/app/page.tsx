@@ -19,7 +19,7 @@ export default function Home() {
   return (
     <div className="page max-w-5xl p-4 mx-auto grid gap-12 min-h-screen content-start">
       <header className="grid items-baseline justify-between grid-flow-col">
-        <h1 className="text-xl text-purple-700 font-bold">Graph Selector</h1>
+        <h1 className="text-xl text-indigo-700 font-bold">Graph Selector</h1>
         <div className="right flex gap-3 items-center text-[0px]">
           <a
             href="https://twitter.com/tone_row_"
@@ -115,12 +115,8 @@ export default function Home() {
 function Banner() {
   return (
     <div className="banner grid gap-4 max-w-xl">
-      <h2 className="text-3xl font-bold">
-        Describe graphs and their associated data in an{" "}
-        <span className="text-purple-600 italic">
-          expressive, agnostic syntax
-        </span>
-        .
+      <h2 className="text-2xl tracking-tight">
+        Describe graphs and their associated data in an expressive, agnostic syntax.
       </h2>
       <p className="text-sm">
         Graph Selector is a language for expressing graphs, such as nodes and
@@ -131,14 +127,14 @@ function Banner() {
       </p>
       <div className="flex justify-start gap-2">
         <a
-          className="flex justify-start items-center gap-2 py-2 px-4 bg-purple-700 text-white rounded active:bg-purple-900 hover:bg-purple-800"
+          className="flex justify-start items-center gap-2 py-2 px-4 bg-indigo-700 text-white rounded active:bg-indigo-900 hover:bg-indigo-800"
           href="#installation"
         >
           Get started <FaArrowRight size={16} />
         </a>
         <a
           href="https://github.com/tone-row/graph-selector"
-          className="flex justify-start items-center gap-2 py-2 px-4 bg-white text-purple-700 rounded border-2 border-purple-700 hover:bg-purple-700 hover:text-white active:bg-purple-800"
+          className="flex justify-start items-center gap-2 py-2 px-4 bg-white text-indigo-700 rounded border-2 border-indigo-700 hover:bg-indigo-700 hover:text-white active:bg-indigo-800"
         >
           <FaGithub size={20} />
           Github
@@ -148,7 +144,7 @@ function Banner() {
         Made with ❤️ by{" "}
         <a
           href="https://twitter.com/tone_row_"
-          className="text-purple-600 hover:underline"
+          className="text-indigo-600 hover:underline"
         >
           Tone Row
         </a>
