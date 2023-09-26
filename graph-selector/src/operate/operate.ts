@@ -18,7 +18,7 @@ export type OperationKey = keyof typeof operations;
 
 /** Create a type which is a tuple. First the opertion key, then the paramaters of the function */
 export type Operation = {
-  [K in OperationKey]: [K, Omit<Parameters<typeof operations[K]>[0], "line">];
+  [K in OperationKey]: [K, Omit<Parameters<(typeof operations)[K]>[0], "line">];
 }[OperationKey];
 
 export type Instruction = {
