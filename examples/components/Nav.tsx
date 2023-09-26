@@ -59,7 +59,7 @@ export function Nav() {
   };
   return (
     <div className="sticky top-[-1px] pt-3 z-10 -mt-3" ref={navRef}>
-      <nav className="rounded bg-white p-3 border-2 border-black mt-[1px]">
+      <nav className="rounded bg-white p-3 mt-[1px]">
         <button
           className="text-xs flex content-center items-center gap-2 w-full justify-end -mt-2 p-2 pb-0 text-neutral-500 hover:text-neutral-700 sm:hidden"
           onClick={() => {

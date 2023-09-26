@@ -7,11 +7,12 @@
   "scripts": {
     "build": "turbo run build",
     "dev": "turbo run dev",
-    "test": "turbo run test",
+    "test": "turbo run test:ci",
     "test:coverage": "pnpm --parallel test:coverage",
     "test:watch": "pnpm --parallel test:watch",
     "lint": "pnpm -F graph-selector lint",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "browsers": "pnpm up -r caniuse-lite --workspace graph-selector"
   },
   "keywords": [],
   "author": "",

@@ -9,27 +9,7 @@ html {
 }
 
 body {
-  background-blend-mode: normal;
-  background-color: #0000;
-  background-image: repeating-radial-gradient(
-      circle at -62% 25%,
-      #ffffff1f,
-      #ffffff1f 60px,
-      #d1d1d187 60px 62px
-    ),
-    repeating-radial-gradient(
-      circle at -63% -220%,
-      #ffffff1f,
-      #ffffff1f 60px,
-      #d1d1d187 60px 62px
-    ),
-    linear-gradient(23deg, #aaaaaa70, #aaaaaa70 0%, #d1d1d187 100%);
-  background-position: 0 0;
-  background-repeat: repeat, repeat, repeat;
-  background-size: 102% 100%;
-  background-attachment: scroll, scroll, scroll;
-  background-origin: padding-box, padding-box, padding-box;
-  background-clip: border-box, border-box, border-box;
+  background-color: #e1edff;
 }
 
 @media (min-width: 640px) {

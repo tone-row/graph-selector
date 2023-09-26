@@ -1,3 +1,5 @@
+import { describe, expect, test } from "vitest";
+
 import { removeDataAttributeFromNode } from "./removeDataAttributeFromNode";
 
 describe("removeDataAttributeFromNode", () => {

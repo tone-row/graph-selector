@@ -1,3 +1,4 @@
+import { describe, expect, it, test } from "vitest";
 import { removeClassesFromNode } from "./removeClassesFromNode";
 
 describe("removeClassFromNode", () => {
