@@ -3,7 +3,9 @@ import { getEdgeBreakIndex, getFeaturesIndex } from "./regexps";
 
 import { getFeatureData } from "./getFeatureData";
 import { matchAndRemovePointers } from "./matchAndRemovePointers";
-import strip from "strip-comments";
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
+import { strip } from "@tone-row/strip-comments";
 import { ParseError } from "./ParseError";
 
 // TODO: these types could probably be improved to match the target types (in ./types.ts) more closely
