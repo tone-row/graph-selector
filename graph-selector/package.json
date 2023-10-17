@@ -1,6 +1,6 @@
 {
   "name": "graph-selector",
-  "version": "0.9.11",
+  "version": "0.9.12",
   "description": "Parse indented text (flowchart.fun syntax) into a graph",
   "source": "src/graph-selector.ts",
   "main": "dist/graph-selector.js",
@@ -44,6 +44,7 @@
     "vitest": "^0.34.5"
   },
   "dependencies": {
+    "@tone-row/strip-comments": "^2.0.6",
     "@types/cytoscape": "^3.19.11",
     "html-entities": "^2.4.0",
     "monaco-editor": "^0.43.0",

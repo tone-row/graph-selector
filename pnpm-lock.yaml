@@ -120,6 +120,9 @@ importers:
 
   graph-selector:
     dependencies:
+      '@tone-row/strip-comments':
+        specifier: ^2.0.6
+        version: 2.0.6
       '@types/cytoscape':
         specifier: ^3.19.11
         version: 3.19.11
@@ -2090,6 +2093,11 @@ packages:
     resolution: {integrity: sha512-4C7nX/dvpzB7za4Ql9K81xK3HPxCpHMgwTZVyf+9JQ6VUbn9jjZVN7/Nkdz/Ugzs2CSjqnL/UPXroiVBVHUWUw==}
     dependencies:
       tslib: 2.4.0
+    dev: false
+
+  /@tone-row/strip-comments@2.0.6:
+    resolution: {integrity: sha512-Fg21Nu+RDQ4NBEYP8vJyDg5TMjdGEQQSKbW8nfipQZo/cmP6l7MFJpdIqJfLHQoRSxWqqKtkWXWiMqxcVgY4pg==}
+    engines: {node: '>=10'}
     dev: false
 
   /@trysound/sax@0.2.0:
