@@ -1,3 +1,4 @@
+import { getIndentSize } from "./getIndentSize";
 import { Graph } from "./types";
 
 type StringifyOptions = {
@@ -14,7 +15,7 @@ const defaultOptions: StringifyOptions = {
 /**
  * Convets a graph to graph-selector DSL
  */
-export function stringify(graph: Graph, _options: StringifyOptions = defaultOptions) {
+export function stringify(graph: Graph, options: StringifyOptions = defaultOptions) {
   const lines: string[] = [];
 
   // In compact mode, we will store where edges should be added
@@ -41,9 +42,35 @@ export function stringify(graph: Graph, _options: StringifyOptions = defaultOpti
     // Only include data if there is any
     const data = stringifyData(node);
 
+    // build the line
     const features = [idStr, classesStr, data].filter(Boolean).join("");
     const line = [labelStr, features].filter(Boolean).join(" ");
-    lines.push(line);
+
+    // Store how indented the parent is for use in compact mode
+    let parentIndent = 0;
+    let insertEdgeAt: number | undefined = undefined;
+
+    if (options.compact) {
+      // check if there is an edge to this id alread in the list of lines
+      const targetStr = idStr ? `(${idStr})` : `(${labelStr})`;
+      const existingLineIndex = lines.findIndex((line) => line.includes(targetStr));
+
+      // If this node has not been referenced yet, add it to the list of lines
+      if (existingLineIndex === -1) {
+        lines.push(line);
+      } else {
+        // replace the targetStr with the line
+        lines[existingLineIndex] = lines[existingLineIndex]!.replace(targetStr, line);
+
+        // set the insertEdgeAt to the index of the next line
+        insertEdgeAt = existingLineIndex + 1;
+
+        // set the parentIndent to the indent of the existing line
+        parentIndent = getIndentSize(lines[existingLineIndex]!);
+      }
+    } else {
+      lines.push(line);
+    }
 
     // get all edges whose source is this node
     const edges = graph.edges.filter((edge) => edge.source === node.id);
@@ -84,8 +111,16 @@ export function stringify(graph: Graph, _options: StringifyOptions = defaultOpti
       // wrap link in ()
       const wrappedLink = `(${link})`;
 
-      const line = ["  ", label, wrappedLink].filter(Boolean).join("");
-      lines.push(line);
+      const parentIndentStr = " ".repeat(parentIndent);
+
+      const line = [parentIndentStr, "  ", label, wrappedLink].filter(Boolean).join("");
+
+      if (options.compact && insertEdgeAt !== undefined) {
+        lines.splice(insertEdgeAt, 0, line);
+        insertEdgeAt++;
+      } else {
+        lines.push(line);
+      }
     }
   }
 
