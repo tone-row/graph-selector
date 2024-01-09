@@ -594,4 +594,183 @@ Step 5 #n9
 Step 7 #n10
   (#n8)`);
   });
+
+  it("can also return a compact version", () => {
+    const result = stringify(
+      {
+        edges: [
+          {
+            data: {
+              classes: "",
+              id: "",
+              label: "",
+            },
+            source: "n1",
+            target: "n2",
+          },
+          {
+            data: {
+              classes: "",
+              id: "",
+              label: "",
+            },
+            source: "n2",
+            target: "n3",
+          },
+          {
+            data: {
+              classes: "",
+              id: "",
+              label: "label",
+            },
+            source: "n3",
+            target: "n4",
+          },
+          {
+            data: {
+              classes: "",
+              id: "",
+              label: "",
+            },
+            source: "n3",
+            target: "n6",
+          },
+          {
+            data: {
+              classes: "",
+              id: "",
+              label: "",
+            },
+            source: "n3",
+            target: "n9",
+          },
+          {
+            data: {
+              classes: "",
+              id: "",
+              label: "",
+            },
+            source: "n4",
+            target: "n10",
+          },
+          {
+            data: {
+              classes: "",
+              id: "",
+              label: "",
+            },
+            source: "n6",
+            target: "n7",
+          },
+          {
+            data: {
+              classes: "",
+              id: "",
+              label: "",
+            },
+            source: "n7",
+            target: "n8",
+          },
+          {
+            data: {
+              classes: "",
+              id: "",
+              label: "",
+            },
+            source: "n9",
+            target: "n10",
+          },
+          {
+            data: {
+              classes: "",
+              id: "",
+              label: "",
+            },
+            source: "n10",
+            target: "n8",
+          },
+        ],
+        nodes: [
+          {
+            data: {
+              classes: "",
+              id: "n1",
+              label: "Start",
+            },
+          },
+          {
+            data: {
+              classes: "",
+              id: "n2",
+              label: "Step 1",
+            },
+          },
+          {
+            data: {
+              classes: "",
+              id: "n3",
+              label: "Step 2",
+            },
+          },
+          {
+            data: {
+              classes: "",
+              id: "n4",
+              label: "Step 3",
+            },
+          },
+          {
+            data: {
+              classes: "",
+              id: "n6",
+              label: "Step 4",
+            },
+          },
+          {
+            data: {
+              classes: "",
+              id: "n7",
+              label: "Step 6",
+            },
+          },
+          {
+            data: {
+              classes: "",
+              id: "n8",
+              label: "Finish",
+            },
+          },
+          {
+            data: {
+              classes: "",
+              id: "n9",
+              label: "Step 5",
+            },
+          },
+          {
+            data: {
+              classes: "",
+              id: "n10",
+              label: "Step 7",
+            },
+          },
+        ],
+      },
+      {
+        compact: true,
+      },
+    );
+
+    expect(result).toBe(`Start #n1
+  Step 1 #n2
+    Step 2 #n3
+      label: Step 3 #n4
+        Step 7 #n10
+          (#n8)
+      Step 4 #n6
+        Step 6 #n7
+          Finish #n8
+      Step 5 #n9
+        (#n10)`);
+  });
 });

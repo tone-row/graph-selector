@@ -7,6 +7,7 @@ import { matchAndRemovePointers } from "./matchAndRemovePointers";
 // @ts-ignore
 import { strip } from "@tone-row/strip-comments";
 import { ParseError } from "./ParseError";
+import { getIndentSize } from "./getIndentSize";
 
 // TODO: these types could probably be improved to match the target types (in ./types.ts) more closely
 
@@ -397,11 +398,6 @@ export function parse(text: string): Graph {
     nodes,
     edges,
   };
-}
-
-function getIndentSize(line: string) {
-  const match = line.match(/^\s*/);
-  return match ? match[0].length : 0;
 }
 
 function findParent(indentSize: number, ancestors: Ancestors): Ancestor {
