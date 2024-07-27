@@ -3,21 +3,25 @@
   "version": "0.10.0",
   "description": "Parse indented text (flowchart.fun syntax) into a graph",
   "source": "src/graph-selector.ts",
-  "main": "dist/graph-selector.js",
-  "umd:main": "dist/graph-selector.umd.js",
-  "module": "dist/graph-selector.mjs",
+  "main": "./dist/graph-selector.cjs",
+  "module": "./dist/graph-selector.mjs",
+  "types": "./dist/graph-selector.d.cts",
   "exports": {
-    "types": "./dist/graph-selector.d.ts",
-    "require": "./dist/graph-selector.js",
-    "default": "./dist/graph-selector.modern.mjs"
+    "require": {
+      "types": "./dist/graph-selector.d.cts",
+      "default": "./dist/graph-selector.cjs"
+    },
+    "import": {
+      "types": "./dist/graph-selector.d.mts",
+      "default": "./dist/graph-selector.mjs"
+    }
   },
-  "types": "dist/graph-selector.d.ts",
   "files": [
     "dist"
   ],
   "scripts": {
-    "build": "rm -rf dist && microbundle",
-    "dev": "microbundle watch",
+    "build": "pkgroll",
+    "dev": "pkgroll --watch",
     "test": "vitest",
     "test:ci": "vitest run",
     "test:coverage": "vitest --coverage",
@@ -31,23 +35,23 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "@types/strip-comments": "^2.0.2",
     "@typescript-eslint/eslint-plugin": "^6.7.3",
     "@typescript-eslint/parser": "^6.7.3",
     "eslint": "^8.50.0",
     "eslint-config-prettier": "^9.0.0",
     "eslint-plugin-no-lookahead-lookbehind-regexp": "^0.3.0",
     "eslint-plugin-prettier": "^5.0.0",
-    "microbundle": "^0.15.1",
     "prettier": "^3.0.3",
     "typescript": "^5.2.2",
     "vitest": "^0.34.5"
   },
   "dependencies": {
+    "@types/strip-comments": "^2.0.2",
     "@tone-row/strip-comments": "^2.0.6",
     "@types/cytoscape": "^3.19.11",
     "html-entities": "^2.4.0",
     "monaco-editor": "^0.43.0",
+    "pkgroll": "^2.4.1",
     "strip-comments": "^2.0.1"
   },
   "browserslist": [
