@@ -5,26 +5,29 @@
   "main": "index.js",
   "private": true,
   "scripts": {
-    "build": "turbo run build",
-    "dev": "turbo run dev",
-    "test": "turbo run test:ci",
-    "test:coverage": "pnpm --parallel test:coverage",
-    "test:watch": "pnpm --parallel test:watch",
-    "lint": "pnpm -F graph-selector lint",
+    "build": "bun --filter graph-selector build; bun --filter examples build",
+    "dev": "bun --filter '*' dev",
+    "test": "bun --filter '*' test",
+    "test:watch": "bun --filter '*' test:watch",
+    "lint": "bun --filter graph-selector lint",
     "prepare": "husky install",
-    "browsers": "pnpm up -r caniuse-lite --workspace graph-selector"
+    "browsers": "bun --filter graph-selector up -r caniuse-lite"
   },
+  "workspaces": [
+    "graph-selector",
+    "examples"
+  ],
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
     "husky": "^8.0.0",
-    "lint-staged": "^13.0.3",
-    "turbo": "^1.9.3"
+    "lint-staged": "^13.0.3"
   },
+  "packageManager": "bun@1.1.21",
   "lint-staged": {
     "graph-selector/**/*.{js,ts}": [
-      "pnpm -F graph-selector lint:staged"
+      "bun --filter graph-selector lint:staged"
     ]
   }
 }

@@ -3,21 +3,14 @@ import { parse } from "./parse";
 export const languageId = "graphselector";
 export const defaultTheme = "graphselector-theme";
 export const defaultThemeDark = "graphselector-theme-dark";
-enum Tokens {
-  edgeFeatures = "edgeFeatures",
-  nodeOrPointer = "nodeOrPointer",
-  pointer = "pointer",
-}
-export const colors: { [key in Tokens]: { light: string; dark: string } } = {
-  nodeOrPointer: { light: "#202020", dark: "#d4d4d4" },
-  edgeFeatures: { light: "#5c6fff", dark: "#5c6fff" },
-  pointer: { light: "#00c722", dark: "#00c722" },
-};
 
-export const languageTokens = {
-  edgeFeatures: "edgeFeatures",
-  nodeOrPointer: "nodeOrPointer",
-  pointer: "pointer",
+export const colors: Record<string, { light: string; dark: string }> = {
+  string: { light: "#251d1d", dark: "#fffcff" },
+  attribute: { light: "#8252eb", dark: "#9e81ef" },
+  variable: { light: "#00c722", dark: "#00c722" },
+  comment: { light: "#808080", dark: "#808080" },
+  type: { light: "#4750f3", dark: "#7f96ff" },
+  "delimiter.curly": { light: "#251d1d", dark: "#fffcff" },
 };
 
 export function registerHighlighter(monaco: typeof Monaco) {
@@ -49,28 +42,27 @@ export function registerHighlighter(monaco: typeof Monaco) {
     defaultToken: "invalid",
     tokenizer: {
       root: [
-        [/^\s+[^\n]*$/, "@rematch", "edge"],
-        [/^[^\n]*$/, "@rematch", "noEdge"],
+        // \/\/ single-line comment...
+        [/\/\/.*/, "comment"],
+        [/\/\*/, "comment", "@comment"],
+        // \w+:
+        [/\s+(\w|\s)*\w:/, "type"],
+        // (.*)
+        [/\(.*\)/, "variable"],
+        // .color_blue
+        [/\.\w+/, "attribute"],
+        // [x] or [y=12] or [z="hello"]
+        [/\[\w+=\w+\]|\[\w+\]|\["[^"]*"|'[^']*']/, "attribute"],
+        // a '{' or '}'
+        [/\{|\}/, "delimiter.curly"],
+        // every other word is string
+        [/\b\w+\b/, "string"],
       ],
-      edge: [
-        [/^.*[^\\]: .*\S+.*/, "@rematch", "edgeFeatures"],
-        [/.*/, "@rematch", Tokens.nodeOrPointer], // should be invalid
-      ],
-      noEdge: [[/.*/, "@rematch", Tokens.nodeOrPointer]],
-      edgeFeatures: [
-        [/^.*[^\\]: /, Tokens.edgeFeatures],
-        [/.*\S+.*$/, "@rematch", Tokens.nodeOrPointer],
-      ],
-      nodeOrPointer: [
-        // whitespace
-        [/\s+/, Tokens.nodeOrPointer],
-        [/\(/, Tokens.pointer, "@pointer"],
-        [/.*$/, Tokens.nodeOrPointer, "@popall"],
-      ],
-      pointer: [
-        [/\)$/, Tokens.pointer, "@popall"],
-        [/\)/, Tokens.pointer, "@pop"],
-        [/[^\(\)]+/, Tokens.pointer],
+      comment: [
+        [/[^\/*]+/, "comment"],
+        [/\/\*/, "comment", "@push"], // nested comment
+        ["\\*/", "comment", "@pop"],
+        [/[\/*]/, "comment"],
       ],
     },
   });
@@ -115,20 +107,24 @@ export function registerHighlighter(monaco: typeof Monaco) {
   monaco.editor.defineTheme(defaultTheme, {
     base: "vs",
     inherit: false,
-    colors: {},
-    rules: Object.entries(languageTokens).map(([token, value]) => ({
-      token: value,
-      foreground: colors[token as Tokens].light,
+    // colors: {},
+    rules: Object.entries(colors).map(([token, value]) => ({
+      token,
+      foreground: value.light,
     })),
+    // Define bracket colors
+    colors: {},
   });
 
   monaco.editor.defineTheme(defaultThemeDark, {
     base: "vs-dark",
     inherit: false,
-    colors: {},
-    rules: Object.entries(languageTokens).map(([token, value]) => ({
-      token: value,
-      foreground: colors[token as Tokens].dark,
+    // colors: {},
+    rules: Object.entries(colors).map(([token, value]) => ({
+      token,
+      foreground: value.dark,
     })),
+    // Define bracket colors
+    colors: {},
   });
 }

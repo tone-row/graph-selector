@@ -1,4 +1,3 @@
-import { Editor } from "@/components/Editor";
 import { PlaygroundState } from "@/components/PlaygroundState";
 
 export default function Page() {
