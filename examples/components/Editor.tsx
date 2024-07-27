@@ -17,7 +17,7 @@ export function Editor({
     <div className="h-64">
       <E
         className="editor"
-        theme={highlight.defaultTheme}
+        theme={highlight.defaultThemeDark}
         beforeMount={highlight.registerHighlighter}
         defaultLanguage={highlight.languageId}
         options={{
@@ -38,6 +38,9 @@ export function Editor({
             highlightActiveIndentation: false,
             highlightActiveBracketPair: false,
           },
+          // @ts-ignore
+          "bracketPairColorization.enabled": false,
+          matchBrackets: "always",
           minimap: {
             enabled: false,
           },
