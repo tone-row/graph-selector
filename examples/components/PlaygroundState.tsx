@@ -1,11 +1,23 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { parse } from "graph-selector";
+import { highlight, parse } from "graph-selector";
 import { Editor } from "./Editor";
 
-const defaultCode = `Hello World
- this: goes to this .color_red[n=15]
+const defaultCode = `Welcome to Flowchart Fun!
+  Start: Modify text to see it transform into a flowchart on the right.
+  Understand Syntax .shape_circle
+    Begin Typing: Start with a label or decision.
+    Decisions: Use colons like "Decisions:".
+    Indent for Steps: Indicate progression or dependency.
+    Customize: Add classes to change color and shape \\(.color_red) .color_red
+    Right-click nodes for more options.
+  Use AI .color_green
+    Paste a document to convert it into a flowchart.
+  Share Your Work .color_blue
+    Download or share your flowchart using the 'Share' button.
+    Hello World
+  this: goes to this .color_red[n=15]
  (goes to this)
   fun {
     wow
@@ -31,6 +43,7 @@ export function PlaygroundState() {
         className="shadow w-12"
         value={value}
         onChange={(val) => val && setValue(val)}
+        theme={highlight.defaultThemeDark}
       />
       <code style={{ fontSize: 12, maxWidth: "100%", overflow: "auto" }}>
         {JSON.stringify(graph)}

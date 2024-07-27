@@ -48,7 +48,7 @@ export function registerHighlighter(monaco: typeof Monaco) {
         // \w+:
         [/\s+(\w|\s)*\w:/, "type"],
         // (.*)
-        [/\(.*\)/, "variable"],
+        [/ \(/, "variable", "@variable"],
         // .color_blue
         [/\.\w+/, "attribute"],
         // [x] or [y=12] or [z="hello"]
@@ -56,13 +56,17 @@ export function registerHighlighter(monaco: typeof Monaco) {
         // a '{' or '}'
         [/\{|\}/, "delimiter.curly"],
         // every other word is string
-        [/\b\w+\b/, "string"],
+        [/./, "string"],
       ],
       comment: [
         [/[^\/*]+/, "comment"],
         [/\/\*/, "comment", "@push"], // nested comment
         ["\\*/", "comment", "@pop"],
         [/[\/*]/, "comment"],
+      ],
+      variable: [
+        [/[^)]+/, "variable"],
+        [/\)/, "variable", "@pop"],
       ],
     },
   });

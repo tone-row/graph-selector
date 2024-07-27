@@ -3,12 +3,13 @@
 import { default as Ed, EditorProps } from "@monaco-editor/react";
 
 import { highlight } from "graph-selector";
+import { memo } from "react";
 
 function E(props: EditorProps) {
   return <Ed {...props} />;
 }
 
-export function Editor({
+export const Editor = memo(function Editor({
   h = 200,
   options = {},
   ...props
@@ -21,7 +22,7 @@ export function Editor({
         beforeMount={highlight.registerHighlighter}
         defaultLanguage={highlight.languageId}
         options={{
-          theme: highlight.defaultTheme,
+          theme: highlight.defaultThemeDark,
           fontSize: 16,
           lineNumbersMinChars: 0,
           lineDecorationsWidth: 0,
@@ -50,4 +51,4 @@ export function Editor({
       />
     </div>
   );
-}
+});
