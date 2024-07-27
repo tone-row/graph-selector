@@ -6,15 +6,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - name: Install Node.js
-        uses: actions/setup-node@v3
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
         with:
-          node-version: "lts/*" # Use the latest LTS version
-      - uses: pnpm/action-setup@v4
-        with:
-          version: 8.6.0
-          run_install: true
+          bun-version: latest
+      - name: Install Dependencies
+        run: bun install --frozen-lockfile
       - name: Lint
-        run: pnpm -F graph-selector lint:ci
+        run: bun --filter graph-selector lint:ci
       - name: Run Tests
-        run: pnpm test
+        run: bun --filter graph-selector test
