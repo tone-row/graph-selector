@@ -10,7 +10,7 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: "lts/*" # Use the latest LTS version
-      - uses: pnpm/action-setup@v2.2.4
+      - uses: pnpm/action-setup@v4
         with:
           version: 8.6.0
           run_install: true
@@ -18,10 +18,3 @@ jobs:
         run: pnpm -F graph-selector lint:ci
       - name: Run Tests
         run: pnpm test
-      # - name: Upload Coverage
-      #   uses: codecov/codecov-action@v3
-      #   with:
-      #     root_dir: ./graph-selector # optional (default = .)
-      #     fail_ci_if_error: false # optional (default = false)
-      #     verbose: true # optional (default = false)
-      #     token: ${{ secrets.CODECOV_TOKEN }} # optional
