@@ -46,13 +46,15 @@ export function registerHighlighter(monaco: typeof Monaco) {
         [/\/\/.*/, "comment"],
         [/\/\*/, "comment", "@comment"],
         // \w+:
-        [/\s+(\w|\s)*\w:/, "type"],
+        [/\s+([^:]+):/, "type"], // Updated regex to allow any character except colon
         // (.*)
         [/ \(/, "variable", "@variable"],
+        // \.color_blue (escaped period)
+        [/\\\.\w+/, "string"], // Add this rule to handle escaped periods
         // .color_blue
         [/\.\w+/, "attribute"],
         // [x] or [y=12] or [z="hello"]
-        [/\[\w+=\w+\]|\[\w+\]|\["[^"]*"|'[^']*']/, "attribute"],
+        [/\[\w+=\w+\]|\[\w+\]|\["[^"]*"|'[^']*'/, "attribute"],
         // a '{' or '}'
         [/\{|\}/, "delimiter.curly"],
         // every other word is string

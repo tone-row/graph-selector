@@ -8,8 +8,8 @@ const defaultCode = `Welcome to Flowchart Fun!
   Start: Modify text to see it transform into a flowchart on the right.
   Understand Syntax .shape_circle
     Begin Typing: Start with a label or decision.
-    Decisions: Use colons like "Decisions:".
-    Indent for Steps: Indicate progression or dependency.
+    Pete's Coffee: Use colons like "Decisions:".
+    Indent for Steps +=-=0349-03948*@#$d: Indicate progression or dependency.
     Customize: Add classes to change color and shape \\(.color_red) .color_red
     Right-click nodes for more options.
   Use AI .color_green
