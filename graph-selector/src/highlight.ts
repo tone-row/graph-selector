@@ -45,8 +45,8 @@ export function registerHighlighter(monaco: typeof Monaco) {
         // \/\/ single-line comment...
         [/\/\/.*/, "comment"],
         [/\/\*/, "comment", "@comment"],
-        // \w+:
-        [/\s+([^:]+):/, "type"], // Updated regex to allow any character except colon
+        // Edge label at start of line (after optional indentation)
+        [/^(\s+[^:\s][^:]*:)/, "type"], // Match entire edge label including indentation
         // (.*)
         [/ \(/, "variable", "@variable"],
         // \.color_blue (escaped period)

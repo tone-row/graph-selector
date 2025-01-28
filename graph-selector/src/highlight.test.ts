@@ -166,4 +166,47 @@ describe("highlight", () => {
     ]);
     expect(monaco.languages.tokenize).toHaveBeenCalledWith("hello (world)", languageId);
   });
+
+  test("tokenizes edge label with colon in node label", () => {
+    // Mock the tokenize function for each line
+    (monaco.languages.tokenize as Mock)
+      .mockReturnValueOnce([{ offset: 0, type: "string", length: 1 }])
+      .mockReturnValueOnce([
+        { offset: 0, type: "type", length: 13 }, // "  edge-label:"
+        { offset: 13, type: "string", length: 19 }, // " label with colon :"
+      ]);
+
+    const tokens = getTokens("a\n  edge-label: label with colon :");
+    expect(tokens).toEqual([
+      { token: "string", content: "a" },
+      { token: "type", content: "  edge-label:" },
+      { token: "string", content: " label with colon :" },
+    ]);
+    expect(monaco.languages.tokenize).toHaveBeenCalledWith("a", languageId);
+    expect(monaco.languages.tokenize).toHaveBeenCalledWith(
+      "  edge-label: label with colon :",
+      languageId,
+    );
+  });
+
+  test("tokenizes edge label with variable", () => {
+    // Mock the tokenize function for each line
+    (monaco.languages.tokenize as Mock)
+      .mockReturnValueOnce([{ offset: 0, type: "string", length: 4 }]) // "test"
+      .mockReturnValueOnce([
+        { offset: 0, type: "type", length: 10 }, // "  goes to:"
+        { offset: 10, type: "string", length: 1 }, // " "
+        { offset: 11, type: "variable", length: 6 }, // "(test)"
+      ]);
+
+    const tokens = getTokens("test\n  goes to: (test)");
+    expect(tokens).toEqual([
+      { token: "string", content: "test" },
+      { token: "type", content: "  goes to:" },
+      { token: "string", content: " " },
+      { token: "variable", content: "(test)" },
+    ]);
+    expect(monaco.languages.tokenize).toHaveBeenCalledWith("test", languageId);
+    expect(monaco.languages.tokenize).toHaveBeenCalledWith("  goes to: (test)", languageId);
+  });
 });
