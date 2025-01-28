@@ -288,4 +288,20 @@ describe("highlight", () => {
     expect(spacedResult?.token).toBe("string");
     expect(spacedResult?.match).toBe(" ");
   });
+
+  test("tokenizes quoted text correctly", () => {
+    // Test quoted text in labels (should be string)
+    const singleQuoteResult = testTokenizerRule("This is 'quoted' text");
+    expect(singleQuoteResult?.token).toBe("string");
+    expect(singleQuoteResult?.match).toBe("This");
+
+    // Test quoted text in attributes (should be attribute)
+    const attrResult = testTokenizerRule("[label='hello']");
+    expect(attrResult?.token).toBe("attribute");
+    expect(attrResult?.match).toBe("[label='hello']");
+
+    const doubleQuoteResult = testTokenizerRule('[label="hello"]');
+    expect(doubleQuoteResult?.token).toBe("attribute");
+    expect(doubleQuoteResult?.match).toBe('[label="hello"]');
+  });
 });

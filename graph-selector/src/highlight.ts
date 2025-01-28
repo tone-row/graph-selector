@@ -56,8 +56,8 @@ export function registerHighlighter(monaco: typeof Monaco) {
         [/#[\w-]+(\.[a-zA-Z][\w-]*)*|\.[a-zA-Z][\w-]*(\.[\w-]+)*/, "attribute"],
         // \.color_blue (escaped period)
         [/\\\.\w+/, "string"], // Add this rule to handle escaped periods
-        // [x] or [y=12] or [z="hello"]
-        [/\[\w+=\w+\]|\[\w+\]|\["[^"]*"|'[^']*'/, "attribute"],
+        // [x] or [y=12] or [z="hello"] or [z='hello']
+        [/\[\w+=(\w+|"[^"]*"|'[^']*')\]|\[\w+\]/, "attribute"],
         // a '{' or '}'
         [/\{|\}/, "delimiter.curly"],
         // Words (must come after attribute rules)
