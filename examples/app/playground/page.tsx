@@ -1,12 +1,16 @@
 import { PlaygroundState } from "@/components/PlaygroundState";
 
-export default function Page({
-  searchParams,
-}: {
-  searchParams: { [key: string]: string | string[] | undefined };
-}) {
-  const initialValue = searchParams.code
-    ? decodeURIComponent(searchParams.code as string)
+type SearchParams = Promise<{ [key: string]: string | string[] | undefined }>;
+
+interface PageProps {
+  params: Promise<{ slug: string }>;
+  searchParams: SearchParams;
+}
+
+export default async function Page({ searchParams }: PageProps) {
+  const search = await searchParams;
+  const initialValue = search.code
+    ? decodeURIComponent(search.code as string)
     : undefined;
 
   return (
