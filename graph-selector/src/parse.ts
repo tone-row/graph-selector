@@ -28,6 +28,9 @@ export function parse(text: string): Graph {
   const nodes: Graph["nodes"] = [];
   const edges: Graph["edges"] = [];
 
+  // add a \ before any http:// or https://
+  text = text.replace(/(https?:)\/\//g, "$1\\/\\/");
+
   // break into lines
   let lines = strip(text, { preserveNewlines: true }).split(/\n/g);
 
