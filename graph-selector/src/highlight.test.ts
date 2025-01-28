@@ -266,4 +266,26 @@ describe("highlight", () => {
     expect(spacedHttpResult?.token).toBe("string");
     expect(spacedHttpResult?.match).toBe("  http://google.com");
   });
+
+  test("tokenizes a node with ID and class", () => {
+    // Test ID with class
+    const result = testTokenizerRule("#a.large");
+    expect(result?.token).toBe("attribute");
+    expect(result?.match).toBe("#a.large");
+
+    // Also test just an ID
+    const idResult = testTokenizerRule("#myid");
+    expect(idResult?.token).toBe("attribute");
+    expect(idResult?.match).toBe("#myid");
+
+    // And just a class
+    const classResult = testTokenizerRule(".myclass");
+    expect(classResult?.token).toBe("attribute");
+    expect(classResult?.match).toBe(".myclass");
+
+    // Test with leading space (should match the ID/class part)
+    const spacedResult = testTokenizerRule(" #a.large");
+    expect(spacedResult?.token).toBe("string");
+    expect(spacedResult?.match).toBe(" ");
+  });
 });

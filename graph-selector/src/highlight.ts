@@ -51,16 +51,19 @@ export function registerHighlighter(monaco: typeof Monaco) {
         [/^\s+[^:\s/][^:]*:/, "type"], // Match edge label but exclude URLs by preventing / after :
         // (.*)
         [/ \(/, "variable", "@variable"],
+        // #id and .class combinations (must come before word rule)
+        [/ /, "string"], // Handle space before ID/class separately
+        [/#[\w-]+(\.[a-zA-Z][\w-]*)*|\.[a-zA-Z][\w-]*(\.[\w-]+)*/, "attribute"],
         // \.color_blue (escaped period)
         [/\\\.\w+/, "string"], // Add this rule to handle escaped periods
-        // .color_blue
-        [/\.\w+/, "attribute"],
         // [x] or [y=12] or [z="hello"]
         [/\[\w+=\w+\]|\[\w+\]|\["[^"]*"|'[^']*'/, "attribute"],
         // a '{' or '}'
         [/\{|\}/, "delimiter.curly"],
-        // every other word is string
-        [/./, "string"],
+        // Words (must come after attribute rules)
+        [/[^\s#\.\[\]\{\}\(\)]+/, "string"],
+        // Spaces
+        [/\s+/, "string"],
       ],
       comment: [
         [/[^\/*]+/, "comment"],
