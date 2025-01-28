@@ -39,7 +39,7 @@ export function registerHighlighter(monaco: typeof Monaco) {
   });
 
   monaco.languages.setMonarchTokensProvider(languageId, {
-    defaultToken: "invalid",
+    defaultToken: "string",
     tokenizer: {
       root: [
         // URLs (must come before comment and edge label rules)
@@ -55,10 +55,8 @@ export function registerHighlighter(monaco: typeof Monaco) {
         [/(#[\w-]+(\.[a-zA-Z][\w-]*)*|\.[a-zA-Z][\w-]*(\.[\w-]+)*)/, "attribute"],
         // Attributes with quoted values
         [/\[\w+=(['"][^'"]*['"]|\w+)\]|\[\w+\]/, "attribute"],
-        // Standalone # and . should be treated as strings
-        [/[#.]/, "string"],
-        // Words (anything that's not whitespace or special characters)
-        [/[^\s\[\](){}<>:]+/, "string"],
+        // Escaped characters (must come before other rules)
+        [/\\[[\](){}<>:#.\/]/, "string"],
         // Spaces
         [/\s+/, "string"],
       ],

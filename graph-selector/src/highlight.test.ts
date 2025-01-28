@@ -84,6 +84,11 @@ describe("highlight", () => {
         return { token, match: match[0] };
       }
     }
+    // If no rule matches, return the default token with the first word
+    const defaultMatch = text.match(/^\S+/);
+    if (defaultMatch) {
+      return { token: tokenizer.defaultToken, match: defaultMatch[0] };
+    }
     return null;
   }
 
@@ -332,5 +337,22 @@ describe("highlight", () => {
     const partialClassResult = testTokenizerRule(".a");
     expect(partialClassResult?.token).toBe("attribute");
     expect(partialClassResult?.match).toBe(".a");
+  });
+
+  test("handles escaped characters correctly", () => {
+    // Test escaped parentheses
+    const escapedParensResult = testTokenizerRule("Escaping \\(parens\\)");
+    expect(escapedParensResult?.token).toBe("string");
+    expect(escapedParensResult?.match).toBe("Escaping");
+
+    // Test escaped brackets
+    const escapedBracketsResult = testTokenizerRule("Escaping \\[brackets\\]");
+    expect(escapedBracketsResult?.token).toBe("string");
+    expect(escapedBracketsResult?.match).toBe("Escaping");
+
+    // Test escaped characters should be treated as part of the string
+    const escapedCharResult = testTokenizerRule("\\(");
+    expect(escapedCharResult?.token).toBe("string");
+    expect(escapedCharResult?.match).toBe("\\(");
   });
 });
