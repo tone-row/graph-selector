@@ -49,8 +49,9 @@ export function registerHighlighter(monaco: typeof Monaco) {
         [/\/\*/, "comment", "@comment"],
         // Edge label at start of line (after optional indentation)
         [/^\s+[^:\s/][^:]*:/, "type"], // Match edge label but exclude URLs by preventing / after :
-        // (.*)
-        [/ \(/, "variable", "@variable"],
+        // Variable pointers (including leading space)
+        [/ \([^)]+\)/, "variable"],
+        [/\([^)]+\)/, "variable"],
         // #id and .class combinations (must come before word rule)
         [/(#[\w-]+(\.[a-zA-Z][\w-]*)*|\.[a-zA-Z][\w-]*(\.[\w-]+)*)/, "attribute"],
         // Attributes with quoted values

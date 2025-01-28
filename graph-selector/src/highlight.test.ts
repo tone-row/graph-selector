@@ -355,4 +355,26 @@ describe("highlight", () => {
     expect(escapedCharResult?.token).toBe("string");
     expect(escapedCharResult?.match).toBe("\\(");
   });
+
+  test("handles IDs and classes inside variable pointers", () => {
+    // Test ID inside pointer
+    const idPointerResult = testTokenizerRule("(#myid)");
+    expect(idPointerResult?.token).toBe("variable");
+    expect(idPointerResult?.match).toBe("(#myid)");
+
+    // Test class inside pointer
+    const classPointerResult = testTokenizerRule("(.myclass)");
+    expect(classPointerResult?.token).toBe("variable");
+    expect(classPointerResult?.match).toBe("(.myclass)");
+
+    // Test ID with class inside pointer
+    const idClassPointerResult = testTokenizerRule("(#myid.myclass)");
+    expect(idClassPointerResult?.token).toBe("variable");
+    expect(idClassPointerResult?.match).toBe("(#myid.myclass)");
+
+    // Test with space before pointer
+    const spacedPointerResult = testTokenizerRule(" (#myid)");
+    expect(spacedPointerResult?.token).toBe("variable");
+    expect(spacedPointerResult?.match).toBe(" (#myid)");
+  });
 });
