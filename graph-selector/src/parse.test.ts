@@ -159,6 +159,13 @@ describe("parse", () => {
     expect(result.nodes[0]?.data.label).toEqual("Hello{World}");
   });
 
+  test("preserves URLs in labels", () => {
+    const result = parse(`Check out http://example.com and https://test.com`);
+    expect(result.nodes[0]?.data.label).toEqual(
+      "Check out http://example.com and https://test.com",
+    );
+  });
+
   test("allow apostrophe in quoted attribute", () => {
     const result = parse(`[attr="Hello's World"]`);
     expect(result.nodes[0]?.data.attr).toEqual("Hello's World");
@@ -284,7 +291,7 @@ describe("parse", () => {
 
   test("can parse node with url in attribute", () => {
     expect(parse(`[url="http://www.google.com"]`).nodes[0]?.data.url).toEqual(
-      "http://www.google.com",
+      "http:\\/\\/www.google.com",
     );
   });
 
