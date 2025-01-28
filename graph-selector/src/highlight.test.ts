@@ -394,4 +394,24 @@ describe("highlight", () => {
     expect(spacedResult?.token).toBe("attribute");
     expect(spacedResult?.match).toBe("[size = 2.439]");
   });
+
+  test("tokenizes attributes containing URLs", () => {
+    // Test URL in attribute
+    const urlResult = testTokenizerRule(
+      '[src="https://i.ibb.co/N3r6Fv1/Screen-Shot-2023-01-11-at-2-22-31-PM.png"]',
+    );
+    expect(urlResult?.token).toBe("attribute");
+    expect(urlResult?.match).toBe(
+      '[src="https://i.ibb.co/N3r6Fv1/Screen-Shot-2023-01-11-at-2-22-31-PM.png"]',
+    );
+
+    // Test URL in attribute with leading spaces
+    const spacedUrlResult = testTokenizerRule(
+      '  [src="https://i.ibb.co/N3r6Fv1/Screen-Shot-2023-01-11-at-2-22-31-PM.png"]',
+    );
+    expect(spacedUrlResult?.token).toBe("attribute");
+    expect(spacedUrlResult?.match).toBe(
+      '  [src="https://i.ibb.co/N3r6Fv1/Screen-Shot-2023-01-11-at-2-22-31-PM.png"]',
+    );
+  });
 });

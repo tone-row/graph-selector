@@ -42,20 +42,20 @@ export function registerHighlighter(monaco: typeof Monaco) {
     defaultToken: "string",
     tokenizer: {
       root: [
-        // URLs (must come before comment and edge label rules)
-        [/^\s*https?:\/\/[^\s]+/, "string"],
-        // \/\/ single-line comment... (but not URLs)
-        [/^\/\/.*|[^:]\/\/.*/, "comment"],
-        [/\/\*/, "comment", "@comment"],
+        // Attributes with quoted values (including URLs), numbers, or words
+        [/\s*\[\w+\s*=\s*(['"].*?['"]|-?\d*\.?\d+|\w+)\]|\s*\[\w+\]/, "attribute"],
+        // URLs (must come after attributes but before edge labels)
+        [/\s*https?:\/\/[^\s]+/, "string"],
         // Edge label at start of line (after optional indentation)
-        [/^\s+[^:\s/][^:]*:/, "type"], // Match edge label but exclude URLs by preventing / after :
+        [/^\s+[a-zA-Z][\w-]*:/, "type"], // Match edge label starting with letter
         // Variable pointers (including leading space)
         [/ \([^)]+\)/, "variable"],
         [/\([^)]+\)/, "variable"],
         // #id and .class combinations (must come before word rule)
         [/(#[\w-]+(\.[a-zA-Z][\w-]*)*|\.[a-zA-Z][\w-]*(\.[\w-]+)*)/, "attribute"],
-        // Attributes with quoted values or numbers
-        [/\[\w+\s*=\s*(['"][^'"]*['"]|-?\d*\.?\d+|\w+)\]|\[\w+\]/, "attribute"],
+        // \/\/ single-line comment... (but not URLs)
+        [/^\/\/.*|[^:]\/\/.*/, "comment"],
+        [/\/\*/, "comment", "@comment"],
         // Escaped characters (must come before other rules)
         [/\\[[\](){}<>:#.\/]/, "string"],
         // Spaces
