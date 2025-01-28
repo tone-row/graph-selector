@@ -52,16 +52,13 @@ export function registerHighlighter(monaco: typeof Monaco) {
         // (.*)
         [/ \(/, "variable", "@variable"],
         // #id and .class combinations (must come before word rule)
-        [/ /, "string"], // Handle space before ID/class separately
-        [/#[\w-]+(\.[a-zA-Z][\w-]*)*|\.[a-zA-Z][\w-]*(\.[\w-]+)*/, "attribute"],
-        // \.color_blue (escaped period)
-        [/\\\.\w+/, "string"], // Add this rule to handle escaped periods
-        // [x] or [y=12] or [z="hello"] or [z='hello']
-        [/\[\w+=(\w+|"[^"]*"|'[^']*')\]|\[\w+\]/, "attribute"],
-        // a '{' or '}'
-        [/\{|\}/, "delimiter.curly"],
-        // Words (must come after attribute rules)
-        [/[^\s#\.\[\]\{\}\(\)]+/, "string"],
+        [/(#[\w-]+(\.[a-zA-Z][\w-]*)*|\.[a-zA-Z][\w-]*(\.[\w-]+)*)/, "attribute"],
+        // Attributes with quoted values
+        [/\[\w+=(['"][^'"]*['"]|\w+)\]|\[\w+\]/, "attribute"],
+        // Standalone # and . should be treated as strings
+        [/[#.]/, "string"],
+        // Words (anything that's not whitespace or special characters)
+        [/[^\s\[\](){}<>:]+/, "string"],
         // Spaces
         [/\s+/, "string"],
       ],

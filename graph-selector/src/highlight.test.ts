@@ -304,4 +304,33 @@ describe("highlight", () => {
     expect(doubleQuoteResult?.token).toBe("attribute");
     expect(doubleQuoteResult?.match).toBe('[label="hello"]');
   });
+
+  test("handles incomplete tokens correctly", () => {
+    // Test standalone # (should be string)
+    const hashResult = testTokenizerRule("Label #");
+    expect(hashResult?.token).toBe("string");
+    expect(hashResult?.match).toBe("Label");
+
+    const hashOnlyResult = testTokenizerRule("#");
+    expect(hashOnlyResult?.token).toBe("string");
+    expect(hashOnlyResult?.match).toBe("#");
+
+    // Test standalone . (should be string)
+    const dotResult = testTokenizerRule("Label .");
+    expect(dotResult?.token).toBe("string");
+    expect(dotResult?.match).toBe("Label");
+
+    const dotOnlyResult = testTokenizerRule(".");
+    expect(dotOnlyResult?.token).toBe("string");
+    expect(dotOnlyResult?.match).toBe(".");
+
+    // Test partial ID/class (should be string until complete)
+    const partialIdResult = testTokenizerRule("#a");
+    expect(partialIdResult?.token).toBe("attribute");
+    expect(partialIdResult?.match).toBe("#a");
+
+    const partialClassResult = testTokenizerRule(".a");
+    expect(partialClassResult?.token).toBe("attribute");
+    expect(partialClassResult?.match).toBe(".a");
+  });
 });
