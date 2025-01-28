@@ -54,8 +54,8 @@ export function registerHighlighter(monaco: typeof Monaco) {
         [/\([^)]+\)/, "variable"],
         // #id and .class combinations (must come before word rule)
         [/(#[\w-]+(\.[a-zA-Z][\w-]*)*|\.[a-zA-Z][\w-]*(\.[\w-]+)*)/, "attribute"],
-        // Attributes with quoted values
-        [/\[\w+=(['"][^'"]*['"]|\w+)\]|\[\w+\]/, "attribute"],
+        // Attributes with quoted values or numbers
+        [/\[\w+\s*=\s*(['"][^'"]*['"]|-?\d*\.?\d+|\w+)\]|\[\w+\]/, "attribute"],
         // Escaped characters (must come before other rules)
         [/\\[[\](){}<>:#.\/]/, "string"],
         // Spaces

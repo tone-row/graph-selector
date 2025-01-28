@@ -377,4 +377,21 @@ describe("highlight", () => {
     expect(spacedPointerResult?.token).toBe("variable");
     expect(spacedPointerResult?.match).toBe(" (#myid)");
   });
+
+  test("tokenizes attributes with numeric values", () => {
+    // Test numeric values
+    const numericResult = testTokenizerRule("[size=2.439]");
+    expect(numericResult?.token).toBe("attribute");
+    expect(numericResult?.match).toBe("[size=2.439]");
+
+    // Test negative numbers
+    const negativeResult = testTokenizerRule("[size=-2.439]");
+    expect(negativeResult?.token).toBe("attribute");
+    expect(negativeResult?.match).toBe("[size=-2.439]");
+
+    // Test with spaces around equals
+    const spacedResult = testTokenizerRule("[size = 2.439]");
+    expect(spacedResult?.token).toBe("attribute");
+    expect(spacedResult?.match).toBe("[size = 2.439]");
+  });
 });
