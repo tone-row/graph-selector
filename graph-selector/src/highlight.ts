@@ -42,11 +42,13 @@ export function registerHighlighter(monaco: typeof Monaco) {
     defaultToken: "invalid",
     tokenizer: {
       root: [
-        // \/\/ single-line comment...
-        [/\/\/.*/, "comment"],
+        // URLs (must come before comment and edge label rules)
+        [/^\s*https?:\/\/[^\s]+/, "string"],
+        // \/\/ single-line comment... (but not URLs)
+        [/^\/\/.*|[^:]\/\/.*/, "comment"],
         [/\/\*/, "comment", "@comment"],
         // Edge label at start of line (after optional indentation)
-        [/^(\s+[^:\s][^:]*:)/, "type"], // Match entire edge label including indentation
+        [/^\s+[^:\s/][^:]*:/, "type"], // Match edge label but exclude URLs by preventing / after :
         // (.*)
         [/ \(/, "variable", "@variable"],
         // \.color_blue (escaped period)

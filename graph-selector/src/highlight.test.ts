@@ -70,6 +70,23 @@ describe("highlight", () => {
     return tokens;
   }
 
+  function testTokenizerRule(text: string) {
+    // Get the tokenizer rules directly
+    const tokenizer = (monaco.languages.setMonarchTokensProvider as Mock).mock.calls[0][1];
+    const rules = tokenizer.tokenizer.root;
+
+    // Try each rule until we find a match
+    for (const rule of rules) {
+      const [regex, token] = rule;
+      if (typeof regex === "string") continue; // Skip string literals
+      const match = text.match(regex);
+      if (match && match.index === 0) {
+        return { token, match: match[0] };
+      }
+    }
+    return null;
+  }
+
   test("tokenizes a simple node", () => {
     // Mock the tokenize function for this test
     (monaco.languages.tokenize as Mock).mockReturnValueOnce([
@@ -208,5 +225,45 @@ describe("highlight", () => {
     ]);
     expect(monaco.languages.tokenize).toHaveBeenCalledWith("test", languageId);
     expect(monaco.languages.tokenize).toHaveBeenCalledWith("  goes to: (test)", languageId);
+  });
+
+  test("tokenizes URLs correctly", () => {
+    // Mock the tokenize function for each line
+    (monaco.languages.tokenize as Mock)
+      .mockReturnValueOnce([{ offset: 0, type: "string", length: 22 }]) // "https://google.com"
+      .mockReturnValueOnce([{ offset: 0, type: "string", length: 17 }]); // "http://google.com"
+
+    const tokens = getTokens("https://google.com\nhttp://google.com");
+    expect(tokens).toEqual([
+      { token: "string", content: "https://google.com" },
+      { token: "string", content: "http://google.com" },
+    ]);
+    expect(monaco.languages.tokenize).toHaveBeenCalledWith("https://google.com", languageId);
+    expect(monaco.languages.tokenize).toHaveBeenCalledWith("http://google.com", languageId);
+  });
+
+  test("verifies URL tokenization rules", () => {
+    // Test that URLs are not tokenized as comments
+    const result = testTokenizerRule("//google.com");
+    expect(result?.token).toBe("comment"); // This should fail because we want URLs to be strings
+    expect(result?.match).toBe("//google.com"); // This shows it's matching the whole URL as a comment
+
+    // Test that URLs are tokenized as strings
+    const httpsResult = testTokenizerRule("https://google.com");
+    expect(httpsResult?.token).toBe("string");
+    expect(httpsResult?.match).toBe("https://google.com");
+
+    const httpResult = testTokenizerRule("http://google.com");
+    expect(httpResult?.token).toBe("string");
+    expect(httpResult?.match).toBe("http://google.com");
+
+    // Test URLs with leading spaces
+    const spacedHttpsResult = testTokenizerRule("  https://google.com");
+    expect(spacedHttpsResult?.token).toBe("string");
+    expect(spacedHttpsResult?.match).toBe("  https://google.com");
+
+    const spacedHttpResult = testTokenizerRule("  http://google.com");
+    expect(spacedHttpResult?.token).toBe("string");
+    expect(spacedHttpResult?.match).toBe("  http://google.com");
   });
 });
