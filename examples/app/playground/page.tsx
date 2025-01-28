@@ -3,10 +3,10 @@ import { PlaygroundState } from "@/components/PlaygroundState";
 export default function Page({
   searchParams,
 }: {
-  searchParams: { code?: string };
+  searchParams: { [key: string]: string | string[] | undefined };
 }) {
   const initialValue = searchParams.code
-    ? decodeURIComponent(searchParams.code)
+    ? decodeURIComponent(searchParams.code as string)
     : undefined;
 
   return (
