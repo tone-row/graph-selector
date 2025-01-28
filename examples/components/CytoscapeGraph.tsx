@@ -1,8 +1,9 @@
-import cytoscape, { CytoscapeOptions } from "cytoscape";
+import cytoscape, { CytoscapeOptions, ElementDefinition } from "cytoscape";
 import { useEffect, useRef, useState } from "react";
 
 import dagre from "cytoscape-dagre";
 import edgeConnections from "cytoscape-edge-connections";
+import { toCytoscapeElements } from "graph-selector";
 
 cytoscape.use(edgeConnections);
 cytoscape.use(dagre);
@@ -12,8 +13,8 @@ export function CytoscapeGraph({
   style = [],
   containerStyle = {},
 }: {
-  elements: cytoscape.ElementDefinition[];
-  style?: cytoscape.Stylesheet[];
+  elements: ReturnType<typeof toCytoscapeElements>;
+  style?: cytoscape.StylesheetStyle[];
   containerStyle?: React.CSSProperties;
 }) {
   const cy = useRef<cytoscape.Core>();
@@ -23,11 +24,12 @@ export function CytoscapeGraph({
   useEffect(() => {
     setError("");
     try {
-      let options: CytoscapeOptions = {
+      let options = {
         elements,
         layout: {
           // @ts-ignore
           name: "dagre",
+          // @ts-ignore
           spacingFactor: 2,
           rankDir: "LR",
         },
@@ -71,7 +73,7 @@ export function CytoscapeGraph({
           },
           ...style,
         ],
-      };
+      } as CytoscapeOptions;
       // test with error first
       cyError.current = cytoscape({ ...options, headless: true });
       let cyE = cyError.current;

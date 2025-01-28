@@ -29,5 +29,9 @@
     "graph-selector/**/*.{js,ts}": [
       "bun --filter graph-selector lint:staged"
     ]
+  },
+  "dependencies": {
+    "@types/cytoscape": "^3.21.9",
+    "cytoscape": "^3.31.0"
   }
 }
