@@ -1,9 +1,9 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { highlight, parse } from "graph-selector";
 import { Editor } from "./Editor";
-
+import monaco from "monaco-editor";
 const defaultCode = `Welcome to Flowchart Fun!
   Start: Modify text to see it transform into a flowchart on the right.
   Understand Syntax .shape_circle
@@ -26,8 +26,8 @@ tesing a multiline comment
 */
 does it work // not really`;
 
-export function PlaygroundState() {
-  const [value, setValue] = useState(defaultCode);
+export function PlaygroundState({ initialValue }: { initialValue?: string }) {
+  const [value, setValue] = useState(initialValue ?? defaultCode);
   const graph = useMemo(() => {
     try {
       return parse(value);
@@ -36,14 +36,28 @@ export function PlaygroundState() {
       return { nodes: [], edges: [] };
     }
   }, [value]);
+  const [darkMode, setDarkMode] = useState(false);
   return (
     <>
+      <div style={{ display: "flex", flexDirection: "row", gap: 10 }}>
+        <label>
+          <input
+            type="checkbox"
+            checked={darkMode}
+            onChange={() => setDarkMode(!darkMode)}
+          />
+          <span>Dark / Light Mode</span>
+        </label>
+      </div>
       <Editor
         h={500}
         className="shadow w-12"
         value={value}
         onChange={(val) => val && setValue(val)}
-        theme={highlight.defaultThemeDark}
+        theme={darkMode ? highlight.defaultThemeDark : highlight.defaultTheme}
+        options={{
+          theme: darkMode ? highlight.defaultThemeDark : highlight.defaultTheme,
+        }}
       />
       <code style={{ fontSize: 12, maxWidth: "100%", overflow: "auto" }}>
         {JSON.stringify(graph)}

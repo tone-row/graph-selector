@@ -39,26 +39,27 @@ export function registerHighlighter(monaco: typeof Monaco) {
   });
 
   monaco.languages.setMonarchTokensProvider(languageId, {
-    defaultToken: "invalid",
+    defaultToken: "string",
     tokenizer: {
       root: [
-        // \/\/ single-line comment...
-        [/\/\/.*/, "comment"],
+        // Attributes with quoted values (including URLs), numbers, or words
+        [/\s*\[\w+\s*=\s*(['"].*?['"]|-?\d*\.?\d+|\w+)\]|\s*\[\w+\]/, "attribute"],
+        // URLs (must come after attributes but before edge labels)
+        [/\s*https?:\/\/[^\s]+/, "string"],
+        // Edge label at start of line (after optional indentation)
+        [/^\s+[a-zA-Z][\w-]*:/, "type"], // Match edge label starting with letter
+        // Variable pointers (including leading space)
+        [/ \([^)]+\)/, "variable"],
+        [/\([^)]+\)/, "variable"],
+        // #id and .class combinations (must come before word rule)
+        [/(#[\w-]+(\.[a-zA-Z][\w-]*)*|\.[a-zA-Z][\w-]*(\.[\w-]+)*)/, "attribute"],
+        // \/\/ single-line comment... (but not URLs)
+        [/^\/\/.*|[^:]\/\/.*/, "comment"],
         [/\/\*/, "comment", "@comment"],
-        // \w+:
-        [/\s+([^:]+):/, "type"], // Updated regex to allow any character except colon
-        // (.*)
-        [/ \(/, "variable", "@variable"],
-        // \.color_blue (escaped period)
-        [/\\\.\w+/, "string"], // Add this rule to handle escaped periods
-        // .color_blue
-        [/\.\w+/, "attribute"],
-        // [x] or [y=12] or [z="hello"]
-        [/\[\w+=\w+\]|\[\w+\]|\["[^"]*"|'[^']*'/, "attribute"],
-        // a '{' or '}'
-        [/\{|\}/, "delimiter.curly"],
-        // every other word is string
-        [/./, "string"],
+        // Escaped characters (must come before other rules)
+        [/\\[[\](){}<>:#.\/]/, "string"],
+        // Spaces
+        [/\s+/, "string"],
       ],
       comment: [
         [/[^\/*]+/, "comment"],
