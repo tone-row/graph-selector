@@ -26,8 +26,8 @@ tesing a multiline comment
 */
 does it work // not really`;
 
-export function PlaygroundState() {
-  const [value, setValue] = useState(defaultCode);
+export function PlaygroundState({ initialValue }: { initialValue?: string }) {
+  const [value, setValue] = useState(initialValue ?? defaultCode);
   const graph = useMemo(() => {
     try {
       return parse(value);
