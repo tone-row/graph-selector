@@ -1,8 +1,5 @@
-import { featuresRe } from "./regexps";
+import { featuresReGlobal as re } from "./regexps";
 import { Data, Descriptor } from "./types";
-
-// compiled once; lastIndex is reset per call so no state leaks between calls
-const re = new RegExp(featuresRe, "gs");
 
 /**
  * Given a line, it returns the feaures from the line
@@ -17,7 +14,8 @@ export function getFeatureData(_line: string) {
   let attributes = "";
 
   while ((match = re.exec(line)) != null) {
-    if (!match.groups) continue;
+    // an empty match never advances lastIndex, so continuing here would loop forever
+    if (!match.groups) break;
     if (!match.groups.replace) break;
 
     // if (match.groups.pointer) pointers.push(match.groups.pointer);

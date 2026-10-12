@@ -20,6 +20,15 @@ module.exports = {
         caughtErrorsIgnorePattern: "^_",
       },
     ],
+    "no-restricted-syntax": [
+      "error",
+      {
+        selector:
+          ":matches(NewExpression, CallExpression)[callee.name='RegExp'] > :not(Literal, TemplateLiteral).arguments:first-child",
+        message:
+          "Write a regex literal instead. Consumers that transpile named groups (CRA's Babel) wrap literals only, so a RegExp built from another regex loses match.groups.",
+      },
+    ],
   },
   env: {
     browser: true,
