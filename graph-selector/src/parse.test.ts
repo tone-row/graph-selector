@@ -516,4 +516,136 @@ a {
 }`);
     expect(result.nodes[0]?.data.isParent).toEqual(true);
   });
+
+  const parentOf = (result: ReturnType<typeof parse>, id: string) =>
+    result.nodes.find((n) => n.data.id === id)?.data.parent;
+
+  test("a reference inside a container places that node in the container", () => {
+    const result = parse(`
+Task A #a
+Task B #b
+  (#a)
+Sprint 1 #sprint {
+  (#a)
+  (#b)
+  Task C #c
+}`);
+    expect(parentOf(result, "a")).toEqual("sprint");
+    expect(parentOf(result, "b")).toEqual("sprint");
+    expect(parentOf(result, "c")).toEqual("sprint");
+    expect(result.edges.length).toEqual(1);
+    expect(result.edges[0]?.source).toEqual("b");
+    expect(result.edges[0]?.target).toEqual("a");
+  });
+
+  test("an unindented reference inside a container places that node in the container", () => {
+    const result = parse(`
+Task A #a
+Sprint #sprint {
+(#a)
+}`);
+    expect(parentOf(result, "a")).toEqual("sprint");
+  });
+
+  test("label and class references inside a container place every match in the container", () => {
+    const result = parse(`
+Task A #a
+Task B #b.todo
+Task C #c.todo
+Sprint #sprint {
+  (Task A)
+  (.todo)
+}`);
+    expect(parentOf(result, "a")).toEqual("sprint");
+    expect(parentOf(result, "b")).toEqual("sprint");
+    expect(parentOf(result, "c")).toEqual("sprint");
+    expect(result.edges.length).toEqual(0);
+  });
+
+  test("a reference inside a container can point at a node declared later", () => {
+    const result = parse(`
+Sprint #sprint {
+  (#a)
+}
+Task A #a`);
+    expect(parentOf(result, "a")).toEqual("sprint");
+  });
+
+  test("a reference nested under a node inside a container makes an edge, not a member", () => {
+    const result = parse(`
+Task A #a
+Sprint #sprint {
+  Task C #c
+    (#a)
+}`);
+    expect(parentOf(result, "a")).toBeUndefined();
+    expect(parentOf(result, "c")).toEqual("sprint");
+    expect(result.edges.length).toEqual(1);
+    expect(result.edges[0]?.source).toEqual("c");
+    expect(result.edges[0]?.target).toEqual("a");
+  });
+
+  test("a node in a sibling container stays put but its leading reference still draws edges", () => {
+    const result = parse(`
+One #one {
+  Task A #a
+}
+Two #two {
+  (#a)
+    Task B #b
+}`);
+    expect(parentOf(result, "a")).toEqual("one");
+    expect(parentOf(result, "b")).toEqual("two");
+    expect(result.edges.length).toEqual(1);
+    expect(result.edges[0]?.source).toEqual("a");
+    expect(result.edges[0]?.target).toEqual("b");
+  });
+
+  test("a reference in an inner container moves a node out of the outer container", () => {
+    const result = parse(`
+Outer #outer {
+  Task A #a
+  Inner #inner {
+    (#a)
+  }
+}`);
+    expect(parentOf(result, "a")).toEqual("inner");
+    expect(parentOf(result, "inner")).toEqual("outer");
+  });
+
+  test("an inner container referencing its outer container leaves the outer parentless", () => {
+    const result = parse(`
+Outer #outer {
+  Inner #inner {
+    (#outer)
+  }
+}`);
+    expect(parentOf(result, "outer")).toBeUndefined();
+    expect(parentOf(result, "inner")).toEqual("outer");
+  });
+
+  test("when two sibling containers reference one node the first wins", () => {
+    const result = parse(`
+Task A #a
+One #one {
+  (#a)
+}
+Two #two {
+  (#a)
+}`);
+    expect(parentOf(result, "a")).toEqual("one");
+  });
+
+  test("a reference matching an edge label does not give the edge a parent", () => {
+    const result = parse(`
+Task A #a
+  go: Task B #b
+Sprint #sprint {
+  (go)
+}`);
+    expect(result.edges.length).toEqual(1);
+    expect(result.edges[0]?.data.label).toEqual("go");
+    expect(result.edges[0]?.data.parent).toBeUndefined();
+    expect(result.nodes.length).toEqual(3);
+  });
 });
