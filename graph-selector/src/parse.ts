@@ -43,7 +43,7 @@ export function parse(text: string): Graph {
 
   // store Ids
   const nodeIds: string[] = [];
-  const edgeIds: string[] = [];
+  const edgeIds = new Set<string>();
 
   // store ancestors (ids at indent size)
   // Because of containers, we need to keep track of indents at different levels
@@ -267,7 +267,7 @@ export function parse(text: string): Graph {
           if (!edgeId) {
             edgeId = `${ancestor}-${id}-1`;
           }
-          if (edgeIds.includes(edgeId)) {
+          if (edgeIds.has(edgeId)) {
             throw new ParseError(
               `Line ${lineNumber}: Duplicate edge id "${edgeId}"`,
               lineNumber,
@@ -278,7 +278,7 @@ export function parse(text: string): Graph {
               "DUPLICATE_EDGE_ID",
             );
           }
-          edgeIds.push(edgeId);
+          edgeIds.add(edgeId);
           edges.push({
             source: ancestor,
             target: id,
@@ -377,14 +377,14 @@ export function parse(text: string): Graph {
         if (!data.id) {
           let inc = 1;
           let edgeId = `${source}-${target}-${inc}`;
-          while (edgeIds.includes(edgeId)) {
+          while (edgeIds.has(edgeId)) {
             ++inc;
             edgeId = `${source}-${target}-${inc}`;
           }
           data.id = edgeId;
         }
 
-        if (edgeIds.includes(data.id)) {
+        if (edgeIds.has(data.id)) {
           const line = lines[lineNumber - 1];
           if (!line) continue;
           throw new ParseError(
@@ -397,7 +397,7 @@ export function parse(text: string): Graph {
           );
         }
 
-        edgeIds.push(data.id);
+        edgeIds.add(data.id);
         edges.push({
           source,
           target,
