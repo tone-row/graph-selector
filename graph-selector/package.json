@@ -25,6 +25,7 @@
     "test": "vitest",
     "test:ci": "vitest run",
     "test:coverage": "vitest --coverage",
+    "bench": "vite-node bench/parse.bench.ts",
     "check": "tsc --noEmit",
     "lint": "eslint 'src/**/*.{js,cjs,ts}' --quiet --fix",
     "lint:staged": "eslint --fix",
