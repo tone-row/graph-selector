@@ -62,6 +62,22 @@ describe("parse properties over generated documents", () => {
     expect(interleaved).toEqual(alone);
   });
 
+  test("a line's features do not depend on the lines before it", () => {
+    for (let seed = 1; seed <= 200; seed++) {
+      const r = rng(seed);
+      const lines = Array.from({ length: 2 + Math.floor(r() * 8) }, (_, j) => {
+        let line = `node ${j} #k${j}`;
+        if (r() < 0.5) line += ".red";
+        if (r() < 0.3) line += "[w=1]";
+        if (r() < 0.5) line += " and more";
+        return line;
+      });
+      const features = (text: string) =>
+        Object.fromEntries(parse(text).nodes.map(({ data }) => [data.label, data]));
+      expect(features([...lines].reverse().join("\n"))).toEqual(features(lines.join("\n")));
+    }
+  });
+
   test("every edge connects entities in the graph and edge ids are unique", () => {
     for (const doc of docs) {
       const graph = outcome(doc);
