@@ -362,13 +362,14 @@ export function parse(text: string): Graph {
   }
 
   // resolve unresolved edges
+  // Pointers match nodes first, then edges, each in creation order,
+  // including edges created earlier in this loop.
+  const index = new PointerIndex();
+  for (const node of nodes) index.add(node);
+  for (const edge of edges) index.add(edge);
   for (const { source, target, lineNumber, label, otherData, ...rest } of unresolvedEdges) {
-    const sourceNodes = isPointerArray(source)
-      ? getNodesFromPointerArray(nodes, edges, source)
-      : (nodesById.get(source) ?? []);
-    const targetNodes = isPointerArray(target)
-      ? getNodesFromPointerArray(nodes, edges, target)
-      : (nodesById.get(target) ?? []);
+    const sourceNodes = isPointerArray(source) ? index.get(source) : (nodesById.get(source) ?? []);
+    const targetNodes = isPointerArray(target) ? index.get(target) : (nodesById.get(target) ?? []);
     if (sourceNodes.length === 0 || targetNodes.length === 0) continue;
     for (const sourceNode of sourceNodes) {
       for (const targetNode of targetNodes) {
@@ -405,14 +406,16 @@ export function parse(text: string): Graph {
         }
 
         edgeIds.add(data.id);
-        edges.push({
+        const edge = {
           source,
           target,
           parser: {
             lineNumber,
           },
           data,
-        });
+        };
+        edges.push(edge);
+        index.add(edge);
       }
     }
   }
@@ -424,7 +427,7 @@ export function parse(text: string): Graph {
       containerAndAncestors.push(id);
       id = nodesById.get(id)?.[0]?.data.parent;
     }
-    for (const target of getNodesFromPointerArray(nodes, [], pointer)) {
+    for (const target of getNodesFromPointerArray(nodes, pointer)) {
       if (containerAndAncestors.includes(target.data.id)) continue;
       const parent = target.data.parent;
       const inUnrelatedContainer = isId(parent) && !containerAndAncestors.includes(parent);
@@ -449,29 +452,49 @@ function findParent(indentSize: number, ancestors: Ancestors): Ancestor {
   }
   return parent;
 }
-/**
- * Returns the nodes or edges that match a given pointer array
- *
- * Note: Because we only resolve unresolved edges once, we can't
- * resolve pointers to edges that haven't been created yet. This is something
- * potentially worth fixing in the future.
- */
-function getNodesFromPointerArray(
-  nodes: Graph["nodes"],
-  edges: Graph["edges"],
-  [pointerType, value]: Pointer,
-) {
-  const entities = [...nodes, ...edges];
+type Entity = Graph["nodes"][number] | Graph["edges"][number];
+
+/** Entities grouped by each value a pointer can match, in the order they were added. */
+class PointerIndex {
+  private byId = new Map<string, Entity[]>();
+  private byClass = new Map<string, Entity[]>();
+  private byLabel = new Map<string, Entity[]>();
+
+  add(entity: Entity) {
+    const { id, classes, label } = entity.data;
+    if (typeof id === "string") addTo(this.byId, id, entity);
+    if (typeof label === "string") addTo(this.byLabel, label, entity);
+    if (typeof classes === "string") {
+      for (const c of classes.split(".")) if (c) addTo(this.byClass, c, entity);
+    }
+  }
+
+  /** A copy, so entities added while the caller iterates are not seen. */
+  get([pointerType, value]: Pointer): Entity[] {
+    const bucket =
+      pointerType === "id" ? this.byId : pointerType === "class" ? this.byClass : this.byLabel;
+    return bucket.get(value)?.slice() ?? [];
+  }
+}
+
+function addTo<T>(map: Map<string, T[]>, key: string, value: T) {
+  const bucket = map.get(key);
+  if (!bucket) map.set(key, [value]);
+  else if (bucket[bucket.length - 1] !== value) bucket.push(value);
+}
+
+/** Returns the nodes that match a given pointer array */
+function getNodesFromPointerArray(nodes: Graph["nodes"], [pointerType, value]: Pointer) {
   switch (pointerType) {
     case "id":
-      return entities.filter((node) => node.data.id === value);
+      return nodes.filter((node) => node.data.id === value);
     case "class":
-      return entities.filter(
+      return nodes.filter(
         (node) =>
           typeof node.data.classes === "string" && node.data.classes.split(".").includes(value),
       );
     case "label":
-      return entities.filter((node) => node.data.label === value);
+      return nodes.filter((node) => node.data.label === value);
   }
 }
 
