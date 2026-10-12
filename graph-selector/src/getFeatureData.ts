@@ -1,12 +1,16 @@
 import { featuresRe } from "./regexps";
 import { Data, Descriptor } from "./types";
 
+// compiled once; lastIndex is reset per call so no state leaks between calls
+const re = new RegExp(featuresRe, "gs");
+
 /**
  * Given a line, it returns the feaures from the line
  */
 export function getFeatureData(_line: string) {
   let line = _line.slice(0).trim();
-  const re = new RegExp(featuresRe, "gs");
+  if (!line) return { id: "", classes: "", data: {} as Data, line };
+  re.lastIndex = 0;
   let match: RegExpExecArray | null;
   let id = "";
   let classes = "";
