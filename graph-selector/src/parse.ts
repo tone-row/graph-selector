@@ -366,7 +366,9 @@ export function parse(text: string): Graph {
   // resolve unresolved edges
   // Pointers match nodes first, then edges, each in creation order,
   // including edges created earlier in this loop.
-  const index = new PointerIndex();
+  const index = new PointerIndex(
+    unresolvedEdges.flatMap(({ source, target }) => [source, target].filter(isPointerArray)),
+  );
   for (const node of nodes) index.add(node);
   for (const edge of edges) index.add(edge);
   for (const { source, target, lineNumber, label, otherData, ...rest } of unresolvedEdges) {
@@ -456,18 +458,37 @@ function findParent(indentSize: number, ancestors: Ancestors): Ancestor {
 }
 type Entity = Graph["nodes"][number] | Graph["edges"][number];
 
-/** Entities grouped by each value a pointer can match, in the order they were added. */
+/**
+ * Entities grouped by each value a pointer can match, in the order they were added.
+ * Only values named by the pointers given up front are kept, so most entities cost
+ * a few set lookups instead of map inserts.
+ */
 class PointerIndex {
   private byId = new Map<string, Entity[]>();
   private byClass = new Map<string, Entity[]>();
   private byLabel = new Map<string, Entity[]>();
+  private wantedIds = new Set<string>();
+  private wantedClasses = new Set<string>();
+  private wantedLabels = new Set<string>();
+
+  constructor(pointers: Pointer[]) {
+    for (const [pointerType, value] of pointers) {
+      if (pointerType === "id") this.wantedIds.add(value);
+      else if (pointerType === "class") this.wantedClasses.add(value);
+      else this.wantedLabels.add(value);
+    }
+  }
 
   add(entity: Entity) {
     const { id, classes, label } = entity.data;
-    if (typeof id === "string") addTo(this.byId, id, entity);
-    if (typeof label === "string") addTo(this.byLabel, label, entity);
-    if (typeof classes === "string") {
-      for (const c of classes.split(".")) if (c) addTo(this.byClass, c, entity);
+    if (typeof id === "string" && this.wantedIds.has(id)) addTo(this.byId, id, entity);
+    if (typeof label === "string" && this.wantedLabels.has(label)) {
+      addTo(this.byLabel, label, entity);
+    }
+    if (typeof classes === "string" && this.wantedClasses.size > 0) {
+      for (const c of classes.split(".")) {
+        if (this.wantedClasses.has(c)) addTo(this.byClass, c, entity);
+      }
     }
   }
 
