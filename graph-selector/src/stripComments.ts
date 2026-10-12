@@ -29,15 +29,11 @@ export function stripComments(text: string): string {
   while (i < text.length) {
     const c = text.charAt(i);
     const next = text.charAt(i + 1);
-    if (c === "\\" && i + 1 < text.length && !isLineTerminator(next)) {
+    if (c === "\\") {
       i += 2;
       continue;
     }
-    if (
-      depth === 0 &&
-      (c === '"' || c === "'" || c === "`") &&
-      (i === 0 || !isWordChar(text.charAt(i - 1)))
-    ) {
+    if (depth === 0 && (c === '"' || c === "'" || c === "`") && !isWordChar(text.charAt(i - 1))) {
       const close = findClosingQuote(text, i);
       if (close !== -1) {
         i = close + 1;

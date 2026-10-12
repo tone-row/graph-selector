@@ -51,6 +51,10 @@ const EDGE_CASES = [
   "/* \\*/ x */ y",
   '"""// c"',
   '\u00e9"a // b"',
+  '"a\x01b" // c"',
+  '"a\\" b // c',
+  "a // c\u2029b",
+  "_'x // y'",
 ];
 
 const TOKENS = [
