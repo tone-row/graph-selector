@@ -44,7 +44,7 @@ export function parse(text: string): Graph {
   let lineNumber = 0;
 
   // store Ids
-  const nodeIds: string[] = [];
+  const nodeIds = new Set<string>();
   const edgeIds = new Set<string>();
 
   // store ancestors (ids at indent size)
@@ -199,7 +199,7 @@ export function parse(text: string): Graph {
     }
 
     // Throw if id already exists
-    if (lineDeclaresNode && nodeIds.includes(id)) {
+    if (lineDeclaresNode && nodeIds.has(id)) {
       throw new ParseError(
         `Line ${lineNumber}: Duplicate node id "${id}"`,
         lineNumber,
@@ -211,7 +211,7 @@ export function parse(text: string): Graph {
     }
 
     // Store id
-    nodeIds.push(id);
+    nodeIds.add(id);
 
     // create node if line declares node
     if (lineDeclaresNode) {
