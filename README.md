@@ -87,6 +87,20 @@ d
 
 This creates a graph with 4 nodes and 3 edges.
 
+Curly brackets group nodes into a container. A reference on its own line inside a container places that node in the container, even if the node was declared elsewhere.
+
+```
+Task A #a
+Task B
+  (#a)
+Sprint 1 {
+  (#a)
+  Task C
+}
+```
+
+This creates a container holding Task A and Task C, with an edge from Task B to Task A. A reference indented under a node is still just an edge, and a node that already belongs to another container stays where it is.
+
 ## Monaco Editor
 
 Graph Selector has an export named `highlight` which contains a lot of the tools for using this language with the [Monaco Editor]([https://www.npmjs.com/package/@monaco-editor/react](https://github.com/microsoft/monaco-editor)). Check out this for a complete example of using this language in a Monaco editor in React, with syntax highlighting and error reporting: https://stackblitz-starters-me6lmw.stackblitz.io
