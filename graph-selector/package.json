@@ -43,6 +43,7 @@
     "eslint-config-prettier": "^9.0.0",
     "eslint-plugin-no-lookahead-lookbehind-regexp": "^0.3.0",
     "eslint-plugin-prettier": "^5.0.0",
+    "pkgroll": "^2.4.1",
     "prettier": "^3.0.3",
     "typescript": "^5.2.2",
     "vitest": "^0.34.5"
@@ -50,8 +51,7 @@
   "dependencies": {
     "@types/cytoscape": "^3.19.11",
     "html-entities": "^2.4.0",
-    "monaco-editor": "^0.43.0",
-    "pkgroll": "^2.4.1"
+    "monaco-editor": "^0.43.0"
   },
   "browserslist": [
     "defaults"
