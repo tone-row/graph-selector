@@ -648,4 +648,24 @@ Sprint #sprint {
     expect(result.edges[0]?.data.parent).toBeUndefined();
     expect(result.nodes.length).toEqual(3);
   });
+
+  test("a dedent forgets deeper ancestors", () => {
+    const result = parse(`a\n  b\nc\n   d`);
+    expect(result.edges.map((e) => [e.source, e.target])).toEqual([
+      ["n1", "n2"],
+      ["n3", "n4"],
+    ]);
+  });
+
+  test("features parse the same regardless of earlier parses", () => {
+    parse(`foo #x bar\nb #yy`);
+    const result = parse(`a #x.c[k=v]\n  b #y`);
+    expect(result.nodes.map((n) => n.data.id)).toEqual(["x", "y"]);
+    expect(result.nodes[0]?.data.k).toEqual("v");
+  });
+
+  test("features on a later line survive trailing text on an earlier line", () => {
+    const result = parse(`foo #x bar\nb #yy`);
+    expect(result.nodes.map((n) => n.data.id)).toEqual(["x", "yy"]);
+  });
 });
