@@ -28,6 +28,8 @@ type ContainerReferences = { containerId: ID; pointer: Pointer }[];
 export function parse(text: string): Graph {
   const nodes: Graph["nodes"] = [];
   const edges: Graph["edges"] = [];
+  // keyed on data.id, which a [id=...] attribute can override after the line id is chosen
+  const nodesById = new Map<ID, Graph["nodes"]>();
 
   // add a \ before any http:// or https://
   text = text.replace(/(https?:)\/\//g, "$1\\/\\/");
@@ -241,6 +243,11 @@ export function parse(text: string): Graph {
       }
 
       nodes.push(node);
+      if (isId(node.data.id)) {
+        const sameId = nodesById.get(node.data.id);
+        if (sameId) sameId.push(node);
+        else nodesById.set(node.data.id, [node]);
+      }
     }
 
     // if container, set parent id
@@ -358,10 +365,10 @@ export function parse(text: string): Graph {
   for (const { source, target, lineNumber, label, otherData, ...rest } of unresolvedEdges) {
     const sourceNodes = isPointerArray(source)
       ? getNodesFromPointerArray(nodes, edges, source)
-      : nodes.filter((n) => n.data.id === source);
+      : (nodesById.get(source) ?? []);
     const targetNodes = isPointerArray(target)
       ? getNodesFromPointerArray(nodes, edges, target)
-      : nodes.filter((n) => n.data.id === target);
+      : (nodesById.get(target) ?? []);
     if (sourceNodes.length === 0 || targetNodes.length === 0) continue;
     for (const sourceNode of sourceNodes) {
       for (const targetNode of targetNodes) {
@@ -415,7 +422,7 @@ export function parse(text: string): Graph {
     let id: unknown = containerId;
     while (isId(id) && !containerAndAncestors.includes(id)) {
       containerAndAncestors.push(id);
-      id = nodes.find((n) => n.data.id === id)?.data.parent;
+      id = nodesById.get(id)?.[0]?.data.parent;
     }
     for (const target of getNodesFromPointerArray(nodes, [], pointer)) {
       if (containerAndAncestors.includes(target.data.id)) continue;
