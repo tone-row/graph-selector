@@ -36,6 +36,7 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@tone-row/strip-comments": "2.0.6",
     "@typescript-eslint/eslint-plugin": "^6.7.3",
     "@typescript-eslint/parser": "^6.7.3",
     "eslint": "^8.50.0",
@@ -47,13 +48,10 @@
     "vitest": "^0.34.5"
   },
   "dependencies": {
-    "@types/strip-comments": "^2.0.2",
-    "@tone-row/strip-comments": "^2.0.6",
     "@types/cytoscape": "^3.19.11",
     "html-entities": "^2.4.0",
     "monaco-editor": "^0.43.0",
-    "pkgroll": "^2.4.1",
-    "strip-comments": "^2.0.1"
+    "pkgroll": "^2.4.1"
   },
   "browserslist": [
     "defaults"
