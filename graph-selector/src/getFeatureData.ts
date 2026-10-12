@@ -6,12 +6,13 @@ import { Data, Descriptor } from "./types";
  */
 export function getFeatureData(_line: string) {
   let line = _line.slice(0).trim();
+  const re = new RegExp(featuresRe, "gs");
   let match: RegExpExecArray | null;
   let id = "";
   let classes = "";
   let attributes = "";
 
-  while ((match = featuresRe.exec(line)) != null) {
+  while ((match = re.exec(line)) != null) {
     if (!match.groups) continue;
     if (!match.groups.replace) break;
 

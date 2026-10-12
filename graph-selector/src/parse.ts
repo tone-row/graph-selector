@@ -89,7 +89,7 @@ export function parse(text: string): Graph {
     const indentSize = getIndentSize(line);
 
     // get our relevant set of ancestors to work with indents
-    let ancestors = allAncestors[allAncestors.length - 1] || [];
+    const ancestors = allAncestors[allAncestors.length - 1] || [];
 
     // check if line is a "source-pointer" (i.e. a reference, like (x), with no indent)
     if (indentSize === 0 && line[0] === "(") {
@@ -351,7 +351,7 @@ export function parse(text: string): Graph {
     } else {
       ancestors[indentSize] = id;
     }
-    ancestors = ancestors.slice(0, indentSize + 1);
+    ancestors.length = indentSize + 1;
   }
 
   // resolve unresolved edges

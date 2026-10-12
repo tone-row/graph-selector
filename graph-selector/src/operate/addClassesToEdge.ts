@@ -32,9 +32,6 @@ export function addClassesToEdge({ line, classNames }: { line: string; className
   if (startOfFeatures === 0) {
     features = featuresRe.exec(edge)?.[0] || "";
     edge = edge.slice(features.length);
-
-    // reset regex
-    featuresRe.lastIndex = 0;
   }
 
   const divider = noEdge ? ": " : "";
