@@ -3,9 +3,7 @@ import { getEdgeBreakIndex, getFeaturesIndex } from "./regexps";
 
 import { getFeatureData } from "./getFeatureData";
 import { matchAndRemovePointers } from "./matchAndRemovePointers";
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
-import { strip } from "@tone-row/strip-comments";
+import { stripComments } from "./stripComments";
 import { ParseError } from "./ParseError";
 import { getIndentSize } from "./getIndentSize";
 
@@ -35,7 +33,7 @@ export function parse(text: string): Graph {
   text = text.replace(/(https?:)\/\//g, "$1\\/\\/");
 
   // break into lines
-  let lines = strip(text, { preserveNewlines: true }).split(/\n/g);
+  let lines = stripComments(text).split(/\n/g);
 
   // unescape backslashes in newlines
   lines = lines.map((line: string) => line.replace(/\\n/g, "\n"));
