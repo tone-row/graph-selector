@@ -23,6 +23,7 @@ type UnresolvedEdges = {
 }[];
 type Ancestor = Pointer[] | ID | null;
 type Ancestors = Ancestor[];
+type ContainerReferences = { containerId: ID; pointer: Pointer }[];
 
 export function parse(text: string): Graph {
   const nodes: Graph["nodes"] = [];
@@ -55,6 +56,8 @@ export function parse(text: string): Graph {
 
   // pop container state on and off stack
   const containerParentIds: ID[] = [];
+
+  const containerReferences: ContainerReferences = [];
 
   for (let line of lines) {
     ++lineNumber;
@@ -92,6 +95,10 @@ export function parse(text: string): Graph {
     if (indentSize === 0 && line[0] === "(") {
       // parse pointers
       const [pointers] = matchAndRemovePointers(line);
+      const containerId = containerParentIds[containerParentIds.length - 1];
+      if (containerId) {
+        for (const pointer of pointers) containerReferences.push({ containerId, pointer });
+      }
       // Update array of ancestors
       allAncestors[allAncestors.length - 1] = [pointers];
       continue;
@@ -332,6 +339,12 @@ export function parse(text: string): Graph {
       }
     }
 
+    const containerId = containerParentIds[containerParentIds.length - 1];
+    const isTopLevelReference = !lineDeclaresNode && !ancestor;
+    if (isTopLevelReference && containerId) {
+      for (const pointer of pointers) containerReferences.push({ containerId, pointer });
+    }
+
     // Update array of ancestors
     if (!lineDeclaresNode) {
       ancestors[indentSize] = pointers;
@@ -394,6 +407,22 @@ export function parse(text: string): Graph {
           data,
         });
       }
+    }
+  }
+
+  for (const { containerId, pointer } of containerReferences) {
+    const containerAndAncestors: ID[] = [];
+    let id: unknown = containerId;
+    while (isId(id) && !containerAndAncestors.includes(id)) {
+      containerAndAncestors.push(id);
+      id = nodes.find((n) => n.data.id === id)?.data.parent;
+    }
+    for (const target of getNodesFromPointerArray(nodes, [], pointer)) {
+      if (containerAndAncestors.includes(target.data.id)) continue;
+      const parent = target.data.parent;
+      const inUnrelatedContainer = isId(parent) && !containerAndAncestors.includes(parent);
+      if (inUnrelatedContainer) continue;
+      target.data.parent = containerId;
     }
   }
 
