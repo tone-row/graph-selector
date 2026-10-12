@@ -9,6 +9,7 @@ const re = new RegExp(featuresRe, "gs");
 
 export function getFeatureData(_line: string) {
   let line = _line.slice(0).trim();
+  if (!line) return { id: "", classes: "", data: {} as Data, line };
   re.lastIndex = 0;
   let match: RegExpExecArray | null;
   let id = "";
