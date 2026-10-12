@@ -4,9 +4,12 @@ import { Data, Descriptor } from "./types";
 /**
  * Given a line, it returns the feaures from the line
  */
+// compiled once; lastIndex is reset per call so no state leaks between calls
+const re = new RegExp(featuresRe, "gs");
+
 export function getFeatureData(_line: string) {
   let line = _line.slice(0).trim();
-  const re = new RegExp(featuresRe, "gs");
+  re.lastIndex = 0;
   let match: RegExpExecArray | null;
   let id = "";
   let classes = "";
