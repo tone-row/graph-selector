@@ -1,8 +1,14 @@
 import { describe, expect, test } from "vitest";
 
 import { getFeatureData } from "./getFeatureData";
+import { featuresRe, featuresReGlobal } from "./regexps";
 
 describe("getFeatureData", () => {
+  test("its global regex is featuresRe with the g flag", () => {
+    expect(featuresReGlobal.source).toBe(featuresRe.source);
+    expect(featuresReGlobal.flags).toBe("gs");
+  });
+
   test("it parses IDs", () => {
     const { id, line } = getFeatureData("#hello");
     expect(id).toBe("hello");
